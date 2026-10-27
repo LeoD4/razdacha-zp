@@ -14,6 +14,7 @@ body{margin:0 auto;color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe 
 h1{margin:6px 6px 14px;font-size:34px;font-weight:800;color:var(--ac);letter-spacing:.5px}
 h1 small{font-size:16px;font-weight:400;color:var(--mut);margin-left:8px}
 .lbl{margin:18px 10px 8px;font-size:14px;letter-spacing:2px;color:var(--mut);font-weight:600}
+summary.lbl{cursor:pointer;list-style:none}summary.lbl::-webkit-details-marker{display:none}summary.lbl::before{content:"▸ "}details[open]>summary.lbl::before{content:"▾ "}
 .card{background:var(--card);border:2px solid var(--bd);border-radius:26px;padding:14px 16px;margin:10px 0}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;font-size:13px;color:var(--mut)}
@@ -69,7 +70,7 @@ nav svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;st
 <script>
 var KEY="zpcfg4",D=[5000,1000,500,200,100];
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
-var C=JSON.parse(JSON.stringify(DEF)),armed="";
+var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
 var REF=null,CLOUD="☁ подключаюсь…",pushT=null,pushing=false,dirty=false;
 function setCloud(t){CLOUD=t;var e=document.getElementById("cloud");if(e)e.textContent=t}
@@ -283,9 +284,9 @@ h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">'+P.map(fun
 h+='<div class="mut" id="si'+i+'" style="margin-top:10px">'+infoSt(st)+"</div></div>"});
 h+='<div style="margin:8px 4px"><button class="pill" id="adds">+ Этап</button> <button class="pill g2" id="addbs">+ След. катер</button></div>';
 h+='<div class="mut" id="tsk" style="margin:0 10px">Всего по этапам: '+fmtk(ts)+' кг</div><p class="w" id="warnk" style="margin:4px 10px 0">'+warnK(ts,tk)+"</p>";
-h+='<div class="lbl">ЛЮДИ · СТАВКА · КГ</div><div class="card">';
+h+='<details id="ppl"'+(PPL?" open":"")+'><summary class="lbl">ЛЮДИ · СТАВКА · КГ</summary><div class="card">';
 P.forEach(function(p,j){h+='<div class="r2"><b>'+esc(p.n)+'</b><span><select data-rt="'+j+'">'+[500,480,450].map(function(r){return'<option'+(rateOf(p)===r?" selected":"")+'>'+r+"</option>"}).join("")+'</select> <span class="mut" id="pk'+j+'">'+fmtk(pkg(p.n))+' кг</span><button class="x" data-xp="'+j+'" style="margin-left:8px">×</button></span></div>'});
-h+='<p class="mut" style="margin:8px 0 0">500: бригадир и бухгалтер, 480: рабочие, 450: помощники (выходят помочь).</p><div class="pr" style="padding:12px 0 0"><input id="newn" type="text" placeholder="Новое имя" style="flex:1;width:auto;text-align:left;font-family:inherit"><button class="pill" id="add">+ Добавить</button></div></div>';
+h+='<p class="mut" style="margin:8px 0 0">500: бригадир и бухгалтер, 480: рабочие, 450: помощники (выходят помочь).</p><div class="pr" style="padding:12px 0 0"><input id="newn" type="text" placeholder="Новое имя" style="flex:1;width:auto;text-align:left;font-family:inherit"><button class="pill" id="add">+ Добавить</button></div></div></details>';
 return h}
 function boatsView(){var B=boats(),tk=0,h='<div class="lbl">КАТЕРА</div>';
 B.forEach(function(x,i){tk+=kgn(x.k)+kgn(x.m);h+='<div class="card pr"><input data-bb="'+i+'" type="text" placeholder="№" value="'+esc(x.b)+'" style="width:56px;text-align:center"><input data-bc="'+i+'" type="text" placeholder="капитан" value="'+esc(x.c||"")+'" style="flex:1;width:auto;min-width:0;text-align:left;font-family:inherit"><input data-bk="'+i+'" type="text" inputmode="decimal" placeholder="кг" value="'+esc(x.k)+'" style="width:76px"><input data-bm="'+i+'" type="text" inputmode="decimal" placeholder="кам" value="'+esc(x.m||"")+'" style="width:60px"><button class="x" data-xb="'+i+'">×</button></div>'});
@@ -362,6 +363,7 @@ a.querySelectorAll("select[data-rt]").forEach(function(e){e.onchange=function(){
 var as=document.getElementById("adds");if(as)as.onclick=function(){addStage(false)};
 var an=document.getElementById("addbs");if(an)an.onclick=function(){addStage(true)};
 var ab=document.getElementById("addb");if(ab)ab.onclick=function(){boats().push({b:"",k:""});save();render()};
+var pd=document.getElementById("ppl");if(pd)pd.ontoggle=function(){PPL=pd.open};
 var ad=document.getElementById("add");if(ad)ad.onclick=function(){var v=document.getElementById("newn").value.trim();if(!v||C.people.some(function(p){return p.n===v}))return;C.people.push({n:v,a:""});save();render()};
 var gl=document.getElementById("gsload");if(gl)gl.onclick=function(){if(!SBUSY)loadList()};
 a.querySelectorAll("button[data-gl]").forEach(function(b){b.onclick=function(){var n=SLIST&&SLIST[+b.getAttribute("data-gl")];if(n)loadShift(n)}});
