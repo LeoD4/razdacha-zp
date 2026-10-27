@@ -80,7 +80,7 @@ function schedPush(){if(!REF)return;setCloud("☁ сохраняю…");clearTim
 function doPush(){if(!REF)return;if(pushing){dirty=true;return}pushing=true;C.ts=C.ts||Date.now();var snap=JSON.parse(JSON.stringify(C));
 REF.set(snap).then(function(){setCloud("☁ сохранено в облаке")}).catch(function(e){setCloud("☁ не удалось сохранить"+(e&&e.code?" ("+e.code+")":""))}).then(function(){pushing=false;if(dirty){dirty=false;doPush()}})}
 function initCloud(){
-if(!window.claude||!window.claude.use){ROLE="owner";setCloud("☁ облака нет, данные только на этом телефоне");render();return}
+if(!window.claude||!window.claude.use){ROLE="owner";setCloud("");render();return}
 Promise.all([claude.use("db"),claude.use("user")]).then(function(r){var db=r[0],user=r[1];
 if(!db||!user){ROLE="login";render();return}
 DBH=db;
@@ -367,11 +367,11 @@ h+='<div class="card s">';
 R.E.forEach(function(e){h+='<p class="w">'+esc(e)+"</p>"});
 if(R.rest<0)h+='<p class="w">ЗП больше банка на '+fmt(-R.rest)+" ₽.</p>";
 h+="<p><b>ЗП всего:</b> "+fmt(R.S)+" ₽"+(R.RAW!==R.S?' <span class="mut">(округление вниз убрало '+fmt(R.RAW-R.S)+" ₽)</span>":"")+"</p>";
-h+="<p><b>Остаток банка:</b> "+fmt(R.rest)+" ₽. Весь остаток уходит бригадиру, комиссии нет.</p>";
+h+="<p><b>Остаток банка:</b> "+fmt(R.rest)+" ₽</p>";
 h+="<p><b>Размен:</b> "+(R.nostock?"купюры не введены на вкладке «Люди»":R.fail?"подходящего варианта нет":R.ex?esc(exText(R)):"не нужен")+".</p>";
 if(R.fail)h+='<p class="w">'+esc(R.fail)+"</p>";
 else if(!R.nostock){var lv=0;D.forEach(function(d){lv+=R.L[d]*d});
-h+="<p><b>После раздачи на складе:</b> "+txt(R.L)+" = "+fmt(lv)+" ₽. Это остаток для бригадира.</p>";
+h+="<p><b>После раздачи на складе:</b> "+txt(R.L)+" = "+fmt(lv)+" ₽. Это остаток.</p>";
 if(lv!==R.rest)h+='<p class="w">Остаток на складе ('+fmt(lv)+" ₽) не сходится с остатком банка ("+fmt(R.rest)+" ₽): наличные не совпадают с банком.</p>"}
 h+="</div>"}
 if(!window.claude&&!/^https:\/\/script\.google\.com\//.test(GS_URL))h+='<div class="lbl">ТАБЛИЦА GOOGLE</div><div class="card"><label>Ссылка Apps Script<input id="gsurl" type="text" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(C.gs||"")+'" style="text-align:left;font:14px ui-monospace,Menlo,Consolas,monospace"></label></div>';
