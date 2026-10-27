@@ -410,14 +410,14 @@ return mcp.callTool(SV,"get_spreadsheet",{spreadsheetId:SHEET_ID,fields:["sheets
 var pl=res&&res.payload;if(typeof pl==="string"){try{pl=JSON.parse(pl)}catch(x){pl=null}}
 var names=((pl&&pl.sheets)||[]).map(function(s){return s.properties&&s.properties.title}),name=blk.title,k=1;
 while(names.indexOf(name)>=0){k++;name=blk.title+" ("+k+")"}
-var gid=(rec.ts%2000000000)+1,n=blk.rows.length;
+var gid=(rec.ts%2000000000)+1,n=blk.rows.length,nc=blk.rows[0].length,lc=String.fromCharCode(64+nc);
 stage="write";
 return mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:[{addSheet:{properties:{sheetId:gid,title:name}}}]}).then(function(){
-return mcp.callTool(SV,"update_values",{spreadsheetId:SHEET_ID,range:"'"+name+"'!A1:H"+n,values:blk.rows})}).then(function(){
+return mcp.callTool(SV,"update_values",{spreadsheetId:SHEET_ID,range:"'"+name+"'!A1:"+lc+n,values:blk.rows})}).then(function(){
 sheetDone(rec,name);
 function rg(a){return{sheetId:gid,startRowIndex:a[0],endRowIndex:a[1],startColumnIndex:a[2],endColumnIndex:a[3]}}
 var rq=blk.bold.map(function(a){return{repeatCell:{cell:{userEnteredFormat:{textFormat:{bold:true}}},fields:"userEnteredFormat.textFormat",range:rg(a)}}}).concat(blk.num.map(function(x){return{repeatCell:{cell:{userEnteredFormat:{numberFormat:{pattern:x.f,type:"NUMBER"}}},fields:"userEnteredFormat.numberFormat",range:rg(x.r)}}}));
-rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:0,endIndex:8},properties:{pixelSize:120},fields:"pixelSize"}});
+rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:0,endIndex:nc},properties:{pixelSize:120},fields:"pixelSize"}});
 mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:rq}).catch(function(){})})})}).catch(function(e){NOTE3=sheetErr(e)+(stage==="write"?" Проверьте таблицу, прежде чем повторять.":" Смена сохранена в архиве: нажмите «В таблицу».");render()})}
 function rateOf(p){if(p.r)return +p.r;return{"Саня":500,"Даня":500,"Аня":450}[p.n]||480}
 function autoOf(p){var k=pkg(p.n),sl=kgn(p.s);return(k>0||sl>0)?String(Math.floor(k*rateOf(p)+sl*400+1e-9)):""}
