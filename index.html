@@ -60,7 +60,8 @@ tr.f td:first-child{text-align:left;font-size:12px;color:var(--mut)}
 .w{color:var(--warn);font-weight:700}
 .ok2{color:var(--ac);font-weight:700}
 .mut{color:var(--mut);font-size:13px}
-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:calc(100% - 24px);max-width:576px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px;background:var(--nav);border:2px solid var(--bd);border-radius:32px;z-index:9}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:calc(100% - 24px);max-width:576px;display:grid;grid-template-columns:1.42fr 1fr;gap:6px;z-index:9}
+nav .ng{display:grid;gap:2px;padding:4px;background:var(--nav);border:2px solid var(--bd);border-radius:32px}
 nav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;border:2px solid transparent;border-radius:26px;background:none;color:var(--mut);font:600 11px system-ui,sans-serif;min-width:0;letter-spacing:-.2px}
 nav button.on{background:var(--acbg);border-color:var(--bd);color:var(--ac)}
 nav svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -147,7 +148,8 @@ var gv=0;D.forEach(function(d){gv+=R.ex.give[d]*d});
 return'<p style="margin:0 0 6px"><b>Нужен размен.</b> Отдайте в размен: <b>'+lst(R.ex.give)+"</b> ("+fmt(gv)+" ₽). Получите взамен: <b>"+lst(R.ex.get)+"</b>.</p>"+
 '<p class="mut" style="margin:0">Почему: '+(R.base?"без размена при выдаче уйдёт "+R.base.n+" "+pl3(R.base.n,"купюра","купюры","купюр")+", с разменом "+nb+", на "+(R.base.n-R.n)+" меньше":"имеющимися купюрами точно выдать все суммы нельзя, с разменом выдача займёт "+nb)+". В размен уходит "+R.k+" "+pl3(R.k,"купюра","купюры","купюр")+": меньше не получится"+(R.base?" без лишних купюр при выдаче":"")+". Это подсказка: после размена исправьте количество купюр выше, сами числа не меняются.</p>"}
 var IC={shift:'<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5h6M9 12l2 2 4-4M9 17h6"/></svg>',people:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.6 0 4.5 2 4.5 5"/></svg>',tab:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>',sum:'<svg viewBox="0 0 24 24"><path d="M5 4h14M5 10h14M5 16h9"/><path d="M15 19.5l2.2 2L21 17.5"/></svg>',log:'<svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>'};
-function nav(){return'<nav>'+[["shift","Смена"],["people","Люди"],["tab","Выплаты"],["log","Журнал"],["sum","Итог"]].map(function(t){return'<button data-t="'+t[0]+'" class="'+(C.tab===t[0]?"on":"")+'">'+IC[t[0]]+t[1]+"</button>"}).join("")+"</nav>"}
+function nav(){function g(L){return'<div class="ng" style="grid-template-columns:repeat('+L.length+',1fr)">'+L.map(function(t){return'<button data-t="'+t[0]+'" class="'+(C.tab===t[0]?"on":"")+'">'+IC[t[0]]+t[1]+"</button>"}).join("")+"</div>"}
+return"<nav>"+g([["shift","Смена"],["people","Люди"],["sum","Итог"]])+g([["tab","Выплаты"],["log","Журнал"]])+"</nav>"}
 var ROLE=(window.claude&&window.claude.use)?null:"owner",DBH=null,REPS=[],EMPLOADED=false,EMPERR="",NOTE2="";
 function render(){
 var a=document.getElementById("app");
