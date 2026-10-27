@@ -14,6 +14,9 @@
 // 5. Сохраните, затем Развернуть → Управление развёртываниями → карандаш →
 //    Версия: «Новая версия» → Развернуть. Ссылка /exec не меняется.
 //
+// 6. Один раз выберите вверху функцию payFixAll и нажмите «Выполнить»: в уже созданных
+//    листах «Зарплата» станет выданной зарплатой, а не суммой к выдаче.
+//
 // Повторная отправка тех же строк ничего не задваивает: строка с уже записанным
 // «ID строки» пропускается, а «Аванс» и «Остаток» на листе смены меняются только
 // при первой записи строки.
@@ -58,19 +61,53 @@ function payPost(d) {
   }
 }
 
-// «Аванс» += сумма аванса, «Остаток» −= любая выплата; в строке сотрудника и в строке «Итого».
+// «Аванс» += сумма аванса, «Остаток» −= любая выплата, затем «Зарплата» пересчитывается
+// как выданная зарплата: (Начислено вниз до 100) − Аванс − Остаток. Строка «Итого» — суммы.
 function payBump(ss, l) {
   if (!l.sheet) return;
   var sh = ss.getSheetByName(l.sheet);
   if (!sh) return;
-  var v = sh.getDataRange().getValues();
-  var H = (v[2] || []).map(String), cA = H.indexOf('Аванс'), cO = H.indexOf('Остаток');
-  for (var i = 3; i < v.length; i++) {
-    var nm = String(v[i][0]).trim();
-    if (nm !== l.n && nm !== 'Итого') continue;
-    if (l.kind === 'adv' && cA >= 0) sh.getRange(i + 1, cA + 1).setValue((Number(v[i][cA]) || 0) + l.amt);
-    if (cO >= 0) sh.getRange(i + 1, cO + 1).setValue((Number(v[i][cO]) || 0) - l.amt);
-    if (nm === 'Итого') break;
+  var v = sh.getDataRange().getValues(), c = payCols_(v);
+  if (!c) return;
+  for (var i = 3; i < c.tot; i++) {
+    if (String(v[i][0]).trim() !== l.n) continue;
+    if (l.kind === 'adv') v[i][c.a] = (Number(v[i][c.a]) || 0) + l.amt;
+    v[i][c.o] = (Number(v[i][c.o]) || 0) - l.amt;
   }
+  payRecalc_(sh, v, c);
 }
 
+function payCols_(v) {
+  var H = (v[2] || []).map(String), c = { r: H.indexOf('Начислено, ₽'), z: H.indexOf('Зарплата'), a: H.indexOf('Аванс'), o: H.indexOf('Остаток'), tot: -1 };
+  if (c.r < 0 || c.z < 0 || c.a < 0 || c.o < 0) return null;
+  for (var i = 3; i < v.length; i++) if (String(v[i][0]).trim() === 'Итого') { c.tot = i; break; }
+  return c.tot < 0 ? null : c;
+}
+
+function payRecalc_(sh, v, c) {
+  var Z = [], A = [], O = [], sz = 0, sa = 0, so = 0;
+  for (var i = 3; i < c.tot; i++) {
+    if (String(v[i][0]).trim() === '') { Z.push([v[i][c.z]]); A.push([v[i][c.a]]); O.push([v[i][c.o]]); continue; }
+    var due = Math.floor((Number(v[i][c.r]) || 0) / 100) * 100, a = Number(v[i][c.a]) || 0,
+        o = v[i][c.o] === '' ? due : (Number(v[i][c.o]) || 0), z = Math.max(0, due - a - o);
+    sz += z; sa += a; so += o;
+    Z.push([z || '']); A.push([a || '']); O.push([o]);
+  }
+  Z.push([sz || '']); A.push([sa || '']); O.push([so]);
+  var n = c.tot - 2;
+  sh.getRange(4, c.z + 1, n, 1).setValues(Z);
+  sh.getRange(4, c.a + 1, n, 1).setValues(A);
+  sh.getRange(4, c.o + 1, n, 1).setValues(O);
+}
+
+// Запустить один раз вручную (выбрать payFixAll и нажать «Выполнить»): переводит
+// уже созданные листы смен на новый смысл «Зарплаты» — только выданная зарплата.
+function payFixAll() {
+  var ss = SpreadsheetApp.openById(typeof SPREADSHEET_ID !== 'undefined' ? SPREADSHEET_ID : SHEET_ID), n = 0;
+  ss.getSheets().forEach(function (sh) {
+    if (sh.getName() === PAY_SHEET || sh.getLastRow() < 4) return;
+    var v = sh.getDataRange().getValues(), c = payCols_(v);
+    if (c) { payRecalc_(sh, v, c); n++; }
+  });
+  Logger.log('Обновлено листов: ' + n);
+}

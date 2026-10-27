@@ -231,7 +231,7 @@ function gsGet(q){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl")
 return fetch(GU+"?"+q+"&pin="+encodeURIComponent(gsPin())).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){askPin();throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
 function gsErr(e){var m=e&&e.message;return m==="nourl"?"В коде сайта не задана ссылка Apps Script (GS_URL).":m==="pin"?"Нужен PIN таблицы. Введите его и нажмите кнопку ещё раз.":"Не удалось получить данные из таблицы."+(m&&m!=="err"?" ("+m+")":"")}
 function resetShift(){C.bank=C.n1=C.n05=C.sw=C.brig="";C.bankR="";C.restored="";C.people.forEach(function(p){p.a="";p.s=""});C.ticks={};C.sig="";C.boats=null;C.stages=null;C.date=""}
-function parseShift(rows,name){var tot=-1,i,H=(rows[2]||[]).map(String),iR=H.indexOf("Начислено, ₽"),iB=H.indexOf("Катер"),iM=H.indexOf("Камчадал"),iA=H.indexOf("Зарплата"),iV=H.indexOf("Аванс"),iO=H.indexOf("Остаток"),iS=H.indexOf("КГ салата");if(iR<0)iR=2;if(iB<0)iB=5;if(iA<0)iA=H.indexOf("К выдаче, ₽");
+function parseShift(rows,name){var tot=-1,i,H=(rows[2]||[]).map(String),iR=H.indexOf("Начислено, ₽"),iB=H.indexOf("Катер"),iM=H.indexOf("Камчадал"),iA=H.indexOf("К выдаче, ₽"),iV=H.indexOf("Аванс"),iO=H.indexOf("Остаток"),iS=H.indexOf("КГ салата");if(iR<0)iR=2;if(iB<0)iB=5;
 for(i=3;i<rows.length;i++){if(String(rows[i][0]).trim()==="Итого"){tot=i;break}}
 if(tot<0)return null;
 var P=[],B=[],bank=null,r;
@@ -362,10 +362,10 @@ var t=mk();t[0]="Отчёт по смене от "+ddate(rec);rows.push(t);rows.
 var h=mk();["Имя","Кг","КГ салата","Начислено, ₽","Зарплата","Аванс","Остаток","","Катер","Кг","Камчадал"].forEach(function(x,i){h[i]=x});rows.push(h);
 var sk=0,ss=0,sr=0,sa=0,sv=0,spd=0,bk=0,bm=0;
 for(var i=0;i<n;i++){var r=mk(),p=P[i],b=B[i];
-if(p){var av=p.adv||0,pd=p.pd==null?av:p.pd;r[0]=p.n;r[1]=p.kg==null?"":p.kg;r[2]=p.sal||"";r[3]=p.raw;r[4]=p.A;r[5]=av||"";r[6]=p.A-pd;spd+=pd;sk+=p.kg||0;ss+=p.sal||0;sr+=p.raw;sa+=p.A;sv+=av}
+if(p){var av=p.adv||0,pd=p.pd==null?av:p.pd;r[0]=p.n;r[1]=p.kg==null?"":p.kg;r[2]=p.sal||"";r[3]=p.raw;r[4]=pd-av||"";r[5]=av||"";r[6]=p.A-pd;spd+=pd;sk+=p.kg||0;ss+=p.sal||0;sr+=p.raw;sa+=p.A;sv+=av}
 if(b){r[8]=b.b+(b.c?" · "+b.c:"");r[9]=b.kg;r[10]=b.m||"";bk+=b.kg;bm+=b.m||0}
 rows.push(r)}
-var tt=mk();tt[0]="Итого";tt[1]=rd(sk);tt[2]=ss?rd(ss):"";tt[3]=sr;tt[4]=sa;tt[5]=sv||"";tt[6]=sa-spd;tt[8]="Всего кг";tt[9]=rd(bk);tt[10]=bm?rd(bm):"";rows.push(tt);rows.push(mk());
+var tt=mk();tt[0]="Итого";tt[1]=rd(sk);tt[2]=ss?rd(ss):"";tt[3]=sr;tt[4]=spd-sv||"";tt[5]=sv||"";tt[6]=sa-spd;tt[8]="Всего кг";tt[9]=rd(bk);tt[10]=bm?rd(bm):"";rows.push(tt);rows.push(mk());
 [["Банк, ₽",rec.bank],["ЗП всего, ₽",rec.S],["Остаток, ₽",rec.bank-rec.S]].forEach(function(x,k){var r=mk();r[0]=x[0];r[1]=x[1];if(k===0){r[8]="Итого салат, кг";r[9]=rd(rec.salad||0)}rows.push(r)});
 return{title:ddate(rec),rows:rows,bold:[],num:[]}}
 function sheetErr(e){var c=e&&e.code;if(c==="server_not_connected"||c==="selection_required")return"Подключите Google Sheets в настройках Claude, раздел «Коннекторы».";if(c==="needs_reauth")return"Переподключите Google Sheets в настройках Claude.";if(c==="not_in_manifest"||c==="approval_required"||c==="consent_required")return"Доступ к Google Sheets не разрешён. Разрешите его для этой страницы.";return"Не удалось записать в таблицу"+(c?" ("+c+")":"")+"."}
@@ -389,9 +389,16 @@ if(names.indexOf(JN)<0)return mcp.callTool(SV,"update_spreadsheet",{spreadsheetI
 var have={};col.forEach(function(r){have[String(r[1])]=1});var add=lines.filter(function(l){if(have[l.id])return false;have[l.id]=1;return true});
 if(!add.length)return{added:0,skipped:lines.length};var st=Math.max(col.length,1)+1;
 return put("'"+JN+"'!A"+st+":J"+(st+add.length-1),add.map(function(l){return[l.op,l.id,l.sdate,l.pdate,l.type,l.n,l.amt,l.bills,l.st,l.ts]})).then(function(){
-var q=Promise.resolve(),bad=0;add.forEach(function(l){if(!l.sheet||names.indexOf(l.sheet)<0)return;q=q.then(function(){return get("'"+l.sheet+"'!A1:K200").then(function(v){var H=(v[2]||[]).map(String),cA=H.indexOf("Аванс"),cO=H.indexOf("Остаток"),u=[];
-for(var i=3;i<v.length;i++){var nm=String(v[i][0]==null?"":v[i][0]).trim();if(nm===l.n||nm==="Итого"){if(l.kind==="adv"&&cA>=0)u.push([i,cA,kgn(v[i][cA])+l.amt]);if(cO>=0)u.push([i,cO,kgn(v[i][cO])-l.amt]);if(nm==="Итого")break}}
-return u.reduce(function(p,x){return p.then(function(){return put("'"+l.sheet+"'!"+String.fromCharCode(65+x[1])+(x[0]+1),[[x[2]]])})},Promise.resolve())}).catch(function(){bad++})})});
+var q=Promise.resolve(),bad=0;add.forEach(function(l){if(!l.sheet||names.indexOf(l.sheet)<0)return;q=q.then(function(){return get("'"+l.sheet+"'!A1:K200").then(function(v){var H=(v[2]||[]).map(String),c={r:H.indexOf("Начислено, ₽"),z:H.indexOf("Зарплата"),a:H.indexOf("Аванс"),o:H.indexOf("Остаток")},tot=-1,i;
+if(c.r<0||c.z<0||c.a<0||c.o<0)return;for(i=3;i<v.length;i++)if(String(v[i][0]==null?"":v[i][0]).trim()==="Итого"){tot=i;break}if(tot<0)return;
+function cell(r,k){return r[k]==null?"":r[k]}
+var Z=[],A=[],O=[],sz=0,sa=0,so=0;
+for(i=3;i<tot;i++){var r=v[i],nm=String(cell(r,0)).trim();if(!nm){Z.push([cell(r,c.z)]);A.push([cell(r,c.a)]);O.push([cell(r,c.o)]);continue}
+var due=Math.floor(kgn(cell(r,c.r))/100)*100,a=kgn(cell(r,c.a)),o=String(cell(r,c.o)).trim()===""?due:kgn(cell(r,c.o));if(nm===l.n){if(l.kind==="adv")a+=l.amt;o-=l.amt}
+var zz=Math.max(0,due-a-o);sz+=zz;sa+=a;so+=o;Z.push([zz||""]);A.push([a||""]);O.push([o])}
+Z.push([sz||""]);A.push([sa||""]);O.push([so]);
+function col(k){return String.fromCharCode(65+k)}
+return put("'"+l.sheet+"'!"+col(c.z)+"4:"+col(c.z)+(tot+1),Z).then(function(){return put("'"+l.sheet+"'!"+col(c.a)+"4:"+col(c.a)+(tot+1),A)}).then(function(){return put("'"+l.sheet+"'!"+col(c.o)+"4:"+col(c.o)+(tot+1),O)})}).catch(function(){bad++})})});
 return q.then(function(){return{added:add.length,skipped:lines.length-add.length,warn:bad?"Не обновлены суммы на листах смен: "+bad+".":""}})})})})}
 function sheetDone(rec,name){rec.sheet=name||"ok";save();NOTE3="Смена записана в таблицу, лист «"+name+"».";render();syncPay()}
 function withPaid(rec){var o={};pays().forEach(function(op){if(op.sid!==rec.id||!op.synced)return;op.lines.forEach(function(l){var x=o[l.n]=o[l.n]||{adv:0,pd:0};if(op.type==="adv")x.adv+=l.amt;x.pd+=l.amt})});var r=JSON.parse(JSON.stringify(rec));r.rows.forEach(function(w){var x=o[w.n]||{adv:0,pd:0};w.adv=x.adv;w.pd=x.pd});return r}
