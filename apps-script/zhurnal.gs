@@ -1,15 +1,18 @@
 // Журнал выплат для сайта «Раздача ЗП».
 //
 // Как подключить (один раз):
-// 1. Откройте Google Таблицу → Расширения → Apps Script (тот скрипт, ссылка на который
-//    записана в сайте как GS_URL).
-// 2. Создайте в нём новый файл (+ → Скрипт), назовите «zhurnal» и вставьте этот код целиком.
-// 3. В функции doGet ПОСЛЕ проверки PIN добавьте строку:
-//      if (e.parameter.action === 'ver') return payOut({ ok: true, v: 2 });
-// 4. В функции doPost ПОСЛЕ разбора JSON (d = JSON.parse(...)) и проверки PIN добавьте строку:
-//      if (d.action === 'pay') return payOut(payPost(d));
-// 5. Развернуть → Управление развёртываниями → карандаш → Версия: «Новая версия» → Развернуть.
-//    Ссылка /exec при этом не меняется.
+// 1. Google Таблица → Расширения → Apps Script (скрипт, где есть doGet и doPost).
+// 2. Слева «+» → «Скрипт», назовите файл «zhurnal» и вставьте в него этот код целиком.
+// 3. В doGet сразу ПОСЛЕ строки с проверкой PIN
+//      if (PIN && String(p.pin || '') !== PIN) return json_({ ok: false, error: 'pin' });
+//    добавьте:
+//      if (p.action === 'ver') return json_({ ok: true, v: 2 });
+// 4. В doPost сразу ПОСЛЕ строки с проверкой PIN
+//      if (PIN && String(blk.pin || '') !== PIN) return json_({ ok: false, error: 'pin' });
+//    добавьте:
+//      if (blk.action === 'pay') return json_(payPost(blk));
+// 5. Сохраните, затем Развернуть → Управление развёртываниями → карандаш →
+//    Версия: «Новая версия» → Развернуть. Ссылка /exec не меняется.
 //
 // Повторная отправка тех же строк ничего не задваивает: строка с уже записанным
 // «ID строки» пропускается, а «Аванс» и «Остаток» на листе смены меняются только
@@ -19,10 +22,10 @@ var PAY_SHEET = 'Журнал выплат';
 var PAY_HDR = ['Операция', 'ID строки', 'Дата смены', 'Дата выдачи', 'Тип', 'Сотрудник', 'Сумма, ₽', 'Купюры', 'Статус', 'Записано'];
 
 function payPost(d) {
-  var lock = LockService.getScriptLock();
-  lock.waitLock(20000);
+  var lock = LockService.getScriptLock(), own = !lock.hasLock();
+  if (own) lock.waitLock(20000);
   try {
-    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var ss = SpreadsheetApp.openById(typeof SPREADSHEET_ID !== 'undefined' ? SPREADSHEET_ID : SHEET_ID);
     var J = ss.getSheetByName(PAY_SHEET);
     if (!J) {
       J = ss.insertSheet(PAY_SHEET);
@@ -51,7 +54,7 @@ function payPost(d) {
     return { ok: true, added: add.length, skipped: (d.lines || []).length - add.length,
              warn: bad ? 'Не обновлены суммы на листах смен: ' + bad + '.' : '' };
   } finally {
-    lock.releaseLock();
+    if (own) lock.releaseLock();
   }
 }
 
@@ -71,6 +74,3 @@ function payBump(ss, l) {
   }
 }
 
-function payOut(o) {
-  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
-}
