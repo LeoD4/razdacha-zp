@@ -345,7 +345,9 @@ var F=L.filter(function(x){return(!JF.sd||x.op.sdate===JF.sd)&&(!JF.pd||x.op.pda
 h+='<div class="lbl">ЖУРНАЛ ВЫПЛАТ · '+F.length+'</div><div class="card">';
 if(!F.length)h+='<p class="mut" style="margin:0">Записей нет.</p>';
 F.forEach(function(x){var b=lst(x.l.c||{});h+='<div class="r2"><div><b>'+esc(x.l.n)+"</b> · "+tname(x.op.type)+'<div class="mut">смена '+esc(dd(x.op.sdate))+" · выдача "+(x.op.pdate?esc(dd(x.op.pdate)):"—")+'</div><div class="mut">'+(b?esc(b)+" · ":"")+esc(x.l.st||"")+(x.op.src==="table"?"":" · записано "+dstr(x.op.ts))+(x.op.synced?" · ✓ в таблице":"")+'</div><div class="mut">№ '+esc(x.op.id)+"</div></div><b>"+fmt(x.l.amt)+" ₽</b></div>"});
-return h+'<div class="r2"><b>Итого</b><b>'+fmt(tot)+" ₽</b></div></div>"}
+h+='<div class="r2"><b>Итого</b><b>'+fmt(tot)+" ₽</b></div></div>";
+if(pays().length)h+='<div style="margin:16px 4px"><button class="pill g2" id="clrj">'+(armed==="clrj"?"Точно? Нажмите ещё раз":"Очистить журнал на этом устройстве")+'</button></div><p class="mut" style="margin:0 8px">Удаляет выплаты только на сайте, в Google Таблице ничего не меняется. Выплаты, которые ещё не записаны в таблицу, не удаляются. «Обновить из таблицы» вернёт на сайт всё, что есть в таблице.</p>';
+return h}
 function boats(){if(!C.boats)C.boats=[{b:"",k:""},{b:"",k:""},{b:"",k:""},{b:"",k:""}];return C.boats}
 function kgn(v){var x=parseFloat(String(v==null?"":v).replace(/\s/g,"").replace(",","."));return isNaN(x)?0:x}
 function fmtk(n){return String(Math.round(n*100)/100).replace(".",",")}
@@ -548,6 +550,9 @@ var pdi=document.getElementById("pdist");if(pdi)pdi.onclick=function(){var d=dra
 a.querySelectorAll("[data-jf]").forEach(function(e){e.onchange=function(){JF[e.getAttribute("data-jf")]=e.value;render()}});
 var sy=document.getElementById("sync");if(sy)sy.onclick=function(){syncPay()};
 var pu=document.getElementById("pull");if(pu)pu.onclick=function(){pullPay(true)};
+var cj=document.getElementById("clrj");if(cj)cj.onclick=function(){if(armed!=="clrj"){armed="clrj";render();return}armed="";var keep=pays().filter(function(o){return!o.synced}),gone=pays().length-keep.length;
+try{localStorage.setItem(KEY+"_paybak",JSON.stringify({ts:Date.now(),pay:C.pay}))}catch(e){}
+C.pay=keep;PULLNOTE="Журнал на устройстве очищен: удалено операций "+gone+(keep.length?", оставлено не записанных в таблицу: "+keep.length:"")+". В таблице ничего не изменилось.";save();render()};
 renderPlan();
 a.querySelectorAll("button[data-x]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-x");if(armed!=="x"+i){armed="x"+i;b.textContent="Удалить?";return}C.people.splice(+i,1);armed="";save();render()}});
 a.querySelectorAll("input[data-bb]").forEach(function(e){e.oninput=function(){boats()[+e.getAttribute("data-bb")].b=e.value;save()}});
