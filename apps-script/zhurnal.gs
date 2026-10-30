@@ -17,6 +17,11 @@
 // 6. Один раз выберите вверху функцию payFixAll и нажмите «Выполнить»: в уже созданных
 //    листах «Зарплата» станет выданной зарплатой, а не суммой к выдаче.
 //
+// 7. Оформление «Табеля катеров» в листе смены: в doPost сразу ПОСЛЕ строки
+//      applyDesign_(sh);
+//    добавьте:
+//      styleTimesheet_(sh);
+//
 // Сайт читает журнал тем же запросом (pay с пустым списком строк): в ответе всегда
 // приходят все строки листа, и сайт сливает их со своим журналом по «ID строки».
 //
@@ -115,4 +120,37 @@ function payFixAll() {
     if (c) { payRecalc_(sh, v, c); n++; }
   });
   Logger.log('Обновлено листов: ' + n);
+}
+
+// Оформляет столбец «Сотрудники» у таблицы катеров и «Табель катеров» в цветах шапки листа (ячейка A3).
+function styleTimesheet_(sh) {
+  var v = sh.getDataRange().getValues(), H = (v[2] || []).map(String), tr = -1, tc = -1;
+  for (var r = 0; r < v.length && tr < 0; r++)
+    for (var c = 0; c < v[r].length; c++) if (String(v[r][c]).trim() === 'Табель катеров') { tr = r; tc = c; break; }
+  var head = sh.getRange(3, 1), bg = head.getBackground(), fg = head.getFontColor();
+  var cs = H.indexOf('Сотрудники');
+  if (cs >= 0) {
+    sh.getRange(3, cs + 1).setBackground(bg).setFontColor(fg).setFontWeight('bold');
+    var n = 0; for (var i = 3; i < v.length && String(v[i][0]).trim() !== 'Итого'; i++) n++;
+    if (n) sh.getRange(4, cs + 1, n, 1).setWrap(true).setVerticalAlignment('middle');
+    sh.setColumnWidth(cs + 1, 240);
+  }
+  if (tr < 0) return;
+  var hr = tr + 1, w = 0, b = 0;
+  while (tc + 1 + w < v[hr].length && String(v[hr][tc + 1 + w]).trim() !== '') w++;
+  while (hr + 1 + b < v.length && String(v[hr + 1 + b][tc]).trim() !== '') b++;
+  sh.getRange(tr + 1, tc + 1).setFontWeight('bold').setFontSize(12);
+  sh.getRange(hr + 1, tc + 1, 1, w + 1).setBackground(bg).setFontColor(fg).setFontWeight('bold').setVerticalAlignment('bottom');
+  if (w) sh.getRange(hr + 1, tc + 2, 1, w).setTextRotation(90).setHorizontalAlignment('center');
+  if (b) {
+    sh.getRange(hr + 2, tc + 1, b, 1).setFontWeight('bold');
+    if (w) sh.getRange(hr + 2, tc + 2, b, w).setHorizontalAlignment('center').setFontColor('#2e7d32').setFontWeight('bold');
+    for (var k = 0; k < b; k += 2) sh.getRange(hr + 2 + k, tc + 1, 1, w + 1).setBackground('#f3f7fb');
+  }
+  sh.getRange(hr + 1, tc + 1, b + 1, w + 1).setBorder(true, true, true, true, true, true, '#9fb3c8', SpreadsheetApp.BorderStyle.SOLID);
+  if (tc > 0) {
+    sh.setColumnWidth(tc, 24);
+    sh.setColumnWidth(tc + 1, 120);
+    if (w) sh.setColumnWidths(tc + 2, w, 32);
+  }
 }
