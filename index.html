@@ -57,6 +57,13 @@ tr.f td:first-child{text-align:left;font-size:12px;color:var(--mut)}
 .r2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
 .r2:last-child{border-bottom:0}
 .r2>b{white-space:nowrap}
+table.jt{border-collapse:collapse;border-spacing:0;min-width:100%}
+.jt th,.jt td{padding:9px 8px;text-align:left;font-size:14px;white-space:nowrap;border-bottom:1px solid var(--bd)}
+.jt th{font-size:12px;font-weight:600;color:var(--mut)}
+.jt td.r,.jt th.r{text-align:right;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.jt tfoot td{font-weight:800;border-bottom:0;border-top:2px solid var(--bd)}
+.jt .ds{display:none}
+@media (max-width:440px){.jt th,.jt td{padding:8px 5px;font-size:13px}.jt th{font-size:11px;white-space:normal;vertical-align:bottom}.jt .dl{display:none}.jt .ds{display:inline}.card.jc{padding:12px 8px}}
 .w{color:var(--warn);font-weight:700}
 .ok2{color:var(--ac);font-weight:700}
 .mut{color:var(--mut);font-size:13px}
@@ -340,12 +347,15 @@ var sds=uq(L.map(function(x){return x.op.sdate})).sort().reverse(),ns=uq(L.map(f
 var un=pays().filter(function(op){return!op.synced}).length;
 h+='<div class="card"><button class="pill g2" id="pull" style="margin-bottom:10px">'+(PULLING?"Обновляю…":"Обновить из таблицы")+"</button>"+(PULLNOTE?'<p class="mut" style="margin:0 0 10px">'+esc(PULLNOTE)+"</p>":"")+"</div>";
 h+='<div class="card"><p style="margin:0 0 10px">'+(un?"Не записано в таблицу: "+un+" "+pl3(un,"операция","операции","операций")+".":"✓ Все операции записаны в таблицу.")+"</p>"+(un?'<button class="pill" id="sync">'+(SYNCING?"Записываю…":"Записать в таблицу")+"</button>":"")+(SYNCNOTE?'<p class="mut" style="margin:10px 0 0">'+esc(SYNCNOTE)+"</p>":"")+"</div>";
-h+='<div class="card"><div class="g" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><label>Дата смены<select data-jf="sd" style="width:100%;margin-top:4px"><option value="">Все</option>'+sds.map(function(x){return'<option value="'+esc(x)+'"'+(JF.sd===x?" selected":"")+">"+esc(dd(x))+"</option>"}).join("")+'</select></label><label>Дата выдачи<input data-jf="pd" type="date" value="'+esc(JF.pd)+'" style="min-width:0"></label><label>Сотрудник<select data-jf="n" style="width:100%;margin-top:4px"><option value="">Все</option>'+ns.map(function(x){return'<option'+(JF.n===x?" selected":"")+">"+esc(x)+"</option>"}).join("")+'</select></label><label>Операция<select data-jf="t" style="width:100%;margin-top:4px"><option value="">Все</option><option value="adv"'+(JF.t==="adv"?" selected":"")+'>Аванс</option><option value="sal"'+(JF.t==="sal"?" selected":"")+">Зарплата</option></select></label></div></div>";
-var F=L.filter(function(x){return(!JF.sd||x.op.sdate===JF.sd)&&(!JF.pd||x.op.pdate===JF.pd)&&(!JF.n||x.l.n===JF.n)&&(!JF.t||x.op.type===JF.t)}).sort(function(a,b){return b.op.ts-a.op.ts}),tot=0;F.forEach(function(x){tot+=x.l.amt});
-h+='<div class="lbl">ЖУРНАЛ ВЫПЛАТ · '+F.length+'</div><div class="card">';
+h+='<div class="card"><div class="g" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><label>Дата смены<select data-jf="sd" style="width:100%;margin-top:4px"><option value="">Все</option>'+sds.map(function(x){return'<option value="'+esc(x)+'"'+(JF.sd===x?" selected":"")+">"+esc(dd(x))+"</option>"}).join("")+'</select></label><label>Сотрудник<select data-jf="n" style="width:100%;margin-top:4px"><option value="">Все</option>'+ns.map(function(x){return'<option'+(JF.n===x?" selected":"")+">"+esc(x)+"</option>"}).join("")+"</select></label></div></div>";
+var F=L.filter(function(x){return(!JF.sd||x.op.sdate===JF.sd)&&(!JF.n||x.l.n===JF.n)}).sort(function(a,b){return(b.op.pdate||"").localeCompare(a.op.pdate||"")||b.op.ts-a.op.ts}),tot=0;F.forEach(function(x){tot+=x.l.amt});
+h+='<div class="lbl">ЖУРНАЛ ВЫПЛАТ · '+F.length+'</div><div class="card jc">';
+function jd(iso){var x=dd(iso);return iso?'<span class="dl">'+esc(x)+'</span><span class="ds">'+esc(x.slice(0,6)+x.slice(8))+"</span>":"—"}
 if(!F.length)h+='<p class="mut" style="margin:0">Записей нет.</p>';
-F.forEach(function(x){var b=lst(x.l.c||{});h+='<div class="r2"><div><b>'+esc(x.l.n)+"</b> · "+tname(x.op.type)+'<div class="mut">смена '+esc(dd(x.op.sdate))+" · выдача "+(x.op.pdate?esc(dd(x.op.pdate)):"—")+'</div><div class="mut">'+(b?esc(b)+" · ":"")+esc(x.l.st||"")+(x.op.src==="table"?"":" · записано "+dstr(x.op.ts))+(x.op.synced?" · ✓ в таблице":"")+'</div><div class="mut">№ '+esc(x.op.id)+"</div></div><b>"+fmt(x.l.amt)+" ₽</b></div>"});
-h+='<div class="r2"><b>Итого</b><b>'+fmt(tot)+" ₽</b></div></div>";
+else{h+='<div class="wrap"><table class="jt"><thead><tr><th>Дата смены</th><th>Сотрудник</th><th>Тип</th><th class="r">Сумма, ₽</th><th>Дата выдачи</th></tr></thead><tbody>';
+F.forEach(function(x){h+="<tr><td>"+jd(x.op.sdate)+"</td><td>"+esc(x.l.n)+"</td><td>"+tname(x.op.type)+'</td><td class="r">'+fmt(x.l.amt)+"</td><td>"+jd(x.op.pdate)+"</td></tr>"});
+h+='</tbody><tfoot><tr><td colspan="3">Итого</td><td class="r">'+fmt(tot)+"</td><td></td></tr></tfoot></table></div>"}
+h+="</div>";
 if(pays().length)h+='<div style="margin:16px 4px"><button class="pill g2" id="clrj">'+(armed==="clrj"?"Точно? Нажмите ещё раз":"Очистить журнал на этом устройстве")+'</button></div><p class="mut" style="margin:0 8px">Удаляет выплаты только на сайте, в Google Таблице ничего не меняется. Выплаты, которые ещё не записаны в таблицу, не удаляются. «Обновить из таблицы» вернёт на сайт всё, что есть в таблице.</p>';
 return h}
 function boats(){if(!C.boats)C.boats=[{b:"",k:""},{b:"",k:""},{b:"",k:""},{b:"",k:""}];return C.boats}
