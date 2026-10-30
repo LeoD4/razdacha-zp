@@ -81,7 +81,7 @@ var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
 var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
-var VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
+var PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
 var REF=null,CLOUD="☁ подключаюсь…",pushT=null,pushing=false,dirty=false;
 function setCloud(t){CLOUD=t;var e=document.getElementById("cloud");if(e)e.textContent=t}
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(C))}catch(e){}}
@@ -266,7 +266,7 @@ function restoreCard(){var h='<div class="card"><p class="mut" style="margin:0 0
 if(NOTE3)h+='<p class="ok2" style="margin:10px 0 0">'+esc(NOTE3)+"</p>";
 if(SLIST&&SLIST.length)h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">'+SLIST.slice(0,8).map(function(n,i){return'<button class="pill g2" data-gl="'+i+'">'+esc(n)+"</button>"}).join("")+"</div>";
 return h+"</div>"}
-function draft(){if(!C.draft)C.draft={};var d=C.draft;if(!d.id)d.id="op"+Date.now()+Math.random().toString(36).slice(2,6);if(!d.sid||!findShift(d.sid))d.sid=sidCur();if(!d.pdate)d.pdate=todayISO();if(!d.type)d.type="sal";if(!d.amt)d.amt={};if(!d.ticks)d.ticks={};return d}
+function draft(){if(!C.draft)C.draft={};var d=C.draft;if(!d.id)d.id="op"+Date.now()+Math.random().toString(36).slice(2,6);if(!d.sid||!findShift(d.sid))d.sid=sidCur();if(d.pdate==null)d.pdate="";if(!d.type)d.type="sal";if(!d.amt)d.amt={};if(!d.ticks)d.ticks={};return d}
 function payState(){var d=draft(),sh=shiftBy(d.sid),pd=paidOf(sh.id),rows=[],W=[],err=[],warn=[],tot=0;
 sh.rows.forEach(function(w){var p=pd[w.n]||{adv:0,sal:0},paid=p.adv+p.sal,rem=w.A-paid,v=d.amt[w.n],def=d.type==="sal"?Math.max(0,rem):0,a=(v==null||v==="")?def:cnt(v);
 if(a%100)err.push(w.n+": "+fmt(a)+" ₽ не делится на 100.");else if(a>Math.max(0,rem))warn.push(w.n+": "+fmt(a)+" ₽ больше остатка "+fmt(Math.max(0,rem))+" ₽.");
@@ -283,7 +283,7 @@ Object.keys(fix).forEach(function(k){out[k]=fix[k]});sh.forEach(function(o){out[
 sh.sort(function(a,b){return(b.q-b.f)-(a.q-a.f)});for(var i=0;i<rem-sm;i++)out[sh[i].n]++;
 var amt={};rows.forEach(function(x){amt[x.n]=String((out[x.n]||0)*100)});return{amt:amt}}
 function viewPay(){var P=payState(),d=P.d,h=restoreCard();
-h+='<div class="card"><label>Смена, за которую выплата<select id="psel" style="width:100%;margin-top:4px">'+shOpts(d.sid)+'</select></label><label style="margin-top:10px">Дата выдачи<input id="pdate" type="date" value="'+esc(d.pdate)+'"></label><div style="margin-top:10px"><span style="font-size:13px;color:var(--mut)">Операция</span><div style="display:flex;gap:8px;margin-top:6px">'+[["adv","Аванс"],["sal","Зарплата"]].map(function(t){return'<button class="chip'+(d.type===t[0]?" on":"")+'" data-pt="'+t[0]+'" style="flex:1">'+t[1]+"</button>"}).join("")+"</div></div></div>";
+h+='<div class="card"><label>Смена, за которую выплата<select id="psel" style="width:100%;margin-top:4px">'+shOpts(d.sid)+'</select></label><label style="margin-top:10px">Дата выдачи<input id="pdate" type="date" value="'+esc(d.pdate)+'"'+(PDERR?' style="border-color:var(--warn)"':"")+'><span class="w" id="pderr" style="display:'+(PDERR?"block":"none")+';margin-top:4px;font-size:13px">Выберите дату выдачи</span></label><div style="margin-top:10px"><span style="font-size:13px;color:var(--mut)">Операция</span><div style="display:flex;gap:8px;margin-top:6px">'+[["adv","Аванс"],["sal","Зарплата"]].map(function(t){return'<button class="chip'+(d.type===t[0]?" on":"")+'" data-pt="'+t[0]+'" style="flex:1">'+t[1]+"</button>"}).join("")+"</div></div></div>";
 if(d.type==="adv")h+='<div class="card pr" style="padding:12px 16px"><label style="flex:1;min-width:0">Сумма на аванс, ₽<input id="pbud" type="text" inputmode="numeric" value="'+esc(d.budget||"")+'"></label><button class="pill" id="pdist" style="flex:none;align-self:flex-end">Распределить</button></div>';
 if(PAYERR)h+='<p class="w" style="margin:4px 10px">'+esc(PAYERR)+"</p>";
 if(PAYNOTE)h+='<div class="card"><p class="ok2" style="margin:0">'+esc(PAYNOTE)+"</p>"+(SYNCNOTE?'<p class="mut" style="margin:6px 0 0">'+esc(SYNCNOTE)+"</p>":"")+"</div>";
@@ -329,16 +329,19 @@ function bindPlan(){var a=document.getElementById("payplan");if(!a)return;var d=
 a.querySelectorAll("td.cl").forEach(function(td){td.onclick=function(){var k=td.getAttribute("data-k");d.ticks[k]=!d.ticks[k];armed="";save();renderPlan()}});
 a.querySelectorAll("td.nm").forEach(function(td){td.onclick=function(){var P=payState(),R=billPlan(P.W),w=R.W[+td.getAttribute("data-i")],ds=D.filter(function(x){return w.c[x]}),all=ds.every(function(x){return d.ticks[w.n+"|"+x]});ds.forEach(function(x){d.ticks[w.n+"|"+x]=!all});armed="";save();renderPlan()}});
 var o=document.getElementById("pover");if(o)o.onchange=function(){d.over=o.checked;save();renderPlan()};
-var c=document.getElementById("pconf");if(c)c.onclick=function(){if(c.disabled)return;if(armed!=="pconf"){armed="pconf";renderPlan();return}armed="";confirmPay()}}
+var c=document.getElementById("pconf");if(c)c.onclick=function(){if(c.disabled)return;if(!dateOk(draft().pdate)){armed="";noDate();return}if(armed!=="pconf"){armed="pconf";renderPlan();return}armed="";confirmPay()}}
+function dateOk(v){return/^\d{4}-\d{2}-\d{2}$/.test(v||"")}
+function noDate(){PDERR=true;var e=document.getElementById("pdate"),pe=document.getElementById("pderr");if(e){e.style.borderColor="var(--warn)";e.scrollIntoView({block:"center"})}if(pe)pe.style.display="block";renderPlan()}
 function confirmPay(){var d=draft();
 if(pays().some(function(op){return op.id===d.id})){d.id="";d.ticks={};PAYNOTE="Эта операция уже записана в журнал, повторно не записана.";save();render();return}
+if(!dateOk(d.pdate)){noDate();return}
 var P=payState(),R=billPlan(P.W);if(P.err.length||(P.warn.length&&!d.over)||R.fail)return;
 var lines=[];R.W.forEach(function(w){var c=z(),s=0;D.forEach(function(x){if(w.c[x]&&d.ticks[w.n+"|"+x]){c[x]=w.c[x];s+=w.c[x]*x}});if(s)lines.push({n:w.n,amt:s,plan:w.A,c:c,st:s===w.A?"выдано":"выдано частично"})});
 if(!lines.length)return;
 var op={id:d.id,sid:P.sh.id,sdate:P.sh.date,pdate:d.pdate,type:d.type,ts:Date.now(),lines:lines,ex:exText(R)};
 pays().push(op);
 if(!R.nostock){var nc=JSON.parse(JSON.stringify(C.cash||{}));D.forEach(function(x){var g=0;lines.forEach(function(l){g+=l.c[x]});nc[x]=String(R.st[x]-g)});C.cash=nc}
-C.draft={sid:d.sid,pdate:d.pdate,type:d.type};
+C.draft={sid:d.sid,pdate:"",type:d.type};
 var sm=0;lines.forEach(function(l){sm+=l.amt});
 PAYNOTE=tname(op.type)+" "+fmt(sm)+" ₽ записан"+(op.type==="adv"?"":"а")+" в журнал: "+lines.length+" "+pl3(lines.length,"человек","человека","человек")+".";PAYERR="";
 save();render();window.scrollTo(0,0);syncPay()}
@@ -550,7 +553,7 @@ if(H.length){h+='<div class="lbl">ЗАКРЫТЫЕ СМЕНЫ</div><div class="c
 return h}
 function bind(){
 var a=document.getElementById("app");
-a.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){C.tab=b.getAttribute("data-t");armed="";NOTE="";NOTE2="";NOTE3="";CSVTXT="";PAYNOTE="";PAYERR="";save();render();window.scrollTo(0,0)}});
+a.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){if(b.getAttribute("data-t")==="tab"&&C.tab!=="tab"&&C.draft){C.draft.pdate="";PDERR=false}C.tab=b.getAttribute("data-t");armed="";NOTE="";NOTE2="";NOTE3="";CSVTXT="";PAYNOTE="";PAYERR="";save();render();window.scrollTo(0,0)}});
 ["brig"].forEach(function(id){var e=document.getElementById(id);if(e)e.oninput=function(){C[id]=e.value;save()}});
 a.querySelectorAll("input[data-s]").forEach(function(e){e.oninput=function(){var i=+e.getAttribute("data-s");C.people[i].s=e.value;var b=document.getElementById("bank");if(b)b.value=fmt(bankAuto());var pa=document.querySelector('input[data-a="'+i+'"]');if(pa)pa.placeholder=autoOf(C.people[i])||"сумма";save()}});
 a.querySelectorAll("input[data-a]").forEach(function(e){e.oninput=function(){C.people[+e.getAttribute("data-a")].a=e.value;save()}});
@@ -558,7 +561,7 @@ a.querySelectorAll("input[data-cash]").forEach(function(e){e.oninput=function(){
 a.querySelectorAll("input[data-pa]").forEach(function(e){e.oninput=function(){var v=e.value.replace(/\D/g,"");if(v!==e.value)e.value=v;var d=draft(),P=payState();d.amt[P.rows[+e.getAttribute("data-pa")].n]=v;armed="";save();renderPlan()}});
 ["vsel","ssel"].forEach(function(id){var e=document.getElementById(id);if(e)e.onchange=function(){VSEL=e.value;armed="";render()}});
 var ps=document.getElementById("psel");if(ps)ps.onchange=function(){var d=draft();d.sid=ps.value;d.amt={};d.ticks={};d.over=false;PAYERR="";PAYNOTE="";save();render()};
-var pdt=document.getElementById("pdate");if(pdt)pdt.onchange=function(){draft().pdate=pdt.value||todayISO();save()};
+var pdt=document.getElementById("pdate");if(pdt)pdt.onchange=pdt.oninput=function(){draft().pdate=pdt.value||"";if(pdt.value){PDERR=false;pdt.style.borderColor="";var pe=document.getElementById("pderr");if(pe)pe.style.display="none"}save()};
 a.querySelectorAll("button[data-pt]").forEach(function(b){b.onclick=function(){var d=draft();if(d.type===b.getAttribute("data-pt"))return;d.type=b.getAttribute("data-pt");d.amt={};d.ticks={};d.over=false;PAYERR="";PAYNOTE="";save();render()}});
 var pb=document.getElementById("pbud");if(pb)pb.oninput=function(){var v=pb.value.replace(/\D/g,"");if(v!==pb.value)pb.value=v;draft().budget=v;save();renderPlan()};
 var pdi=document.getElementById("pdist");if(pdi)pdi.onclick=function(){var d=draft(),r=distAdv(cnt(d.budget),payState().rows);PAYNOTE="";if(r.err){PAYERR=r.err}else{PAYERR="";d.amt=r.amt;d.ticks={};d.over=false}save();render()};
@@ -599,6 +602,7 @@ a.querySelectorAll("button[data-g]").forEach(function(b){b.onclick=function(){va
 a.querySelectorAll("button[data-p]").forEach(function(b){b.onclick=function(){var r=hist()[+b.getAttribute("data-p")];if(r)publishReport(r)}});
 }
 migrate();
+if(C.draft)C.draft.pdate="";
 render();
 initCloud();
 </script>
