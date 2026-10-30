@@ -87,7 +87,7 @@ var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
 var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
-PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
+var TBO=false,PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
 var REF=null,CLOUD="☁ подключаюсь…",pushT=null,pushing=false,dirty=false;
 function setCloud(t){CLOUD=t;var e=document.getElementById("cloud");if(e)e.textContent=t}
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(C))}catch(e){}}
@@ -216,15 +216,15 @@ S.forEach(function(st){if(!st.kg&&!st.p.length)return;var o=bt(st.b);o.sk+=st.kg
 var L=bo.map(function(k){return bm[k]}).filter(function(o){return o.sk||o.w}),em={},eo=[];
 L.forEach(function(o){o.po.forEach(function(n){if(!em[n]){em[n]={n:n,list:[],t:0};eo.push(n)}em[n].list.push({b:o.b,c:o.c,kg:o.ppl[n]});em[n].t+=o.ppl[n]})});
 return{S:S,boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
-function tsView(x){var d=tsData(x),h='<div class="lbl">ТАБЕЛЬ КАТЕРОВ</div>',names=[];
-if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div>";
+function tsView(x){var d=tsData(x),h='<details id="tbo"'+(TBO?" open":"")+'><summary class="lbl">ТАБЕЛЬ КАТЕРОВ</summary>',names=[];
+if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div></details>";
 (x.rows||[]).forEach(function(w){if(names.indexOf(w.n)<0)names.push(w.n)});d.S.forEach(function(st){st.p.forEach(function(n){if(names.indexOf(n)<0)names.push(n)})});
 names=names.filter(function(n){return d.boats.some(function(o){return n in o.ppl})});
 h+='<div class="card" style="padding:12px 8px"><div class="wrap"><table class="tg"><thead><tr><th class="s1">Катер</th>'+names.map(function(n){return'<th class="nm">'+esc(n)+"</th>"}).join("")+"</tr></thead><tbody>";
 d.boats.forEach(function(o){h+='<tr><td class="s1"><b>'+esc(o.b||"—")+"</b>"+(o.c?'<span class="mut" style="display:block">'+esc(o.c)+"</span>":"")+"</td>"+names.map(function(n){return'<td class="mk">'+(n in o.ppl?"✓":"")+"</td>"}).join("")+"</tr>"});
 h+="</tbody></table></div>";
 d.boats.forEach(function(o){if(o.w==null)h+='<p class="w" style="margin:8px 4px 0">Катер '+esc(o.b||"без номера")+": в этапах есть, а в списке катеров нет.</p>"});
-return h+"</div>"}
+return h+"</div></details>"}
 function bankOf(x){var kg=0,m=0,sl=0;if(x.cur){boats().forEach(function(b){kg+=kgn(b.k);m+=kgn(b.m)});C.people.forEach(function(p){sl+=kgn(p.s)})}else{var r=x.rec||{};(r.boats||[]).forEach(function(b){kg+=+b.kg||0;m+=+b.m||0});sl=r.salad!=null?+r.salad||0:(r.rows||[]).reduce(function(a,w){return a+(+w.sal||0)},0)}
 return{kg:kg,m:m,s:sl,t:Math.round((kg+m)*500+sl*400)}}
 function shifts(){var L=[{id:sidCur(),date:C.date||todayISO(),rows:curRows(),bank:bankAuto(),cur:true}];hist().forEach(function(r){L.push({id:r.id,date:r.date||ymd(r.ts),ts:r.ts,rows:r.rows||[],bank:r.bank,rec:r})});return L}
@@ -253,14 +253,14 @@ if(C.restored)resetShift();C.ticks={};C.sig=""}
 C.ver=2;saveLocal()}
 function viewPeople(){
 var sel=VSEL||sidCur(),x=shiftBy(sel),h='<div class="card"><label>Смена<select id="vsel" style="width:100%;margin-top:4px">'+shOpts(x.id)+"</select></label></div>";
-if(!x.cur){var pd=paidOf(x.id),S=0;x.rows.forEach(function(w){S+=w.A});
+if(!x.cur){var S=0;x.rows.forEach(function(w){S+=w.A});
 h+='<div class="lbl">НАЧИСЛЕНИЯ · '+esc(ddate(x))+'</div><div class="card"><div class="mut">Только просмотр. Банк '+fmt(x.bank||0)+" ₽ · к выдаче "+fmt(S)+" ₽</div>";
-x.rows.forEach(function(w){var p=pd[w.n]||{adv:0,sal:0},r=rateOfRow(w),paid=p.adv+p.sal;h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">'+(w.kg!=null&&w.kg!==""?fmtk(w.kg)+" кг"+(r?" × "+r:""):"кг —")+(w.sal?" · салат "+fmtk(w.sal)+" кг × 400":"")+"</div><div class=\"mut\">начислено "+fmt(w.raw)+(w.raw!==w.A?" · к выдаче "+fmt(w.A):"")+" · выдано "+fmt(paid)+'</div></div><b>'+fmt(w.A-paid)+" ₽</b></div>"});
-return h+'<p class="mut" style="margin:8px 0 0">Справа остаток к выплате.</p></div>'}
-var pd=paidOf(x.id),S=0;x.rows.forEach(function(w){S+=w.A});
+x.rows.forEach(function(w){var r=rateOfRow(w);h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">'+(w.kg!=null&&w.kg!==""?fmtk(w.kg)+" кг"+(r?" × "+r:""):"кг —")+(w.sal?" · салат "+fmtk(w.sal)+" кг × 400":"")+'</div><div class="mut">начислено '+fmt(w.raw)+'</div></div><b>'+fmt(w.A)+" ₽</b></div>"});
+return h+'<p class="mut" style="margin:8px 0 0">Справа сумма к выдаче (начислено вниз до 100). Выдачи и остатки — на вкладке «Итог».</p></div>'+tsView(x)}
+var S=0;x.rows.forEach(function(w){S+=w.A});
 h+='<div class="lbl">БАНК</div><div class="card"><div class="g"><label>Банк, ₽ (кг × 500, салат × 400)<input id="bank" type="text" readonly value="'+fmt(bankAuto())+'"></label><label>К выдаче всего, ₽<input type="text" readonly value="'+fmt(S)+'"></label></div></div><div class="lbl">СОТРУДНИКИ</div>';
-C.people.forEach(function(p,i){var q=pd[p.n],paid=q?q.adv+q.sal:0;h+='<div class="card pr"><span class="n">'+esc(p.n)+((pkg(p.n)||kgn(p.s)||paid)?'<small style="display:block;font-weight:400;font-size:12px;color:var(--mut)">'+(pkg(p.n)?fmtk(pkg(p.n))+' кг × '+rateOf(p):'')+(kgn(p.s)?(pkg(p.n)?' · ':'')+'салат '+fmtk(kgn(p.s))+' кг × 400':'')+(paid?((pkg(p.n)||kgn(p.s))?' · ':'')+'выдано '+fmt(paid):'')+'</small>':'')+'</span><input data-s="'+i+'" type="text" inputmode="decimal" placeholder="сал" value="'+esc(p.s||"")+'" style="width:54px"><input data-a="'+i+'" type="text" inputmode="numeric" placeholder="'+(autoOf(p)||"сумма")+'" value="'+esc(p.a)+'" style="width:112px"><span class="rub">₽</span></div>'});
-h+='<div style="margin:16px 4px"><button class="pill g2" id="clr">'+(armed==="clr"?"Точно? Нажмите ещё раз":"Очистить суммы, банк, катера и этапы")+'</button></div><p class="mut" style="margin:0 8px">Серая сумма считается сама: кг по этапам × ставка, вниз до 100. Впишите свою, чтобы заменить. Ставки задаются на вкладке «Смена». Пустая сумма означает, что человека в этой смене нет.</p>';return h}
+C.people.forEach(function(p,i){h+='<div class="card pr"><span class="n">'+esc(p.n)+((pkg(p.n)||kgn(p.s))?'<small style="display:block;font-weight:400;font-size:12px;color:var(--mut)">'+(pkg(p.n)?fmtk(pkg(p.n))+' кг × '+rateOf(p):'')+(kgn(p.s)?(pkg(p.n)?' · ':'')+'салат '+fmtk(kgn(p.s))+' кг × 400':'')+'</small>':'')+'</span><input data-s="'+i+'" type="text" inputmode="decimal" placeholder="сал" value="'+esc(p.s||"")+'" style="width:54px"><input data-a="'+i+'" type="text" inputmode="numeric" placeholder="'+(autoOf(p)||"сумма")+'" value="'+esc(p.a)+'" style="width:112px"><span class="rub">₽</span></div>'});
+h+='<div style="margin:16px 4px"><button class="pill g2" id="clr">'+(armed==="clr"?"Точно? Нажмите ещё раз":"Очистить суммы, банк, катера и этапы")+'</button></div><p class="mut" style="margin:0 8px">Серая сумма считается сама: кг по этапам × ставка, вниз до 100. Впишите свою, чтобы заменить. Ставки задаются на вкладке «Смена». Пустая сумма означает, что человека в этой смене нет.</p>';return h+tsView(x)}
 var SLIST=null,SBUSY=false;
 function gsPin(){try{return localStorage.getItem("zppin")||""}catch(e){return""}}
 function askPin(){try{var v=window.prompt("PIN таблицы");if(v!=null&&v.trim()){localStorage.setItem("zppin",v.trim());return true}}catch(e){}return false}
@@ -566,14 +566,13 @@ h+='<div class="card s">';
 E.forEach(function(e){h+='<p class="w">'+esc(e)+"</p>"});
 if(rest<0)h+='<p class="w">ЗП больше банка на '+fmt(-rest)+" ₽.</p>";
 h+="<p><b>Начислено:</b> "+fmt(S)+" ₽"+(RAW!==S?' <span class="mut">(округление вниз убрало '+fmt(RAW-S)+" ₽)</span>":"")+"</p>";
-h+="<p><b>Выдано авансами:</b> "+fmt(adv)+" ₽</p><p><b>Выдано зарплатой:</b> "+fmt(sal)+" ₽</p><p><b>Всего выплачено:</b> "+fmt(adv+sal)+" ₽</p>";
-h+="<p><b>Остаток к выплате:</b> "+fmt(S-adv-sal)+" ₽</p>";
 var bk=bankOf(x);h+="<p><b>Банк:</b> "+fmt(bk.t)+' ₽ <span class="mut">(кг '+fmtk(bk.kg)+" × 500 + камчадал "+fmtk(bk.m)+" × 500 + салат "+fmtk(bk.s)+" × 400)</span></p>";
 if(bk.t!==(x.bank||0))h+='<p class="mut">В смене записан банк '+fmt(x.bank||0)+" ₽ (например, загружен из таблицы), остаток банка ниже считается от него.</p>";
 h+="<p><b>Остаток банка:</b> "+fmt(rest)+" ₽</p>";
 h+="</div>";
-h+='<div class="lbl">ПО СОТРУДНИКАМ</div><div class="card">';x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">начислено '+fmt(w.A)+" · аванс "+fmt(q.adv)+" · зарплата "+fmt(q.sal)+"</div></div><b>"+fmt(w.A-q.adv-q.sal)+" ₽</b></div>"});h+='<p class="mut" style="margin:8px 0 0">Справа остаток к выплате.</p></div>'}
-h+=tsView(x);
+h+='<div class="lbl">ПО СОТРУДНИКАМ</div><div class="card jc"><div class="wrap"><table class="jt"><thead><tr><th>Сотрудник</th><th class="r">К выдаче</th><th class="r">Аванс</th><th class="r">Зарплата</th><th class="r">Остаток</th></tr></thead><tbody>';
+x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};h+="<tr><td>"+esc(w.n)+'</td><td class="r">'+fmt(w.A)+'</td><td class="r">'+fmt(q.adv)+'</td><td class="r">'+fmt(q.sal)+'</td><td class="r">'+fmt(w.A-q.adv-q.sal)+"</td></tr>"});
+h+='</tbody><tfoot><tr><td>Итого</td><td class="r">'+fmt(S)+'</td><td class="r">'+fmt(adv)+'</td><td class="r">'+fmt(sal)+'</td><td class="r">'+fmt(S-adv-sal)+"</td></tr></tfoot></table></div></div>"}
 var cs=cashOf(x.id);h+='<div class="card s"><p><b>Наличные по смене:</b> '+(cs.any?txt(cs.n)+" = "+fmt(cs.t)+" ₽":"не введены на вкладке «Выплаты»")+"</p></div>";
 if(!window.claude&&!/^https:\/\/script\.google\.com\//.test(GS_URL))h+='<div class="lbl">ТАБЛИЦА GOOGLE</div><div class="card"><label>Ссылка Apps Script<input id="gsurl" type="text" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(C.gs||"")+'" style="text-align:left;font:14px ui-monospace,Menlo,Consolas,monospace"></label></div>';
 var H=hist();
@@ -617,6 +616,7 @@ var as=document.getElementById("adds");if(as)as.onclick=function(){addStage(fals
 var an=document.getElementById("addbs");if(an)an.onclick=function(){addStage(true)};
 var ab=document.getElementById("addb");if(ab)ab.onclick=function(){boats().push({b:"",k:""});save();render()};
 var pd=document.getElementById("ppl");if(pd)pd.ontoggle=function(){PPL=pd.open};
+var tb=document.getElementById("tbo");if(tb)tb.ontoggle=function(){TBO=tb.open};
 var ad=document.getElementById("add");if(ad)ad.onclick=function(){var v=document.getElementById("newn").value.trim();if(!v||C.people.some(function(p){return p.n===v}))return;C.people.push({n:v,a:""});save();render()};
 var gl=document.getElementById("gsload");if(gl)gl.onclick=function(){if(!SBUSY)loadList()};
 a.querySelectorAll("button[data-gl]").forEach(function(b){b.onclick=function(){var n=SLIST&&SLIST[+b.getAttribute("data-gl")];if(n)loadShift(n)}});
