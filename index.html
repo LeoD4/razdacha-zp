@@ -404,26 +404,30 @@ function inSheet(r){return r.sheet||r.ts===1792474231867||r.ts===1792407853953}
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
 function ddate(r){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(r.date||"");return m?m[3]+"."+m[2]+"."+m[1]:dstr(r.ts).slice(0,10)}
 function salOf(n){var q=C.people.filter(function(p){return p.n===n})[0];return q?kgn(q.s):0}
-function sheetBlock(rec){var P=rec.rows||[],B=rec.boats||[],n=Math.max(P.length,B.length),rows=[],W=11;
+function sheetBlock(rec){var P=rec.rows||[],B=rec.boats||[],M=tsMatrix({rec:rec,rows:P,cur:false}),nb=M?M.names.length:0,TC=13,right=M&&TC+1+nb<=26,
+n=Math.max(P.length,B.length,right?M.boats.length:0),rows=[],W=M?12:11;
 function mk(){var r=[];for(var i=0;i<W;i++)r.push("");return r}
 function rd(x){return Math.round(x*100)/100}
+function who(no){var o=M&&M.boats.filter(function(x){return x.b===String(no==null?"":no).trim()})[0];return o?M.names.filter(function(nm){return nm in o.ppl}).join(", "):""}
 var t=mk();t[0]="Отчёт по смене от "+ddate(rec);rows.push(t);rows.push(mk());
-var h=mk();["Имя","Кг","КГ салата","Начислено, ₽","Зарплата","Аванс","Остаток","","Катер","Кг","Камчадал"].forEach(function(x,i){h[i]=x});rows.push(h);
+var h=mk();["Имя","Кг","КГ салата","Начислено, ₽","Зарплата","Аванс","Остаток","","Катер","Кг","Камчадал"].forEach(function(x,i){h[i]=x});if(M)h[11]="Сотрудники";rows.push(h);
 var sk=0,ss=0,sr=0,sa=0,sv=0,spd=0,bk=0,bm=0;
 for(var i=0;i<n;i++){var r=mk(),p=P[i],b=B[i];
 if(p){var av=p.adv||0,pd=p.pd==null?av:p.pd;r[0]=p.n;r[1]=p.kg==null?"":p.kg;r[2]=p.sal||"";r[3]=p.raw;r[4]=pd-av||"";r[5]=av||"";r[6]=p.A-pd;spd+=pd;sk+=p.kg||0;ss+=p.sal||0;sr+=p.raw;sa+=p.A;sv+=av}
-if(b){r[8]=b.b+(b.c?" · "+b.c:"");r[9]=b.kg;r[10]=b.m||"";bk+=b.kg;bm+=b.m||0}
+if(b){r[8]=b.b+(b.c?" · "+b.c:"");r[9]=b.kg;r[10]=b.m||"";if(M)r[11]=who(b.b);bk+=b.kg;bm+=b.m||0}
 rows.push(r)}
 var tt=mk();tt[0]="Итого";tt[1]=rd(sk);tt[2]=ss?rd(ss):"";tt[3]=sr;tt[4]=spd-sv||"";tt[5]=sv||"";tt[6]=sa-spd;tt[8]="Всего кг";tt[9]=rd(bk);tt[10]=bm?rd(bm):"";rows.push(tt);rows.push(mk());
 [["Банк, ₽",rec.bank],["ЗП всего, ₽",rec.S],["Остаток, ₽",rec.bank-rec.S]].forEach(function(x,k){var r=mk();r[0]=x[0];r[1]=x[1];if(k===0){r[8]="Итого салат, кг";r[9]=rd(rec.salad||0)}rows.push(r)});
-var bold=[],M=tsMatrix({rec:rec,rows:P,cur:false});
-if(M){var nb=M.names.length;
-rows.push([]);bold.push([rows.length,rows.length+2,0,1+nb]);rows.push(["Табель катеров"]);rows.push(["Катер"].concat(M.names));
-M.boats.forEach(function(o){rows.push([o.b+(o.c?" · "+o.c:"")].concat(M.names.map(function(n){return n in o.ppl?"✓":""})))});
-rows.push([]);bold.push([rows.length,rows.length+2,0,3]);rows.push(["Катера и сотрудники"]);rows.push(["№ катера","Наименование","Сотрудники"]);
-M.boats.forEach(function(o){rows.push([o.b,o.c,M.names.filter(function(n){return n in o.ppl}).join(", ")])})}
-var Wm=W;rows.forEach(function(r){if(r.length>Wm)Wm=r.length});rows.forEach(function(r){while(r.length<Wm)r.push("")});
-return{title:ddate(rec),rows:rows,bold:bold,num:[]}}
+var bold=[],ts=null;
+if(M){var r0,c0;
+if(right){r0=1;c0=TC}else{rows.push([]);r0=rows.length;c0=0}
+function put(r,c,v){while(rows.length<=r)rows.push([]);rows[r][c]=v}
+put(r0,c0,"Табель катеров");put(r0+1,c0,"Катер");M.names.forEach(function(nm,k){put(r0+1,c0+1+k,nm)});
+M.boats.forEach(function(o,k){put(r0+2+k,c0,o.b+(o.c?" · "+o.c:""));M.names.forEach(function(nm,j){put(r0+2+k,c0+1+j,nm in o.ppl?"✓":"")})});
+bold.push([r0,r0+2,c0,c0+1+nb]);ts={r:r0,c:c0,names:nb,boats:M.boats.length}}
+var Wm=W;rows.forEach(function(r){if(r.length>Wm)Wm=r.length});rows.forEach(function(r){for(var k=0;k<Wm;k++)if(r[k]==null)r[k]=""});
+return{title:ddate(rec),rows:rows,bold:bold,num:[],ts:ts}}
+function colA(n){var s="";while(n>0){var m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s}
 function sheetErr(e){var c=e&&e.code;if(c==="server_not_connected"||c==="selection_required")return"Подключите Google Sheets в настройках Claude, раздел «Коннекторы».";if(c==="needs_reauth")return"Переподключите Google Sheets в настройках Claude.";if(c==="not_in_manifest"||c==="approval_required"||c==="consent_required")return"Доступ к Google Sheets не разрешён. Разрешите его для этой страницы.";return"Не удалось записать в таблицу"+(c?" ("+c+")":"")+"."}
 var JN="Журнал выплат",JH=["Операция","ID строки","Дата смены","Дата выдачи","Тип","Сотрудник","Сумма, ₽","Купюры","Статус","Записано","ID смены","Лист смены","Метка времени"];
 function syncPay(){if(SYNCING)return;var ops=pays().filter(function(op){return!op.synced});if(!ops.length)return;
@@ -497,7 +501,7 @@ return mcp.callTool(SV,"get_spreadsheet",{spreadsheetId:SHEET_ID,fields:["sheets
 var pl=res&&res.payload;if(typeof pl==="string"){try{pl=JSON.parse(pl)}catch(x){pl=null}}
 var names=((pl&&pl.sheets)||[]).map(function(s){return s.properties&&s.properties.title}),name=blk.title,k=1;
 while(names.indexOf(name)>=0){k++;name=blk.title+" ("+k+")"}
-var gid=(rec.ts%2000000000)+1,n=blk.rows.length,nc=blk.rows[0].length,lc=String.fromCharCode(64+nc);
+var gid=(rec.ts%2000000000)+1,n=blk.rows.length,nc=blk.rows[0].length,lc=colA(nc);
 stage="write";
 return mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:[{addSheet:{properties:{sheetId:gid,title:name}}}]}).then(function(){
 return mcp.callTool(SV,"update_values",{spreadsheetId:SHEET_ID,range:"'"+name+"'!A1:"+lc+n,values:blk.rows})}).then(function(){
@@ -505,6 +509,11 @@ sheetDone(rec,name);
 function rg(a){return{sheetId:gid,startRowIndex:a[0],endRowIndex:a[1],startColumnIndex:a[2],endColumnIndex:a[3]}}
 var rq=blk.bold.map(function(a){return{repeatCell:{cell:{userEnteredFormat:{textFormat:{bold:true}}},fields:"userEnteredFormat.textFormat",range:rg(a)}}}).concat(blk.num.map(function(x){return{repeatCell:{cell:{userEnteredFormat:{numberFormat:{pattern:x.f,type:"NUMBER"}}},fields:"userEnteredFormat.numberFormat",range:rg(x.r)}}}));
 rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:0,endIndex:nc},properties:{pixelSize:120},fields:"pixelSize"}});
+if(nc>11)rq.push({repeatCell:{range:rg([2,blk.rows.length,11,12]),cell:{userEnteredFormat:{wrapStrategy:"WRAP"}},fields:"userEnteredFormat.wrapStrategy"}},{updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:11,endIndex:12},properties:{pixelSize:240},fields:"pixelSize"}});
+var T=blk.ts;if(T){rq.push({repeatCell:{range:rg([T.r+1,T.r+2,T.c+1,T.c+1+T.names]),cell:{userEnteredFormat:{textRotation:{angle:90},horizontalAlignment:"CENTER"}},fields:"userEnteredFormat(textRotation,horizontalAlignment)"}},
+{repeatCell:{range:rg([T.r+2,T.r+2+T.boats,T.c+1,T.c+1+T.names]),cell:{userEnteredFormat:{horizontalAlignment:"CENTER",textFormat:{bold:true,foregroundColor:{red:0.18,green:0.49,blue:0.2}}}},fields:"userEnteredFormat(horizontalAlignment,textFormat)"}},
+{updateBorders:{range:rg([T.r+1,T.r+2+T.boats,T.c,T.c+1+T.names]),top:{style:"SOLID"},bottom:{style:"SOLID"},left:{style:"SOLID"},right:{style:"SOLID"},innerHorizontal:{style:"SOLID"},innerVertical:{style:"SOLID"}}});
+if(T.c>0)rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:T.c+1,endIndex:T.c+1+T.names},properties:{pixelSize:32},fields:"pixelSize"}},{updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:T.c-1,endIndex:T.c},properties:{pixelSize:24},fields:"pixelSize"}})}
 mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:rq}).catch(function(){})})})}).catch(function(e){NOTE3=sheetErr(e)+(stage==="write"?" Проверьте таблицу, прежде чем повторять.":" Смена сохранена в архиве: нажмите «В таблицу».");render()})}
 function rateOf(p){if(p.r)return +p.r;return{"Саня":500,"Даня":500,"Аня":450}[p.n]||480}
 function autoOf(p){var k=pkg(p.n),sl=kgn(p.s);return(k>0||sl>0)?String(Math.floor(k*rateOf(p)+sl*400+1e-9)):""}
