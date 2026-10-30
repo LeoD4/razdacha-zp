@@ -216,10 +216,12 @@ S.forEach(function(st){if(!st.kg&&!st.p.length)return;var o=bt(st.b);o.sk+=st.kg
 var L=bo.map(function(k){return bm[k]}).filter(function(o){return o.sk||o.w}),em={},eo=[];
 L.forEach(function(o){o.po.forEach(function(n){if(!em[n]){em[n]={n:n,list:[],t:0};eo.push(n)}em[n].list.push({b:o.b,c:o.c,kg:o.ppl[n]});em[n].t+=o.ppl[n]})});
 return{S:S,boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
-function tsView(x){var d=tsData(x),h='<details id="tbo"'+(TBO?" open":"")+'><summary class="lbl">ТАБЕЛЬ КАТЕРОВ</summary>',names=[];
-if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div></details>";
+function tsMatrix(x){var d=tsData(x),names=[];if(!d)return null;
 (x.rows||[]).forEach(function(w){if(names.indexOf(w.n)<0)names.push(w.n)});d.S.forEach(function(st){st.p.forEach(function(n){if(names.indexOf(n)<0)names.push(n)})});
-names=names.filter(function(n){return d.boats.some(function(o){return n in o.ppl})});
+names=names.filter(function(n){return d.boats.some(function(o){return n in o.ppl})});return{names:names,boats:d.boats}}
+function tsView(x){var d=tsMatrix(x),h='<details id="tbo"'+(TBO?" open":"")+'><summary class="lbl">ТАБЕЛЬ КАТЕРОВ</summary>',names;
+if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div></details>";
+names=d.names;
 h+='<div class="card" style="padding:12px 8px"><div class="wrap"><table class="tg"><thead><tr><th class="s1">Катер</th>'+names.map(function(n){return'<th class="nm">'+esc(n)+"</th>"}).join("")+"</tr></thead><tbody>";
 d.boats.forEach(function(o){h+='<tr><td class="s1"><b>'+esc(o.b||"—")+"</b>"+(o.c?'<span class="mut" style="display:block">'+esc(o.c)+"</span>":"")+"</td>"+names.map(function(n){return'<td class="mk">'+(n in o.ppl?"✓":"")+"</td>"}).join("")+"</tr>"});
 h+="</tbody></table></div>";
@@ -414,7 +416,14 @@ if(b){r[8]=b.b+(b.c?" · "+b.c:"");r[9]=b.kg;r[10]=b.m||"";bk+=b.kg;bm+=b.m||0}
 rows.push(r)}
 var tt=mk();tt[0]="Итого";tt[1]=rd(sk);tt[2]=ss?rd(ss):"";tt[3]=sr;tt[4]=spd-sv||"";tt[5]=sv||"";tt[6]=sa-spd;tt[8]="Всего кг";tt[9]=rd(bk);tt[10]=bm?rd(bm):"";rows.push(tt);rows.push(mk());
 [["Банк, ₽",rec.bank],["ЗП всего, ₽",rec.S],["Остаток, ₽",rec.bank-rec.S]].forEach(function(x,k){var r=mk();r[0]=x[0];r[1]=x[1];if(k===0){r[8]="Итого салат, кг";r[9]=rd(rec.salad||0)}rows.push(r)});
-return{title:ddate(rec),rows:rows,bold:[],num:[]}}
+var bold=[],M=tsMatrix({rec:rec,rows:P,cur:false});
+if(M){var nb=M.names.length;
+rows.push([]);bold.push([rows.length,rows.length+2,0,1+nb]);rows.push(["Табель катеров"]);rows.push(["Катер"].concat(M.names));
+M.boats.forEach(function(o){rows.push([o.b+(o.c?" · "+o.c:"")].concat(M.names.map(function(n){return n in o.ppl?"✓":""})))});
+rows.push([]);bold.push([rows.length,rows.length+2,0,3]);rows.push(["Катера и сотрудники"]);rows.push(["№ катера","Наименование","Сотрудники"]);
+M.boats.forEach(function(o){rows.push([o.b,o.c,M.names.filter(function(n){return n in o.ppl}).join(", ")])})}
+var Wm=W;rows.forEach(function(r){if(r.length>Wm)Wm=r.length});rows.forEach(function(r){while(r.length<Wm)r.push("")});
+return{title:ddate(rec),rows:rows,bold:bold,num:[]}}
 function sheetErr(e){var c=e&&e.code;if(c==="server_not_connected"||c==="selection_required")return"Подключите Google Sheets в настройках Claude, раздел «Коннекторы».";if(c==="needs_reauth")return"Переподключите Google Sheets в настройках Claude.";if(c==="not_in_manifest"||c==="approval_required"||c==="consent_required")return"Доступ к Google Sheets не разрешён. Разрешите его для этой страницы.";return"Не удалось записать в таблицу"+(c?" ("+c+")":"")+"."}
 var JN="Журнал выплат",JH=["Операция","ID строки","Дата смены","Дата выдачи","Тип","Сотрудник","Сумма, ₽","Купюры","Статус","Записано","ID смены","Лист смены","Метка времени"];
 function syncPay(){if(SYNCING)return;var ops=pays().filter(function(op){return!op.synced});if(!ops.length)return;
