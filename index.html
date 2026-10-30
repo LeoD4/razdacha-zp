@@ -77,7 +77,7 @@ nav svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;st
 <body>
 <div id="app"></div>
 <script>
-var KEY="zpcfg4",D=[5000,2000,1000,500,200,100];
+var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2000,200];
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
 var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
@@ -109,7 +109,7 @@ function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," ")}
 function lab(d){return d===5000?"5к":d===2000?"2к":d===1000?"1к":String(d)}
 function pa(s){s=String(s).replace(/\s/g,"");if(/^\d{1,3}([.,]\d{3})+$/.test(s))return +s.replace(/[.,]/g,"");if(/^\d+([.,]\d{1,2})?$/.test(s))return Math.round(parseFloat(s.replace(",",".")));return NaN}
 function nm(v){v=String(v==null?"":v).trim();if(!v)return 0;var x=pa(v);return isNaN(x)?0:x}
-function txt(c){var p=[];D.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(" + ")||"0"}
+function txt(c){var p=[];ALLD.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(" + ")||"0"}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function billPlan(W){
 var cs=cashOf(),As=W.map(function(w){return w.A}),S=0,pl,fail="";
@@ -143,7 +143,7 @@ if(!bc)break;cur=bc.s;p=bc.p;sc=bc.v;k=bc.k}
 return{p:p,s:cur,base:base,k:k}}
 function exOf(a,b){var g=z(),r=z();D.forEach(function(d){if(a[d]>b[d])g[d]=a[d]-b[d];else r[d]=b[d]-a[d]});return{give:g,get:r}}
 function pl3(n,a,b,c){var m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<12||h>14)?b:c}
-function lst(c){var p=[];D.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(", ")}
+function lst(c){var p=[];ALLD.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(", ")}
 function exText(R){return R.ex?"отдать "+lst(R.ex.give)+", получить "+lst(R.ex.get):""}
 function advice(R){
 if(!R.W.length)return'<p class="mut" style="margin:0">Нет сумм к выдаче.</p>';
@@ -289,9 +289,10 @@ h+='<div class="lbl">'+(d.type==="adv"?"АВАНС":"ЗАРПЛАТА")+" · С�
 if(!P.rows.length)h+='<div class="card"><p class="mut" style="margin:0">В этой смене нет начислений.</p></div>';
 P.rows.forEach(function(x,i){h+='<div class="card pr"><span class="n">'+esc(x.n)+'<small style="display:block;font-weight:400;font-size:12px;color:var(--mut)">начислено '+fmt(x.A)+" · выдано "+fmt(x.paid)+(x.adv?" (аванс "+fmt(x.adv)+")":"")+'</small><small id="pl'+i+'" style="display:block;font-weight:400;font-size:12px;color:var(--mut)"></small></span><input data-pa="'+i+'" type="text" inputmode="numeric" placeholder="'+x.def+'" value="'+esc(x.v)+'" style="width:112px"><span class="rub">₽</span></div>'});
 var cs=cashOf();
-h+='<div class="lbl">НАЛИЧНЫЕ</div><div class="card"><div class="g"><div><span style="font-size:13px;color:var(--mut)">Ожидается в кассе, ₽</span><div id="cashe" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div class="mut">банк смены − уже выдано</div></div><div><span style="font-size:13px;color:var(--mut)">Наличные, ₽</span><div id="cashv" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div id="cashm" style="font-size:13px"></div></div></div>'+
-'<p class="mut" style="margin:14px 0 4px">Купюры в наличии, шт.</p><div class="g" style="grid-template-columns:repeat(3,1fr)">'+D.map(function(dn){var v=(C.cash||{})[dn];return'<label>'+fmt(dn)+' ₽<input data-cash="'+dn+'" type="text" inputmode="numeric" placeholder="0" value="'+esc(v==null?"":v)+'"><span class="mut" id="cs'+dn+'"></span></label>'}).join("")+"</div></div>";
+h+='<div class="lbl">НАЛИЧНЫЕ</div><div class="card"><div class="g"><div><span style="font-size:13px;color:var(--mut)">Ожидается в кассе, ₽</span><div id="cashe" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div class="mut" id="cashh"></div></div><div><span style="font-size:13px;color:var(--mut)">Наличные, ₽</span><div id="cashv" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div id="cashm" style="font-size:13px"></div></div></div>'+
+'<p class="mut" style="margin:14px 0 4px">Купюры в наличии, шт.</p><div class="g" style="grid-template-columns:repeat(2,1fr)">'+D.map(function(dn){var v=(C.cash||{})[dn];return'<label>'+fmt(dn)+' ₽<input data-cash="'+dn+'" type="text" inputmode="numeric" placeholder="0" value="'+esc(v==null?"":v)+'"><span class="mut" id="cs'+dn+'"></span></label>'}).join("")+"</div>"+oldCash()+"</div>";
 return h+'<div id="payplan"></div>'}
+function oldCash(){var c=C.cash||{},p=[],t=0;OLDD.forEach(function(d){var n=cnt(c[d]);if(n){p.push(n+"×"+fmt(d)+" ₽");t+=n*d}});return p.length?'<p class="w" style="margin:12px 0 0">В сохранённых данных есть купюры '+p.join(", ")+" на "+fmt(t)+" ₽. Эти номиналы больше не используются и в наличные не входят. Разменяйте их и внесите в поля выше.</p>":""}
 function planHtml(P,R){var d=P.d,h="";
 P.err.forEach(function(e){h+='<p class="w" style="margin:4px 10px">'+esc(e)+"</p>"});
 if(P.warn.length){h+='<div class="card">'+P.warn.map(function(e){return'<p class="w" style="margin:0 0 6px">'+esc(e)+"</p>"}).join("")+'<label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)"><input id="pover" type="checkbox" style="width:auto;margin:0"'+(d.over?" checked":"")+">Подтверждаю выдачу сверх остатка</label></div>"}
@@ -317,7 +318,7 @@ h+='<p class="mut" style="margin:0 8px">'+(tot?"В журнал попадут �
 return h}
 function renderPlan(){var e=document.getElementById("payplan");if(!e)return;var P=payState(),R=billPlan(P.W);e.innerHTML=planHtml(P,R);
 P.rows.forEach(function(x,i){var t=document.getElementById("pl"+i);if(t)t.textContent=(P.d.type==="adv"?"аванс ":"выдать ")+fmt(x.a)+" · останется "+fmt(x.rem-x.a)});
-var cs=R.cash,v=document.getElementById("cashv"),m=document.getElementById("cashm"),ce=document.getElementById("cashe"),pd=paidOf(P.sh.id),paid=0;Object.keys(pd).forEach(function(k){paid+=pd[k].adv+pd[k].sal});var exp=(P.sh.bank||0)-paid;
+var cs=R.cash,v=document.getElementById("cashv"),m=document.getElementById("cashm"),ce=document.getElementById("cashe"),pd=paidOf(P.sh.id),paid=0;Object.keys(pd).forEach(function(k){paid+=pd[k].adv+pd[k].sal});var exp=P.d.type==="adv"?P.tot:(P.sh.bank||0)-paid,hh=document.getElementById("cashh");if(hh)hh.textContent=P.d.type==="adv"?"сумма аванса в этой операции":"банк смены − уже выдано";
 D.forEach(function(x){var q=document.getElementById("cs"+x);if(q)q.textContent=cs.n[x]?"= "+fmt(cs.n[x]*x)+" ₽":""});
 if(ce)ce.textContent=fmt(exp)+" ₽";
 if(v){v.textContent=fmt(cs.t)+" ₽";if(!cs.any){v.className="";m.className="mut";m.textContent="Купюры не введены"}else if(cs.t===exp){v.className="ok2";m.className="ok2";m.textContent="✓ Совпадает"}else{v.className="w";m.className="w";m.textContent="Сумма не совпадает"}}
@@ -334,7 +335,7 @@ var lines=[];R.W.forEach(function(w){var c=z(),s=0;D.forEach(function(x){if(w.c[
 if(!lines.length)return;
 var op={id:d.id,sid:P.sh.id,sdate:P.sh.date,pdate:d.pdate,type:d.type,ts:Date.now(),lines:lines,ex:exText(R)};
 pays().push(op);
-if(!R.nostock){var nc={};D.forEach(function(x){var g=0;lines.forEach(function(l){g+=l.c[x]});nc[x]=String(R.st[x]-g)});C.cash=nc}
+if(!R.nostock){var nc=JSON.parse(JSON.stringify(C.cash||{}));D.forEach(function(x){var g=0;lines.forEach(function(l){g+=l.c[x]});nc[x]=String(R.st[x]-g)});C.cash=nc}
 C.draft={sid:d.sid,pdate:d.pdate,type:d.type};
 var sm=0;lines.forEach(function(l){sm+=l.amt});
 PAYNOTE=tname(op.type)+" "+fmt(sm)+" ₽ записан"+(op.type==="adv"?"":"а")+" в журнал: "+lines.length+" "+pl3(lines.length,"человек","человека","человек")+".";PAYERR="";
