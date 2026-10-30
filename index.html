@@ -238,10 +238,10 @@ C.people.forEach(function(p,i){var q=pd[p.n],paid=q?q.adv+q.sal:0;h+='<div class
 h+='<div style="margin:16px 4px"><button class="pill g2" id="clr">'+(armed==="clr"?"Точно? Нажмите ещё раз":"Очистить суммы, банк, катера и этапы")+'</button></div><p class="mut" style="margin:0 8px">Серая сумма считается сама: кг по этапам × ставка, вниз до 100. Впишите свою, чтобы заменить. Ставки задаются на вкладке «Смена». Пустая сумма означает, что человека в этой смене нет.</p>';return h}
 var SLIST=null,SBUSY=false;
 function gsPin(){try{return localStorage.getItem("zppin")||""}catch(e){return""}}
-function askPin(){try{var v=window.prompt("PIN таблицы");if(v!=null)localStorage.setItem("zppin",v.trim())}catch(e){}}
-function gsGet(q){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
-return fetch(GU+"?"+q+"&pin="+encodeURIComponent(gsPin())).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){askPin();throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
-function gsErr(e){var m=e&&e.message;return m==="nourl"?"В коде сайта не задана ссылка Apps Script (GS_URL).":m==="pin"?"Нужен PIN таблицы. Введите его и нажмите кнопку ещё раз.":"Не удалось получить данные из таблицы."+(m&&m!=="err"?" ("+m+")":"")}
+function askPin(){try{var v=window.prompt("PIN таблицы");if(v!=null&&v.trim()){localStorage.setItem("zppin",v.trim());return true}}catch(e){}return false}
+function gsGet(q,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
+return fetch(GU+"?"+q+"&pin="+encodeURIComponent(gsPin())).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(!again&&askPin())return gsGet(q,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
+function gsErr(e){var m=e&&e.message;return m==="nourl"?"В коде сайта не задана ссылка Apps Script (GS_URL).":m==="pin"?"PIN таблицы не введён или не подошёл. Нажмите кнопку ещё раз и введите PIN.":"Не удалось получить данные из таблицы."+(m&&m!=="err"?" ("+m+")":"")}
 function resetShift(){C.bank=C.n1=C.n05=C.sw=C.brig="";C.bankR="";C.restored="";C.people.forEach(function(p){p.a="";p.s=""});C.ticks={};C.sig="";C.boats=null;C.stages=null;C.date=""}
 function parseShift(rows,name){var tot=-1,i,H=(rows[2]||[]).map(String),iR=H.indexOf("Начислено, ₽"),iB=H.indexOf("Катер"),iM=H.indexOf("Камчадал"),iA=H.indexOf("К выдаче, ₽"),iV=H.indexOf("Аванс"),iO=H.indexOf("Остаток"),iS=H.indexOf("КГ салата");if(iR<0)iR=2;if(iB<0)iB=5;
 for(i=3;i<rows.length;i++){if(String(rows[i][0]).trim()==="Итого"){tot=i;break}}
@@ -399,8 +399,8 @@ SYNCING=true;SYNCNOTE="Записываю журнал в таблицу…";ren
 function pullPay(manual){if(PULLING||SYNCING)return;var art=window.claude&&window.claude.use;if(!art&&(!gsUrl()||(!manual&&!gsPin())))return;
 PULLING=true;if(manual){PULLNOTE="Загружаю журнал из таблицы…";render()}
 (art?syncMcp([]):pullGs(manual)).then(function(j){if(!j.rows)throw new Error("noread");var m=mergeRows(j.rows);save();PULLNOTE="Журнал сверен с таблицей "+dstr(Date.now())+(m?", добавлено строк: "+m:", новых строк нет")+"."}).catch(function(e){PULLNOTE=e&&e.message==="noread"?"Журнал не подтянут: обновите файл zhurnal.gs в Apps Script.":"Журнал не подтянут из таблицы: "+syncErr(e)}).then(function(){PULLING=false;render()})}
-function pullGs(manual){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
-return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:[]})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(manual)askPin();throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
+function pullGs(manual,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
+return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:[]})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(manual&&!again&&askPin())return pullGs(manual,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
 function isoOf(t){var m=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(String(t||"").trim());return m?m[3]+"-"+m[2]+"-"+m[1]:""}
 function tsOf(t){var m=/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,2}):(\d{2})/.exec(String(t||"").trim());return m?new Date(+m[3],m[2]-1,+m[1],+m[4],+m[5]).getTime():0}
 function billsOf(t){var c=z(),re=/(\d+)\s*×\s*(5к|2к|1к|500|200|100)/g,m;while((m=re.exec(String(t||""))))c[{"5к":5000,"2к":2000,"1к":1000}[m[2]]||+m[2]]+=+m[1];return c}
@@ -417,10 +417,10 @@ if(!r){var m=H.filter(function(x){return(x.date||ymd(x.ts))===op.sdate});if(m.le
 if(r)op.sid=r.id})}
 function fixImports(){pays().forEach(function(im){if(im.src!=="table")return;im.lines.forEach(function(l){if(l.base==null)return;var s=0;
 pays().forEach(function(op){if(op===im||op.src==="table"||op.sid!==im.sid||op.type!==im.type||op.ts>im.ts)return;op.lines.forEach(function(x){if(x.n===l.n)s+=x.amt})});l.amt=l.plan=Math.max(0,l.base-s)})})}
-function syncErr(e){var m=e&&e.message;if(m==="nourl")return"в коде сайта не задана ссылка Apps Script.";if(m==="pin")return"нужен PIN таблицы.";if(m==="oldscript")return"Apps Script ещё не умеет вести журнал (добавьте в него код из файла apps-script/zhurnal.gs).";if(e&&e.code)return sheetErr(e);return"нет связи с таблицей"+(m&&m!=="err"?" ("+m+")":"")+"."}
-function syncGs(lines){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
+function syncErr(e){var m=e&&e.message;if(m==="nourl")return"в коде сайта не задана ссылка Apps Script.";if(m==="pin")return"PIN таблицы не введён или не подошёл.";if(m==="oldscript")return"Apps Script ещё не умеет вести журнал (добавьте в него код из файла apps-script/zhurnal.gs).";if(e&&e.code)return sheetErr(e);return"нет связи с таблицей"+(m&&m!=="err"?" ("+m+")":"")+"."}
+function syncGs(lines,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
 return gsGet("action=ver").then(function(j){if(!(j.v>=2))throw new Error("oldscript")},function(e){if(e&&(e.message==="pin"||e.message==="nourl"))throw e;throw new Error("oldscript")}).then(function(){
-return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:lines})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){askPin();throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
+return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:lines})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(!again&&askPin())return syncGs(lines,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
 function syncMcp(lines){var SV="Google Sheets";
 return claude.use("mcp").then(function(mcp){if(!mcp)throw{code:"server_not_connected"};
 function pl(r){var x=r&&r.payload;if(typeof x==="string"){try{x=JSON.parse(x)}catch(e){x=null}}return x||{}}
@@ -452,7 +452,7 @@ var blk=sheetBlock(withPaid(rec));
 if(!window.claude||!window.claude.use){
 var GU=gsUrl();if(!GU){NOTE3="Таблица не настроена: в коде сайта не задана ссылка Apps Script (GS_URL). Смена сохранена в архиве.";render();return}
 NOTE3="Записываю смену в таблицу…";render();
-blk.pin=gsPin();fetch(GU,{method:"POST",body:JSON.stringify(blk)}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){askPin();NOTE3="Нужен PIN таблицы. Введите его и нажмите «В таблицу» в архиве.";render();return}if(j&&j.ok)sheetDone(rec,j.sheet||blk.title);else{NOTE3="Таблица ответила ошибкой"+(j&&j.error?": "+j.error:"")+". Проверьте таблицу, прежде чем повторять.";render()}}).catch(function(){NOTE3="Не удалось связаться с таблицей. Если лист с этой датой уже появился, повторять не нужно, иначе нажмите «В таблицу» в архиве.";render()});
+var tries=0;(function send(){blk.pin=gsPin();fetch(GU,{method:"POST",body:JSON.stringify(blk)}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(!tries++&&askPin()){send();return}NOTE3="PIN таблицы не введён или не подошёл. Нажмите «В таблицу» в архиве и введите PIN.";render();return}if(j&&j.ok)sheetDone(rec,j.sheet||blk.title);else{NOTE3="Таблица ответила ошибкой"+(j&&j.error?": "+j.error:"")+". Проверьте таблицу, прежде чем повторять.";render()}}).catch(function(){NOTE3="Не удалось связаться с таблицей. Если лист с этой датой уже появился, повторять не нужно, иначе нажмите «В таблицу» в архиве.";render()})})();
 return}
 NOTE3="Записываю смену в таблицу…";render();
 var stage="read";
