@@ -101,7 +101,7 @@ return user.id().then(function(uid){
 if(!uid){setCloud("☁ войдите в аккаунт, чтобы данные сохранялись в облаке");return}
 REF=db.doc("data/users/"+uid+"/state");var first=true;
 REF.onSnapshot(function(s){var d=s.exists?s.data():null;
-if(d&&d.people&&(d.ts||0)>(C.ts||0)){C=JSON.parse(JSON.stringify(d));migrate();saveLocal();var ae=document.activeElement;if(!(ae&&ae.tagName==="INPUT"))render()}
+if(d&&d.people&&(d.ts||0)>(C.ts||0)){C=JSON.parse(JSON.stringify(d));migrate();migCash();saveLocal();var ae=document.activeElement;if(!(ae&&ae.tagName==="INPUT"))render()}
 else if(first&&(!d||(C.ts||0)>(d.ts||0)))schedPush();
 if(first){first=false;if(!pushT)setCloud("☁ подключено")}},
 function(e){setCloud("☁ ошибка облака"+(e&&e.code?" ("+e.code+")":""))})})})}).catch(function(){ROLE="login";render()})}
@@ -121,7 +121,9 @@ var st=cs.any?(pl.p?pl.s:cs.n):T,L=z();D.forEach(function(d){L[d]=st[d]-T[d]});
 return{W:W,cash:cs,nostock:!cs.any,fail:fail,st:st,L:L,T:T,S:S,n:pl.p?pl.p.n:0,base:pl.base,k:pl.k,ex:pl.p&&pl.k?exOf(cs.n,pl.s):null}}
 function z(){return{5000:0,2000:0,1000:0,500:0,200:0,100:0}}
 function cnt(v){v=String(v==null?"":v).replace(/\D/g,"");return v?parseInt(v,10):0}
-function cashOf(){var c=C.cash||{},o=z(),t=0,any=false;D.forEach(function(d){if(String(c[d]==null?"":c[d]).trim()!=="")any=true;o[d]=cnt(c[d]);t+=o[d]*d});return{n:o,t:t,any:any}}
+function cashBox(sid){if(!C.cashBy)C.cashBy={};if(!C.cashBy[sid])C.cashBy[sid]={};return C.cashBy[sid]}
+function migCash(){if(C.cash){C.cashOld=C.cash;delete C.cash}}
+function cashOf(sid){var c=cashBox(sid||draft().sid),o=z(),t=0,any=false;D.forEach(function(d){if(String(c[d]==null?"":c[d]).trim()!=="")any=true;o[d]=cnt(c[d]);t+=o[d]*d});return{n:o,t:t,any:any}}
 function pick(a,s){var M={};
 function f(i,rem){if(rem===0)return 0;if(i>=D.length)return Infinity;var key=i+"|"+rem;if(M[key])return M[key].v;var d=D[i],bv=Infinity,bk=0;
 for(var k=Math.min(s[d],Math.floor(rem/d));k>=0;k--){var v=k+f(i+1,rem-k*d);if(v<bv){bv=v;bk=k}}M[key]={v:bv,k:bk};return bv}
@@ -292,9 +294,9 @@ if(!P.rows.length)h+='<div class="card"><p class="mut" style="margin:0">В эт�
 P.rows.forEach(function(x,i){h+='<div class="card pr"><span class="n">'+esc(x.n)+'<small style="display:block;font-weight:400;font-size:12px;color:var(--mut)">начислено '+fmt(x.A)+" · выдано "+fmt(x.paid)+(x.adv?" (аванс "+fmt(x.adv)+")":"")+'</small><small id="pl'+i+'" style="display:block;font-weight:400;font-size:12px;color:var(--mut)"></small></span><input data-pa="'+i+'" type="text" inputmode="numeric" placeholder="'+x.def+'" value="'+esc(x.v)+'" style="width:112px"><span class="rub">₽</span></div>'});
 var cs=cashOf();
 h+='<div class="lbl">НАЛИЧНЫЕ</div><div class="card"><div class="g"><div><span style="font-size:13px;color:var(--mut)">Ожидается в кассе, ₽</span><div id="cashe" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div class="mut" id="cashh"></div></div><div><span style="font-size:13px;color:var(--mut)">Наличные, ₽</span><div id="cashv" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div id="cashm" style="font-size:13px"></div></div></div>'+
-'<p class="mut" style="margin:14px 0 4px">Купюры в наличии, шт.</p><div class="g" style="grid-template-columns:repeat(2,1fr)">'+D.map(function(dn){var v=(C.cash||{})[dn];return'<label>'+fmt(dn)+' ₽<input data-cash="'+dn+'" type="text" inputmode="numeric" placeholder="0" value="'+esc(v==null?"":v)+'"><span class="mut" id="cs'+dn+'"></span></label>'}).join("")+"</div>"+oldCash()+"</div>";
+'<p class="mut" style="margin:14px 0 4px">Купюры в наличии, шт.</p><div class="g" style="grid-template-columns:repeat(2,1fr)">'+D.map(function(dn){var v=cashBox(d.sid)[dn];return'<label>'+fmt(dn)+' ₽<input data-cash="'+dn+'" type="text" inputmode="numeric" placeholder="0" value="'+esc(v==null?"":v)+'"><span class="mut" id="cs'+dn+'"></span></label>'}).join("")+"</div>"+oldCash()+"</div>";
 return h+'<div id="payplan"></div>'}
-function oldCash(){var c=C.cash||{},p=[],t=0;OLDD.forEach(function(d){var n=cnt(c[d]);if(n){p.push(n+"×"+fmt(d)+" ₽");t+=n*d}});return p.length?'<p class="w" style="margin:12px 0 0">В сохранённых данных есть купюры '+p.join(", ")+" на "+fmt(t)+" ₽. Эти номиналы больше не используются и в наличные не входят. Разменяйте их и внесите в поля выше.</p>":""}
+function oldCash(){var c=cashBox(draft().sid),p=[],t=0;OLDD.forEach(function(d){var n=cnt(c[d]);if(n){p.push(n+"×"+fmt(d)+" ₽");t+=n*d}});return p.length?'<p class="w" style="margin:12px 0 0">В сохранённых данных есть купюры '+p.join(", ")+" на "+fmt(t)+" ₽. Эти номиналы больше не используются и в наличные не входят. Разменяйте их и внесите в поля выше.</p>":""}
 function planHtml(P,R){var d=P.d,h="";
 P.err.forEach(function(e){h+='<p class="w" style="margin:4px 10px">'+esc(e)+"</p>"});
 if(P.warn.length){h+='<div class="card">'+P.warn.map(function(e){return'<p class="w" style="margin:0 0 6px">'+esc(e)+"</p>"}).join("")+'<label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)"><input id="pover" type="checkbox" style="width:auto;margin:0"'+(d.over?" checked":"")+">Подтверждаю выдачу сверх остатка</label></div>"}
@@ -340,7 +342,7 @@ var lines=[];R.W.forEach(function(w){var c=z(),s=0;D.forEach(function(x){if(w.c[
 if(!lines.length)return;
 var op={id:d.id,sid:P.sh.id,sdate:P.sh.date,pdate:d.pdate,type:d.type,ts:Date.now(),lines:lines,ex:exText(R)};
 pays().push(op);
-if(!R.nostock){var nc=JSON.parse(JSON.stringify(C.cash||{}));D.forEach(function(x){var g=0;lines.forEach(function(l){g+=l.c[x]});nc[x]=String(R.st[x]-g)});C.cash=nc}
+if(!R.nostock){var nc=JSON.parse(JSON.stringify(cashBox(op.sid)));D.forEach(function(x){var g=0;lines.forEach(function(l){g+=l.c[x]});nc[x]=String(R.st[x]-g)});C.cashBy[op.sid]=nc}
 C.draft={sid:d.sid,pdate:"",type:d.type};
 var sm=0;lines.forEach(function(l){sm+=l.amt});
 PAYNOTE=tname(op.type)+" "+fmt(sm)+" ₽ записан"+(op.type==="adv"?"":"а")+" в журнал: "+lines.length+" "+pl3(lines.length,"человек","человека","человек")+".";PAYERR="";
@@ -546,7 +548,7 @@ if(bk.t!==(x.bank||0))h+='<p class="mut">В смене записан банк '
 h+="<p><b>Остаток банка:</b> "+fmt(rest)+" ₽</p>";
 h+="</div>";
 h+='<div class="lbl">ПО СОТРУДНИКАМ</div><div class="card">';x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">начислено '+fmt(w.A)+" · аванс "+fmt(q.adv)+" · зарплата "+fmt(q.sal)+"</div></div><b>"+fmt(w.A-q.adv-q.sal)+" ₽</b></div>"});h+='<p class="mut" style="margin:8px 0 0">Справа остаток к выплате.</p></div>'}
-var cs=cashOf();h+='<div class="card s"><p><b>Наличные в кассе:</b> '+(cs.any?txt(cs.n)+" = "+fmt(cs.t)+" ₽":"не введены на вкладке «Выплаты»")+"</p></div>";
+var cs=cashOf(x.id);h+='<div class="card s"><p><b>Наличные по смене:</b> '+(cs.any?txt(cs.n)+" = "+fmt(cs.t)+" ₽":"не введены на вкладке «Выплаты»")+"</p></div>";
 if(!window.claude&&!/^https:\/\/script\.google\.com\//.test(GS_URL))h+='<div class="lbl">ТАБЛИЦА GOOGLE</div><div class="card"><label>Ссылка Apps Script<input id="gsurl" type="text" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(C.gs||"")+'" style="text-align:left;font:14px ui-monospace,Menlo,Consolas,monospace"></label></div>';
 var H=hist();
 if(H.length){h+='<div class="lbl">ЗАКРЫТЫЕ СМЕНЫ</div><div class="card">';H.slice(0,10).forEach(function(r,i){h+='<div class="r2"><div><b>'+ddate(r)+'</b><div class="mut">ЗП '+fmt(r.S)+" ₽ · "+r.rows.length+' чел.'+(r.boats&&r.boats.length?' · '+fmtk(r.boats.reduce(function(s,x){return s+x.kg+(x.m||0)},0))+' кг':'')+'</div></div><span style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:58%"><button class="pill g2" data-e="'+i+'" style="padding:10px 14px">CSV</button>'+(inSheet(r)?'<span class="mut" style="margin-left:6px">✓ в таблице</span>':'<button class="pill g2" data-g="'+i+'" style="padding:10px 14px;margin-left:6px">В таблицу</button>')+'<button class="pill g2" data-d="'+i+'" style="padding:10px 14px">✕</button></span></div>'});h+="</div>"}
@@ -557,7 +559,7 @@ a.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){if(b.g
 ["brig"].forEach(function(id){var e=document.getElementById(id);if(e)e.oninput=function(){C[id]=e.value;save()}});
 a.querySelectorAll("input[data-s]").forEach(function(e){e.oninput=function(){var i=+e.getAttribute("data-s");C.people[i].s=e.value;var b=document.getElementById("bank");if(b)b.value=fmt(bankAuto());var pa=document.querySelector('input[data-a="'+i+'"]');if(pa)pa.placeholder=autoOf(C.people[i])||"сумма";save()}});
 a.querySelectorAll("input[data-a]").forEach(function(e){e.oninput=function(){C.people[+e.getAttribute("data-a")].a=e.value;save()}});
-a.querySelectorAll("input[data-cash]").forEach(function(e){e.oninput=function(){var v=e.value.replace(/\D/g,"");if(v!==e.value)e.value=v;C.cash=C.cash||{};C.cash[e.getAttribute("data-cash")]=v;save();renderPlan()}});
+a.querySelectorAll("input[data-cash]").forEach(function(e){e.oninput=function(){var v=e.value.replace(/\D/g,"");if(v!==e.value)e.value=v;cashBox(draft().sid)[e.getAttribute("data-cash")]=v;save();renderPlan()}});
 a.querySelectorAll("input[data-pa]").forEach(function(e){e.oninput=function(){var v=e.value.replace(/\D/g,"");if(v!==e.value)e.value=v;var d=draft(),P=payState();d.amt[P.rows[+e.getAttribute("data-pa")].n]=v;armed="";save();renderPlan()}});
 ["vsel","ssel"].forEach(function(id){var e=document.getElementById(id);if(e)e.onchange=function(){VSEL=e.value;armed="";render()}});
 var ps=document.getElementById("psel");if(ps)ps.onchange=function(){var d=draft();d.sid=ps.value;d.amt={};d.ticks={};d.over=false;PAYERR="";PAYNOTE="";save();render()};
@@ -601,7 +603,7 @@ a.querySelectorAll("button[data-d]").forEach(function(b){b.onclick=function(){va
 a.querySelectorAll("button[data-g]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-g");if(armed!=="g"+i){armed="g"+i;b.textContent="Точно? Ещё раз";return}armed="";var r=hist()[+i];if(r&&!inSheet(r))sheetReport(r)}});
 a.querySelectorAll("button[data-p]").forEach(function(b){b.onclick=function(){var r=hist()[+b.getAttribute("data-p")];if(r)publishReport(r)}});
 }
-migrate();
+migrate();migCash();
 if(C.draft)C.draft.pdate="";
 render();
 initCloud();
