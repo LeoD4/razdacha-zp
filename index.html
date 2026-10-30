@@ -63,6 +63,16 @@ tr.f td:first-child{text-align:left;font-size:12px;color:var(--mut)}
 .ts summary>span{flex:1;min-width:0}.ts summary>b{white-space:nowrap}
 .tsr{display:flex;justify-content:space-between;gap:10px;padding:7px 0 7px 18px;font-size:14px;border-top:1px dashed var(--bd)}.tsr>:last-child{white-space:nowrap}
 .ts details>:last-child{margin-bottom:8px}
+table.tg{border-collapse:separate;border-spacing:0;font-size:13px}
+.tg th,.tg td{padding:7px 6px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:center;background:var(--card);font-size:13px}
+.tg th{font-size:11px;color:var(--mut);font-weight:600;vertical-align:bottom;white-space:normal;line-height:1.2}.tg th.nm{color:var(--tx);font-size:12px;font-weight:700}
+.tg .r{text-align:right}.tg td.r{font-family:ui-monospace,Menlo,Consolas,monospace}.tg th.nm,.tg td.mk,.tg tfoot td.p{min-width:58px}
+.tg .s1{position:sticky;left:0;z-index:1;width:42px;min-width:42px;max-width:42px;text-align:left}
+.tg .s2{position:sticky;left:42px;z-index:1;width:40px;min-width:40px;border-right:2px solid var(--bd)}
+.tg td.mk,.tg th.nm,.tg tfoot td.p{border-left:1px solid var(--bd)}.tg td.mk{color:var(--ac);font-weight:800;font-size:15px;padding:5px 6px}
+.tg tbody tr.nb td{border-top:2px solid var(--bd)}
+.tg tfoot td{font-weight:800;background:var(--in);border-bottom:0;font-size:13px}.tg tfoot tr:first-child td{border-top:2px solid var(--bd)}
+.tg tfoot td.s1{white-space:normal;font-size:11px;line-height:1.2}
 table.jt{border-collapse:collapse;border-spacing:0;min-width:100%}
 .jt th,.jt td{padding:9px 8px;text-align:left;font-size:14px;white-space:nowrap;border-bottom:1px solid var(--bd)}
 .jt th{font-size:12px;font-weight:600;color:var(--mut)}
@@ -87,7 +97,7 @@ var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
 var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
-var TSM="emp",PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
+var TSM="grid",PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
 var REF=null,CLOUD="☁ подключаюсь…",pushT=null,pushing=false,dirty=false;
 function setCloud(t){CLOUD=t;var e=document.getElementById("cloud");if(e)e.textContent=t}
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(C))}catch(e){}}
@@ -207,19 +217,31 @@ function sidCur(){if(!C.sid)C.sid="c"+Date.now();return C.sid}
 function curErr(){var E=[];C.people.forEach(function(p){var s=amtOf(p);if(s&&isNaN(pa(s)))E.push("Сумма не понята: "+p.n+" «"+s+"»")});return E}
 function curRows(){var W=[];C.people.forEach(function(p){var s=amtOf(p);if(!s)return;var a=pa(s);if(isNaN(a))return;W.push({n:p.n,raw:a,A:Math.floor(a/100)*100,kg:Math.round(pkg(p.n)*100)/100,sal:kgn(p.s),r:rateOf(p)})});return W}
 function tsData(x){var B=[],S=[];
-if(x.cur){boats().forEach(function(b){var no=String(b.b||"").trim();if(no||kgn(b.k)||kgn(b.m))B.push({b:no,c:String(b.c||"").trim(),kg:kgn(b.k),m:kgn(b.m)})});stages().forEach(function(st){S.push({b:String(st.b||"").trim(),kg:kgn(st.k),p:presentOf(st)})})}
-else{var r=x.rec||{};(r.boats||[]).forEach(function(b){B.push({b:String(b.b||"").trim(),c:String(b.c||"").trim(),kg:+b.kg||0,m:+b.m||0})});(r.stages||[]).forEach(function(st){S.push({b:String(st.b||"").trim(),kg:+st.kg||0,p:st.p||[]})})}
+if(x.cur){boats().forEach(function(b){var no=String(b.b||"").trim();if(no||kgn(b.k)||kgn(b.m))B.push({b:no,c:String(b.c||"").trim(),kg:kgn(b.k),m:kgn(b.m)})});stages().forEach(function(st){S.push({b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:kgn(st.k),p:presentOf(st)})})}
+else{var r=x.rec||{};(r.boats||[]).forEach(function(b){B.push({b:String(b.b||"").trim(),c:String(b.c||"").trim(),kg:+b.kg||0,m:+b.m||0})});(r.stages||[]).forEach(function(st){S.push({b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:+st.kg||0,p:st.p||[]})})}
 if(!S.some(function(st){return st.p.length}))return null;
 var bm={},bo=[];function bt(no){if(!bm[no]){bm[no]={b:no,c:"",w:null,m:0,ppl:{},po:[],sk:0,lost:0};bo.push(no)}return bm[no]}
 B.forEach(function(b){var o=bt(b.b);if(b.c&&!o.c)o.c=b.c;o.w=(o.w||0)+b.kg+b.m;o.m+=b.m});
 S.forEach(function(st){if(!st.kg&&!st.p.length)return;var o=bt(st.b);o.sk+=st.kg;if(!st.p.length){o.lost+=st.kg;return}var e=st.kg/st.p.length;st.p.forEach(function(n){if(!(n in o.ppl)){o.ppl[n]=0;o.po.push(n)}o.ppl[n]+=e})});
 var L=bo.map(function(k){return bm[k]}).filter(function(o){return o.sk||o.w}),em={},eo=[];
 L.forEach(function(o){o.po.forEach(function(n){if(!em[n]){em[n]={n:n,list:[],t:0};eo.push(n)}em[n].list.push({b:o.b,c:o.c,kg:o.ppl[n]});em[n].t+=o.ppl[n]})});
-return{boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
+return{S:S,boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
+function tsGrid(x,d){var names=[],A={},tot={},prev=null,h;
+(x.rows||[]).forEach(function(w){A[w.n]=w.A;if(names.indexOf(w.n)<0)names.push(w.n)});
+d.S.forEach(function(st){st.p.forEach(function(n){if(names.indexOf(n)<0)names.push(n)})});
+names=names.filter(function(n){return d.S.some(function(st){return st.p.indexOf(n)>=0})});names.forEach(function(n){tot[n]=0});
+h='<div class="card" style="padding:12px 8px"><div class="wrap"><table class="tg"><thead><tr><th class="s1">Катер №</th><th class="s2">Этап №</th><th class="r">Кг этапа</th><th>Чел.</th><th class="r">Кг на чел.</th>'+names.map(function(n){return'<th class="nm">'+esc(n)+"</th>"}).join("")+"</tr></thead><tbody>";
+d.S.forEach(function(st){if(!st.kg&&!st.p.length)return;var c=st.p.length,e=c?st.kg/c:0;st.p.forEach(function(n){tot[n]+=e});
+h+="<tr"+(prev!==null&&prev!==st.b?' class="nb"':"")+'><td class="s1">'+esc(st.b||"—")+'</td><td class="s2">'+esc(st.s||"")+'</td><td class="r">'+fmtk(st.kg)+"</td><td>"+c+'</td><td class="r">'+(c?fmtk(e):"—")+"</td>"+names.map(function(n){return'<td class="mk">'+(st.p.indexOf(n)>=0?"✓":"")+"</td>"}).join("")+"</tr>";prev=st.b});
+h+='</tbody><tfoot><tr><td class="s1" colspan="2">Итого кг</td><td colspan="3"></td>'+names.map(function(n){return'<td class="r p">'+fmtk(tot[n])+"</td>"}).join("")+'</tr><tr><td class="s1" colspan="2">К выплате, ₽</td><td colspan="3"></td>'+names.map(function(n){return'<td class="r p">'+(A[n]!=null?fmt(A[n]):"—")+"</td>"}).join("")+"</tr></tfoot></table></div>";
+d.boats.forEach(function(o){var s=0;o.po.forEach(function(n){s+=o.ppl[n]});if(o.w==null)h+='<p class="w" style="margin:8px 4px 0">Катер '+esc(o.b||"без номера")+": такого номера нет в списке катеров.</p>";else if(Math.abs(s-o.w)>0.005)h+='<p class="w" style="margin:8px 4px 0">'+esc(blabel(o))+": вес "+fmtk(o.w)+" кг, по этапам "+fmtk(o.sk)+" кг, по людям "+fmtk(s)+" кг"+(o.lost?" ("+fmtk(o.lost)+" кг в этапах без отмеченных людей)":"")+".</p>"});
+return h+'<p class="mut" style="margin:8px 4px 0">Кг на чел. = кг этапа ÷ число отмеченных. Итого кг — сумма по строкам с ✓. Таблицу можно прокрутить вбок.</p></div>'}
 function blabel(o){return"Катер "+(o.b||"без номера")+(o.c?" · "+o.c:"")}
 function tsView(x){var d=tsData(x),h='<div class="lbl">ТАБЕЛЬ КАТЕРОВ</div>';
 if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div>";
-h+='<div style="display:flex;gap:8px;margin:0 4px 10px">'+[["emp","По сотрудникам"],["boat","По катерам"]].map(function(t){return'<button class="chip'+(TSM===t[0]?" on":"")+'" data-tsm="'+t[0]+'" style="flex:1">'+t[1]+"</button>"}).join("")+'</div><div class="card ts">';
+h+='<div style="display:flex;gap:8px;margin:0 4px 10px">'+[["grid","Этапы и люди"],["emp","По сотрудникам"],["boat","По катерам"]].map(function(t){return'<button class="chip'+(TSM===t[0]?" on":"")+'" data-tsm="'+t[0]+'" style="flex:1;font-size:13px;padding:9px 4px">'+t[1]+"</button>"}).join("")+"</div>";
+if(TSM==="grid")return h+tsGrid(x,d);
+h+='<div class="card ts">';
 if(TSM==="emp")d.emps.forEach(function(e){h+="<details><summary><span><b>"+esc(e.n)+'</b><span class="mut" style="display:block">катера: '+e.list.map(function(y){return esc(y.b||"—")}).join(", ")+"</span></span><b>"+fmtk(e.t)+" кг</b></summary>"+e.list.map(function(y){return'<div class="tsr"><span>'+esc(blabel(y))+"</span><span>"+fmtk(y.kg)+" кг</span></div>"}).join("")+'<div class="tsr"><b>Всего</b><b>'+fmtk(e.t)+" кг</b></div></details>"});
 else d.boats.forEach(function(o){var s=0;o.po.forEach(function(n){s+=o.ppl[n]});var bad=o.w!=null&&Math.abs(s-o.w)>0.005;
 h+="<details><summary><span><b>"+esc(blabel(o))+'</b><span class="mut" style="display:block">'+o.po.length+" чел."+(o.m?" · в т. ч. камчадал "+fmtk(o.m)+" кг":"")+(bad?' · <span class="w">по людям '+fmtk(s)+" кг</span>":"")+"</span></span><b>"+fmtk(o.w!=null?o.w:o.sk)+" кг</b></summary>"+
