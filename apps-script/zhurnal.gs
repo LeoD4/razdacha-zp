@@ -17,12 +17,15 @@
 // 6. Один раз выберите вверху функцию payFixAll и нажмите «Выполнить»: в уже созданных
 //    листах «Зарплата» станет выданной зарплатой, а не суммой к выдаче.
 //
+// Сайт читает журнал тем же запросом (pay с пустым списком строк): в ответе всегда
+// приходят все строки листа, и сайт сливает их со своим журналом по «ID строки».
+//
 // Повторная отправка тех же строк ничего не задваивает: строка с уже записанным
 // «ID строки» пропускается, а «Аванс» и «Остаток» на листе смены меняются только
 // при первой записи строки.
 
 var PAY_SHEET = 'Журнал выплат';
-var PAY_HDR = ['Операция', 'ID строки', 'Дата смены', 'Дата выдачи', 'Тип', 'Сотрудник', 'Сумма, ₽', 'Купюры', 'Статус', 'Записано'];
+var PAY_HDR = ['Операция', 'ID строки', 'Дата смены', 'Дата выдачи', 'Тип', 'Сотрудник', 'Сумма, ₽', 'Купюры', 'Статус', 'Записано', 'ID смены', 'Лист смены', 'Метка времени'];
 
 function payPost(d) {
   var lock = LockService.getScriptLock(), own = !lock.hasLock();
@@ -32,16 +35,16 @@ function payPost(d) {
     var J = ss.getSheetByName(PAY_SHEET);
     if (!J) {
       J = ss.insertSheet(PAY_SHEET);
-      J.getRange(1, 1, 1, PAY_HDR.length).setValues([PAY_HDR]).setFontWeight('bold');
       J.setFrozenRows(1);
     }
+    J.getRange(1, 1, 1, PAY_HDR.length).setValues([PAY_HDR]).setFontWeight('bold');
     var last = J.getLastRow(), have = {};
     if (last > 1) J.getRange(2, 2, last - 1, 1).getDisplayValues().forEach(function (r) { have[String(r[0])] = 1; });
     var add = [], fresh = [];
     (d.lines || []).forEach(function (l) {
       if (have[l.id]) return;
       have[l.id] = 1;
-      add.push([l.op, l.id, l.sdate, l.pdate, l.type, l.n, l.amt, l.bills, l.st, l.ts]);
+      add.push([l.op, l.id, l.sdate, l.pdate, l.type, l.n, l.amt, l.bills, l.st, l.ts, l.sid || '', l.sheet || '', String(l.tsms || '')]);
       fresh.push(l);
     });
     if (add.length) {
@@ -54,8 +57,10 @@ function payPost(d) {
     fresh.forEach(function (l) {
       try { payBump(ss, l); } catch (err) { bad++; }
     });
+    var n = J.getLastRow() - 1;
     return { ok: true, added: add.length, skipped: (d.lines || []).length - add.length,
-             warn: bad ? 'Не обновлены суммы на листах смен: ' + bad + '.' : '' };
+             warn: bad ? 'Не обновлены суммы на листах смен: ' + bad + '.' : '',
+             rows: n > 0 ? J.getRange(2, 1, n, PAY_HDR.length).getDisplayValues() : [] };
   } finally {
     if (own) lock.releaseLock();
   }
