@@ -57,6 +57,12 @@ tr.f td:first-child{text-align:left;font-size:12px;color:var(--mut)}
 .r2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
 .r2:last-child{border-bottom:0}
 .r2>b{white-space:nowrap}
+.ts details{border-bottom:1px solid var(--bd)}.ts details:last-child{border-bottom:0}
+.ts summary{display:flex;align-items:center;gap:8px;padding:11px 0;cursor:pointer;list-style:none}.ts summary::-webkit-details-marker{display:none}
+.ts summary::before{content:"▸";color:var(--mut);flex:none}.ts details[open]>summary::before{content:"▾"}
+.ts summary>span{flex:1;min-width:0}.ts summary>b{white-space:nowrap}
+.tsr{display:flex;justify-content:space-between;gap:10px;padding:7px 0 7px 18px;font-size:14px;border-top:1px dashed var(--bd)}.tsr>:last-child{white-space:nowrap}
+.ts details>:last-child{margin-bottom:8px}
 table.jt{border-collapse:collapse;border-spacing:0;min-width:100%}
 .jt th,.jt td{padding:9px 8px;text-align:left;font-size:14px;white-space:nowrap;border-bottom:1px solid var(--bd)}
 .jt th{font-size:12px;font-weight:600;color:var(--mut)}
@@ -81,7 +87,7 @@ var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
 var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
-var PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
+var TSM="emp",PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
 var REF=null,CLOUD="☁ подключаюсь…",pushT=null,pushing=false,dirty=false;
 function setCloud(t){CLOUD=t;var e=document.getElementById("cloud");if(e)e.textContent=t}
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(C))}catch(e){}}
@@ -200,6 +206,26 @@ if(!PULLED){PULLED=true;setTimeout(function(){pullPay(false)},0)}}
 function sidCur(){if(!C.sid)C.sid="c"+Date.now();return C.sid}
 function curErr(){var E=[];C.people.forEach(function(p){var s=amtOf(p);if(s&&isNaN(pa(s)))E.push("Сумма не понята: "+p.n+" «"+s+"»")});return E}
 function curRows(){var W=[];C.people.forEach(function(p){var s=amtOf(p);if(!s)return;var a=pa(s);if(isNaN(a))return;W.push({n:p.n,raw:a,A:Math.floor(a/100)*100,kg:Math.round(pkg(p.n)*100)/100,sal:kgn(p.s),r:rateOf(p)})});return W}
+function tsData(x){var B=[],S=[];
+if(x.cur){boats().forEach(function(b){var no=String(b.b||"").trim();if(no||kgn(b.k)||kgn(b.m))B.push({b:no,c:String(b.c||"").trim(),kg:kgn(b.k),m:kgn(b.m)})});stages().forEach(function(st){S.push({b:String(st.b||"").trim(),kg:kgn(st.k),p:presentOf(st)})})}
+else{var r=x.rec||{};(r.boats||[]).forEach(function(b){B.push({b:String(b.b||"").trim(),c:String(b.c||"").trim(),kg:+b.kg||0,m:+b.m||0})});(r.stages||[]).forEach(function(st){S.push({b:String(st.b||"").trim(),kg:+st.kg||0,p:st.p||[]})})}
+if(!S.some(function(st){return st.p.length}))return null;
+var bm={},bo=[];function bt(no){if(!bm[no]){bm[no]={b:no,c:"",w:null,m:0,ppl:{},po:[],sk:0,lost:0};bo.push(no)}return bm[no]}
+B.forEach(function(b){var o=bt(b.b);if(b.c&&!o.c)o.c=b.c;o.w=(o.w||0)+b.kg+b.m;o.m+=b.m});
+S.forEach(function(st){if(!st.kg&&!st.p.length)return;var o=bt(st.b);o.sk+=st.kg;if(!st.p.length){o.lost+=st.kg;return}var e=st.kg/st.p.length;st.p.forEach(function(n){if(!(n in o.ppl)){o.ppl[n]=0;o.po.push(n)}o.ppl[n]+=e})});
+var L=bo.map(function(k){return bm[k]}).filter(function(o){return o.sk||o.w}),em={},eo=[];
+L.forEach(function(o){o.po.forEach(function(n){if(!em[n]){em[n]={n:n,list:[],t:0};eo.push(n)}em[n].list.push({b:o.b,c:o.c,kg:o.ppl[n]});em[n].t+=o.ppl[n]})});
+return{boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
+function blabel(o){return"Катер "+(o.b||"без номера")+(o.c?" · "+o.c:"")}
+function tsView(x){var d=tsData(x),h='<div class="lbl">ТАБЕЛЬ КАТЕРОВ</div>';
+if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div>";
+h+='<div style="display:flex;gap:8px;margin:0 4px 10px">'+[["emp","По сотрудникам"],["boat","По катерам"]].map(function(t){return'<button class="chip'+(TSM===t[0]?" on":"")+'" data-tsm="'+t[0]+'" style="flex:1">'+t[1]+"</button>"}).join("")+'</div><div class="card ts">';
+if(TSM==="emp")d.emps.forEach(function(e){h+="<details><summary><span><b>"+esc(e.n)+'</b><span class="mut" style="display:block">катера: '+e.list.map(function(y){return esc(y.b||"—")}).join(", ")+"</span></span><b>"+fmtk(e.t)+" кг</b></summary>"+e.list.map(function(y){return'<div class="tsr"><span>'+esc(blabel(y))+"</span><span>"+fmtk(y.kg)+" кг</span></div>"}).join("")+'<div class="tsr"><b>Всего</b><b>'+fmtk(e.t)+" кг</b></div></details>"});
+else d.boats.forEach(function(o){var s=0;o.po.forEach(function(n){s+=o.ppl[n]});var bad=o.w!=null&&Math.abs(s-o.w)>0.005;
+h+="<details><summary><span><b>"+esc(blabel(o))+'</b><span class="mut" style="display:block">'+o.po.length+" чел."+(o.m?" · в т. ч. камчадал "+fmtk(o.m)+" кг":"")+(bad?' · <span class="w">по людям '+fmtk(s)+" кг</span>":"")+"</span></span><b>"+fmtk(o.w!=null?o.w:o.sk)+" кг</b></summary>"+
+o.po.map(function(n){return'<div class="tsr"><span>'+esc(n)+"</span><span>"+fmtk(o.ppl[n])+" кг</span></div>"}).join("")+'<div class="tsr"><b>Всего по людям</b><b>'+fmtk(s)+" кг</b></div>"+
+(o.w==null?'<p class="w" style="margin:6px 0 0">Катера с таким номером нет в списке катеров.</p>':bad?'<p class="w" style="margin:6px 0 0">Вес катера '+fmtk(o.w)+" кг, по этапам "+fmtk(o.sk)+" кг"+(o.lost?", из них "+fmtk(o.lost)+" кг в этапах без отмеченных людей":"")+".</p>":"")+"</details>"});
+return h+"</div>"}
 function bankOf(x){var kg=0,m=0,sl=0;if(x.cur){boats().forEach(function(b){kg+=kgn(b.k);m+=kgn(b.m)});C.people.forEach(function(p){sl+=kgn(p.s)})}else{var r=x.rec||{};(r.boats||[]).forEach(function(b){kg+=+b.kg||0;m+=+b.m||0});sl=r.salad!=null?+r.salad||0:(r.rows||[]).reduce(function(a,w){return a+(+w.sal||0)},0)}
 return{kg:kg,m:m,s:sl,t:Math.round((kg+m)*500+sl*400)}}
 function shifts(){var L=[{id:sidCur(),date:C.date||todayISO(),rows:curRows(),bank:bankAuto(),cur:true}];hist().forEach(function(r){L.push({id:r.id,date:r.date||ymd(r.ts),ts:r.ts,rows:r.rows||[],bank:r.bank,rec:r})});return L}
@@ -548,6 +574,7 @@ if(bk.t!==(x.bank||0))h+='<p class="mut">В смене записан банк '
 h+="<p><b>Остаток банка:</b> "+fmt(rest)+" ₽</p>";
 h+="</div>";
 h+='<div class="lbl">ПО СОТРУДНИКАМ</div><div class="card">';x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">начислено '+fmt(w.A)+" · аванс "+fmt(q.adv)+" · зарплата "+fmt(q.sal)+"</div></div><b>"+fmt(w.A-q.adv-q.sal)+" ₽</b></div>"});h+='<p class="mut" style="margin:8px 0 0">Справа остаток к выплате.</p></div>'}
+h+=tsView(x);
 var cs=cashOf(x.id);h+='<div class="card s"><p><b>Наличные по смене:</b> '+(cs.any?txt(cs.n)+" = "+fmt(cs.t)+" ₽":"не введены на вкладке «Выплаты»")+"</p></div>";
 if(!window.claude&&!/^https:\/\/script\.google\.com\//.test(GS_URL))h+='<div class="lbl">ТАБЛИЦА GOOGLE</div><div class="card"><label>Ссылка Apps Script<input id="gsurl" type="text" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(C.gs||"")+'" style="text-align:left;font:14px ui-monospace,Menlo,Consolas,monospace"></label></div>';
 var H=hist();
@@ -568,6 +595,7 @@ a.querySelectorAll("button[data-pt]").forEach(function(b){b.onclick=function(){v
 var pb=document.getElementById("pbud");if(pb)pb.oninput=function(){var v=pb.value.replace(/\D/g,"");if(v!==pb.value)pb.value=v;draft().budget=v;save();renderPlan()};
 var pdi=document.getElementById("pdist");if(pdi)pdi.onclick=function(){var d=draft(),r=distAdv(cnt(d.budget),payState().rows);PAYNOTE="";if(r.err){PAYERR=r.err}else{PAYERR="";d.amt=r.amt;d.ticks={};d.over=false}save();render()};
 a.querySelectorAll("[data-jf]").forEach(function(e){e.onchange=function(){JF[e.getAttribute("data-jf")]=e.value;render()}});
+a.querySelectorAll("button[data-tsm]").forEach(function(b){b.onclick=function(){TSM=b.getAttribute("data-tsm");render()}});
 var sy=document.getElementById("sync");if(sy)sy.onclick=function(){syncPay()};
 var pu=document.getElementById("pull");if(pu)pu.onclick=function(){pullPay(true)};
 var cj=document.getElementById("clrj");if(cj)cj.onclick=function(){if(armed!=="clrj"){armed="clrj";render();return}armed="";var keep=pays().filter(function(o){return!o.synced}),gone=pays().length-keep.length;
