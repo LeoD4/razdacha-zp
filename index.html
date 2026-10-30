@@ -198,6 +198,8 @@ if(!PULLED){PULLED=true;setTimeout(function(){pullPay(false)},0)}}
 function sidCur(){if(!C.sid)C.sid="c"+Date.now();return C.sid}
 function curErr(){var E=[];C.people.forEach(function(p){var s=amtOf(p);if(s&&isNaN(pa(s)))E.push("Сумма не понята: "+p.n+" «"+s+"»")});return E}
 function curRows(){var W=[];C.people.forEach(function(p){var s=amtOf(p);if(!s)return;var a=pa(s);if(isNaN(a))return;W.push({n:p.n,raw:a,A:Math.floor(a/100)*100,kg:Math.round(pkg(p.n)*100)/100,sal:kgn(p.s),r:rateOf(p)})});return W}
+function bankOf(x){var kg=0,m=0,sl=0;if(x.cur){boats().forEach(function(b){kg+=kgn(b.k);m+=kgn(b.m)});C.people.forEach(function(p){sl+=kgn(p.s)})}else{var r=x.rec||{};(r.boats||[]).forEach(function(b){kg+=+b.kg||0;m+=+b.m||0});sl=r.salad!=null?+r.salad||0:(r.rows||[]).reduce(function(a,w){return a+(+w.sal||0)},0)}
+return{kg:kg,m:m,s:sl,t:Math.round((kg+m)*500+sl*400)}}
 function shifts(){var L=[{id:sidCur(),date:C.date||todayISO(),rows:curRows(),bank:bankAuto(),cur:true}];hist().forEach(function(r){L.push({id:r.id,date:r.date||ymd(r.ts),ts:r.ts,rows:r.rows||[],bank:r.bank,rec:r})});return L}
 function findShift(id){return shifts().filter(function(x){return x.id===id})[0]||null}
 function shiftBy(id){return findShift(id)||shifts()[0]}
@@ -536,6 +538,8 @@ if(rest<0)h+='<p class="w">ЗП больше банка на '+fmt(-rest)+" ₽.
 h+="<p><b>Начислено:</b> "+fmt(S)+" ₽"+(RAW!==S?' <span class="mut">(округление вниз убрало '+fmt(RAW-S)+" ₽)</span>":"")+"</p>";
 h+="<p><b>Выдано авансами:</b> "+fmt(adv)+" ₽</p><p><b>Выдано зарплатой:</b> "+fmt(sal)+" ₽</p><p><b>Всего выплачено:</b> "+fmt(adv+sal)+" ₽</p>";
 h+="<p><b>Остаток к выплате:</b> "+fmt(S-adv-sal)+" ₽</p>";
+var bk=bankOf(x);h+="<p><b>Банк:</b> "+fmt(bk.t)+' ₽ <span class="mut">(кг '+fmtk(bk.kg)+" × 500 + камчадал "+fmtk(bk.m)+" × 500 + салат "+fmtk(bk.s)+" × 400)</span></p>";
+if(bk.t!==(x.bank||0))h+='<p class="mut">В смене записан банк '+fmt(x.bank||0)+" ₽ (например, загружен из таблицы), остаток банка ниже считается от него.</p>";
 h+="<p><b>Остаток банка:</b> "+fmt(rest)+" ₽</p>";
 h+="</div>";
 h+='<div class="lbl">ПО СОТРУДНИКАМ</div><div class="card">';x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">начислено '+fmt(w.A)+" · аванс "+fmt(q.adv)+" · зарплата "+fmt(q.sal)+"</div></div><b>"+fmt(w.A-q.adv-q.sal)+" ₽</b></div>"});h+='<p class="mut" style="margin:8px 0 0">Справа остаток к выплате.</p></div>'}
