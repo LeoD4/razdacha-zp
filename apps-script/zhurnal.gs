@@ -21,6 +21,7 @@
 //      applyDesign_(sh);
 //    добавьте:
 //      styleTimesheet_(sh);
+//    Для уже созданных листов один раз выберите вверху функцию styleAllTimesheets и нажмите «Выполнить».
 //
 // Сайт читает журнал тем же запросом (pay с пустым списком строк): в ответе всегда
 // приходят все строки листа, и сайт сливает их со своим журналом по «ID строки».
@@ -156,4 +157,16 @@ function styleTimesheet_(sh) {
     sh.setColumnWidth(tc + 1, 130);
     for (var j = 0; j < w; j++) sh.setColumnWidth(tc + 2 + j, Math.max(64, 9 * String(v[hr][tc + 1 + j]).length + 22));
   }
+}
+
+// Запустить вручную (выбрать styleAllTimesheets и нажать «Выполнить»): оформляет «Табель катеров»
+// во всех уже созданных листах смен. Данные не меняет, только оформление; можно запускать повторно.
+function styleAllTimesheets() {
+  var ss = SpreadsheetApp.openById(typeof SPREADSHEET_ID !== 'undefined' ? SPREADSHEET_ID : SHEET_ID), n = 0;
+  ss.getSheets().forEach(function (sh) {
+    if (sh.getName() === PAY_SHEET || sh.getLastRow() < 3) return;
+    var v = sh.getDataRange().getValues(), has = v.some(function (r) { return r.some(function (x) { return String(x).trim() === 'Табель катеров'; }); });
+    if (has) { styleTimesheet_(sh); n++; }
+  });
+  Logger.log('Оформлено листов: ' + n);
 }
