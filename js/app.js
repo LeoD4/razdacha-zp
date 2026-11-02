@@ -1,0 +1,580 @@
+var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2000,200];
+var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
+var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
+try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
+var TBO=false,PDERR=false,VSEL="",SYNCING=false,SYNCNOTE="",PULLING=false,PULLED=false,PULLNOTE="",PAYNOTE="",PAYERR="",JF={sd:"",pd:"",n:"",t:""};
+var REF=null,CLOUD="☁ подключаюсь…",pushT=null,pushing=false,dirty=false;
+function setCloud(t){CLOUD=t;var e=document.getElementById("cloud");if(e)e.textContent=t}
+function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(C))}catch(e){}}
+function save(){C.ts=Date.now();saveLocal();schedPush()}
+function schedPush(){if(!REF)return;setCloud("☁ сохраняю…");clearTimeout(pushT);pushT=setTimeout(doPush,900)}
+function doPush(){if(!REF)return;if(pushing){dirty=true;return}pushing=true;C.ts=C.ts||Date.now();var snap=JSON.parse(JSON.stringify(C));
+REF.set(snap).then(function(){setCloud("☁ сохранено в облаке")}).catch(function(e){setCloud("☁ не удалось сохранить"+(e&&e.code?" ("+e.code+")":""))}).then(function(){pushing=false;if(dirty){dirty=false;doPush()}})}
+function initCloud(){
+if(!window.claude||!window.claude.use){ROLE="owner";setCloud("");render();return}
+Promise.all([claude.use("db"),claude.use("user")]).then(function(r){var db=r[0],user=r[1];
+if(!db||!user){ROLE="login";render();return}
+DBH=db;
+return user.isOwner().then(function(own){
+if(!own){ROLE="emp";render();subReports();return}
+ROLE="owner";render();
+return user.id().then(function(uid){
+if(!uid){setCloud("☁ войдите в аккаунт, чтобы данные сохранялись в облаке");return}
+REF=db.doc("data/users/"+uid+"/state");var first=true;
+REF.onSnapshot(function(s){var d=s.exists?s.data():null;
+if(d&&d.people&&(d.ts||0)>(C.ts||0)){C=JSON.parse(JSON.stringify(d));migrate();migCash();saveLocal();var ae=document.activeElement;if(!(ae&&ae.tagName==="INPUT"))render()}
+else if(first&&(!d||(C.ts||0)>(d.ts||0)))schedPush();
+if(first){first=false;if(!pushT)setCloud("☁ подключено")}},
+function(e){setCloud("☁ ошибка облака"+(e&&e.code?" ("+e.code+")":""))})})})}).catch(function(){ROLE="login";render()})}
+function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," ")}
+function lab(d){return d===5000?"5к":d===2000?"2к":d===1000?"1к":String(d)}
+function pa(s){s=String(s).replace(/\s/g,"");if(/^\d{1,3}([.,]\d{3})+$/.test(s))return +s.replace(/[.,]/g,"");if(/^\d+([.,]\d{1,2})?$/.test(s))return Math.round(parseFloat(s.replace(",",".")));return NaN}
+function nm(v){v=String(v==null?"":v).trim();if(!v)return 0;var x=pa(v);return isNaN(x)?0:x}
+function txt(c){var p=[];ALLD.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(" + ")||"0"}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function billPlan(W){
+var cs=cashOf(),As=W.map(function(w){return w.A}),S=0,pl,fail="";
+W.forEach(function(w){S+=w.A});
+if(!cs.any){var inf=z();D.forEach(function(d){inf[d]=1e9});pl={p:alloc(As,inf),s:null,base:null,k:0}}
+else{pl=plan(As,cs.n);if(!pl.p)fail=cs.t<S?"Наличных "+fmt(cs.t)+" ₽ меньше, чем к выдаче "+fmt(S)+" ₽: не хватает "+fmt(S-cs.t)+" ₽.":"Не удалось подобрать раскладку имеющимися купюрами даже с разменом. Проверьте количество купюр."}
+var T=z();W.forEach(function(w,i){w.c=pl.p?pl.p.c[i]:z();D.forEach(function(d){T[d]+=w.c[d]})});
+var st=cs.any?(pl.p?pl.s:cs.n):T,L=z();D.forEach(function(d){L[d]=st[d]-T[d]});
+return{W:W,cash:cs,nostock:!cs.any,fail:fail,st:st,L:L,T:T,S:S,n:pl.p?pl.p.n:0,base:pl.base,k:pl.k,ex:pl.p&&pl.k?exOf(cs.n,pl.s):null}}
+function z(){return{5000:0,2000:0,1000:0,500:0,200:0,100:0}}
+function cnt(v){v=String(v==null?"":v).replace(/\D/g,"");return v?parseInt(v,10):0}
+function cashBox(sid){if(!C.cashBy)C.cashBy={};if(!C.cashBy[sid])C.cashBy[sid]={};return C.cashBy[sid]}
+function migCash(){if(C.cash){C.cashOld=C.cash;delete C.cash}}
+function cashOf(sid){var c=cashBox(sid||draft().sid),o=z(),t=0,any=false;D.forEach(function(d){if(String(c[d]==null?"":c[d]).trim()!=="")any=true;o[d]=cnt(c[d]);t+=o[d]*d});return{n:o,t:t,any:any}}
+function pick(a,s){var M={};
+function f(i,rem){if(rem===0)return 0;if(i>=D.length)return Infinity;var key=i+"|"+rem;if(M[key])return M[key].v;var d=D[i],bv=Infinity,bk=0;
+for(var k=Math.min(s[d],Math.floor(rem/d));k>=0;k--){var v=k+f(i+1,rem-k*d);if(v<bv){bv=v;bk=k}}M[key]={v:bv,k:bk};return bv}
+if(f(0,a)===Infinity)return null;var c=z(),rem=a;for(var i=0;i<D.length&&rem>0;i++){var k=M[i+"|"+rem].k;c[D[i]]=k;rem-=k*D[i]}return c}
+function alloc(As,s){var ix=As.map(function(a,i){return i}),best=null;
+[function(x,y){return As[y]-As[x]},function(x,y){return As[y]%1000-As[x]%1000||As[y]-As[x]},function(x,y){return As[x]-As[y]}].forEach(function(cmp){
+var L={},cs=[],n=0,ok=true;D.forEach(function(d){L[d]=s[d]});
+ix.slice().sort(cmp).forEach(function(i){if(!ok)return;var c=pick(As[i],L);if(!c){ok=false;return}cs[i]=c;D.forEach(function(d){L[d]-=c[d];n+=c[d]})});
+if(ok&&(!best||n<best.n))best={c:cs,n:n}});return best}
+var PEN=3;
+function gave(a,b){var k=0;D.forEach(function(d){if(a[d]>b[d])k+=a[d]-b[d]});return k}
+function recv(cur,d,m,need){var s={};D.forEach(function(e){s[e]=cur[e]});s[d]-=m;var V=m*d,sm=D.filter(function(e){return e<d&&e!==2000});
+sm.forEach(function(e){var t=Math.min(Math.max(0,need[e]-s[e]),Math.floor(V/e));s[e]+=t;V-=t*e});
+sm.forEach(function(e){var t=Math.floor(V/e);s[e]+=t;V-=t*e});return s}
+function plan(As,s0){var base=alloc(As,s0),cur=s0,p=base,k=0,sc=base?base.n:Infinity;
+for(var r=0;r<4;r++){var inf={},need=z(),ip;D.forEach(function(d){inf[d]=d===2000?cur[d]:1e9});ip=alloc(As,inf);if(ip)ip.c.forEach(function(c){D.forEach(function(d){need[d]+=c[d]})});
+var bc=null;D.forEach(function(d){if(d===100)return;for(var m=1;m<=Math.min(cur[d],8);m++){var s=recv(cur,d,m,need),q=alloc(As,s);if(!q)continue;var kk=gave(s0,s),v=q.n+PEN*kk;if(v<sc&&(!bc||v<bc.v))bc={v:v,s:s,p:q,k:kk}}});
+if(!bc)break;cur=bc.s;p=bc.p;sc=bc.v;k=bc.k}
+return{p:p,s:cur,base:base,k:k}}
+function exOf(a,b){var g=z(),r=z();D.forEach(function(d){if(a[d]>b[d])g[d]=a[d]-b[d];else r[d]=b[d]-a[d]});return{give:g,get:r}}
+function pl3(n,a,b,c){var m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<12||h>14)?b:c}
+function lst(c){var p=[];ALLD.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(", ")}
+function exText(R){return R.ex?"отдать "+lst(R.ex.give)+", получить "+lst(R.ex.get):""}
+function advice(R){
+if(!R.W.length)return'<p class="mut" style="margin:0">Нет сумм к выдаче.</p>';
+if(R.nostock)return'<p class="mut" style="margin:0">Введите количество купюр, чтобы проверить выдачу и размен.</p>';
+if(R.fail)return'<p class="w" style="margin:0">Подходящего варианта нет. '+esc(R.fail)+"</p>";
+var nb=R.n+" "+pl3(R.n,"купюра","купюры","купюр");
+if(!R.ex)return'<p class="ok2" style="margin:0">✓ Размен не нужен: зарплата выдаётся имеющимися купюрами, '+nb+".</p>";
+var gv=0;D.forEach(function(d){gv+=R.ex.give[d]*d});
+return'<p style="margin:0 0 6px"><b>Нужен размен.</b> Отдайте в размен: <b>'+lst(R.ex.give)+"</b> ("+fmt(gv)+" ₽). Получите взамен: <b>"+lst(R.ex.get)+"</b>.</p>"+
+'<p class="mut" style="margin:0">Почему: '+(R.base?"без размена при выдаче уйдёт "+R.base.n+" "+pl3(R.base.n,"купюра","купюры","купюр")+", с разменом "+nb+", на "+(R.base.n-R.n)+" меньше":"имеющимися купюрами точно выдать все суммы нельзя, с разменом выдача займёт "+nb)+". В размен уходит "+R.k+" "+pl3(R.k,"купюра","купюры","купюр")+": меньше не получится"+(R.base?" без лишних купюр при выдаче":"")+". Это подсказка: после размена исправьте количество купюр выше, сами числа не меняются.</p>"}
+var IC={shift:'<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5h6M9 12l2 2 4-4M9 17h6"/></svg>',people:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.6 0 4.5 2 4.5 5"/></svg>',tab:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>',sum:'<svg viewBox="0 0 24 24"><path d="M5 4h14M5 10h14M5 16h9"/><path d="M15 19.5l2.2 2L21 17.5"/></svg>',log:'<svg viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="17" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>'};
+function nav(){function g(L){return'<div class="ng" style="grid-template-columns:repeat('+L.length+',1fr)">'+L.map(function(t){return'<button data-t="'+t[0]+'" class="'+(C.tab===t[0]?"on":"")+'">'+IC[t[0]]+t[1]+"</button>"}).join("")+"</div>"}
+return"<nav>"+g([["shift","Смена"],["people","Люди"],["sum","Итог"]])+g([["tab","Выплаты"],["log","Журнал"]])+"</nav>"}
+var ROLE=(window.claude&&window.claude.use)?null:"owner",DBH=null,REPS=[],EMPLOADED=false,EMPERR="",NOTE2="";
+function render(){
+var a=document.getElementById("app");
+if(ROLE===null){a.innerHTML='<h1>РАЗДАЧА ЗП</h1><div class="card"><p class="mut" style="margin:0">Загрузка…</p></div>';return}
+if(ROLE==="login"){a.innerHTML='<h1>РАЗДАЧА ЗП</h1><div class="card"><p style="margin:0 0 12px">Чтобы увидеть отчёт, войдите в свой аккаунт Claude и откройте ссылку ещё раз.</p><button class="pill g2" id="loc">Открыть без облака</button></div>';var l=document.getElementById("loc");if(l)l.onclick=function(){ROLE="owner";render()};return}
+if(ROLE==="emp"){renderEmp();return}
+renderOwner()}
+function getMe(){try{return localStorage.getItem("zpme")||""}catch(e){return""}}
+function setMe(v){try{localStorage.setItem("zpme",v)}catch(e){}}
+function subReports(){if(!DBH)return;
+DBH.collection("reports").orderBy("ts","desc").limit(12).onSnapshot(function(s){REPS=s.docs.map(function(d){return d.data()});EMPLOADED=true;render()},function(e){EMPLOADED=true;EMPERR="Не удалось загрузить отчёт"+(e&&e.code?" ("+e.code+")":"");render()})}
+function rowOf(r,me){return(r.rows||[]).filter(function(x){return x.n===me})[0]}
+function renderEmp(){
+var h='<h1>РАЗДАЧА ЗП<small>отчёт</small></h1>',me=getMe();
+if(!EMPLOADED)h+='<div class="card"><p class="mut" style="margin:0">Загрузка…</p></div>';
+else if(EMPERR)h+='<div class="card"><p class="w" style="margin:0">'+esc(EMPERR)+"</p></div>";
+else if(!REPS.length)h+='<div class="card"><p class="mut" style="margin:0">Отчётов пока нет. После закрытия смены здесь появится ваша сумма.</p></div>';
+else{
+var names=[];REPS.forEach(function(r){(r.rows||[]).forEach(function(w){if(names.indexOf(w.n)<0)names.push(w.n)})});names.sort();
+if(!me||names.indexOf(me)<0){h+='<div class="lbl">ВЫБЕРИТЕ СВОЁ ИМЯ</div><div class="card" style="display:flex;flex-wrap:wrap;gap:8px">'+names.map(function(n){return'<button class="pill" data-me="'+esc(n)+'">'+esc(n)+"</button>"}).join("")+"</div>"}
+else{
+var tot=0,w0=rowOf(REPS[0],me);
+REPS.forEach(function(r){var w=rowOf(r,me);if(w)tot+=w.laid});
+h+='<div class="lbl">'+esc(me).toUpperCase()+'</div><div class="card"><div class="mut">Смена '+dstr(REPS[0].ts)+"</div>"+(w0?'<div style="font:800 44px ui-monospace,Menlo,Consolas,monospace;color:var(--ac);margin:6px 0">'+fmt(w0.A)+' ₽</div><div>'+(w0.laid===w0.A?"✓ Выдано":"Выдача пока не отмечена")+"</div>"+(w0.raw!==w0.A?'<div class="mut" style="margin-top:6px">По ведомости '+fmt(w0.raw)+" ₽, округлено вниз до 100</div>":""):'<p style="margin:6px 0 0">В этой смене вас нет.</p>')+"</div>";
+if(REPS.length>1){h+='<div class="lbl">ПРОШЛЫЕ СМЕНЫ</div><div class="card">';REPS.slice(1).forEach(function(r){var w=rowOf(r,me);h+='<div class="r2"><span>'+dstr(r.ts)+"</span><b>"+(w?fmt(w.A)+" ₽":"—")+"</b></div>"});h+="</div>"}
+h+='<div class="card"><div class="r2"><span class="mut">Выдано за последние смены ('+REPS.length+')</span><b>'+fmt(tot)+' ₽</b></div></div><div style="margin:12px 4px"><button class="pill g2" id="chg">Сменить имя</button></div>'}}
+var a=document.getElementById("app");a.innerHTML=h;
+a.querySelectorAll("button[data-me]").forEach(function(b){b.onclick=function(){setMe(b.getAttribute("data-me"));render()}});
+var c=document.getElementById("chg");if(c)c.onclick=function(){setMe("");render()}}
+function publishReport(rec){
+if(!DBH){NOTE2="Облака нет, отчёт сотрудникам не отправлен.";render();return}
+var pd=paidOf(rec.id);
+DBH.doc("reports/"+rec.ts).set({ts:rec.ts,rows:rec.rows.map(function(w){var x=pd[w.n]||{adv:0,sal:0};return{n:w.n,raw:w.raw,A:w.A,laid:x.adv+x.sal}})}).then(function(){NOTE2="Отчёт опубликован для сотрудников.";render()},function(e){NOTE2="Отчёт сотрудникам не отправлен"+(e&&e.code?" ("+e.code+")":"");render()})}
+function renderOwner(){
+var h='<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class="mut" id="cloud" style="margin:-8px 10px 6px">'+CLOUD+'</div>',t=C.tab;
+h+=t==="shift"?viewShift():t==="people"?viewPeople():t==="tab"?viewPay():t==="log"?viewLog():viewSum();
+document.getElementById("app").innerHTML=h+nav();bind();
+if(!PULLED){PULLED=true;setTimeout(function(){pullPay(false)},0)}}
+function sidCur(){if(!C.sid)C.sid="c"+Date.now();return C.sid}
+function curErr(){var E=[];C.people.forEach(function(p){var s=amtOf(p);if(s&&isNaN(pa(s)))E.push("Сумма не понята: "+p.n+" «"+s+"»")});return E}
+function curRows(){var W=[];C.people.forEach(function(p){var s=amtOf(p);if(!s)return;var a=pa(s);if(isNaN(a))return;W.push({n:p.n,raw:a,A:Math.floor(a/100)*100,kg:Math.round(pkg(p.n)*100)/100,sal:kgn(p.s),r:rateOf(p)})});return W}
+function tsData(x){var B=[],S=[];
+if(x.cur){boats().forEach(function(b){var no=String(b.b||"").trim();if(no||kgn(b.k)||kgn(b.m))B.push({b:no,c:String(b.c||"").trim(),kg:kgn(b.k),m:kgn(b.m)})});stages().forEach(function(st){S.push({b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:kgn(st.k),p:presentOf(st)})})}
+else{var r=x.rec||{};(r.boats||[]).forEach(function(b){B.push({b:String(b.b||"").trim(),c:String(b.c||"").trim(),kg:+b.kg||0,m:+b.m||0})});(r.stages||[]).forEach(function(st){S.push({b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:+st.kg||0,p:st.p||[]})})}
+if(!S.some(function(st){return st.p.length}))return null;
+var bm={},bo=[];function bt(no){if(!bm[no]){bm[no]={b:no,c:"",w:null,m:0,ppl:{},po:[],sk:0,lost:0};bo.push(no)}return bm[no]}
+B.forEach(function(b){var o=bt(b.b);if(b.c&&!o.c)o.c=b.c;o.w=(o.w||0)+b.kg+b.m;o.m+=b.m});
+S.forEach(function(st){if(!st.kg&&!st.p.length)return;var o=bt(st.b);o.sk+=st.kg;if(!st.p.length){o.lost+=st.kg;return}var e=st.kg/st.p.length;st.p.forEach(function(n){if(!(n in o.ppl)){o.ppl[n]=0;o.po.push(n)}o.ppl[n]+=e})});
+var L=bo.map(function(k){return bm[k]}).filter(function(o){return o.sk||o.w}),em={},eo=[];
+L.forEach(function(o){o.po.forEach(function(n){if(!em[n]){em[n]={n:n,list:[],t:0};eo.push(n)}em[n].list.push({b:o.b,c:o.c,kg:o.ppl[n]});em[n].t+=o.ppl[n]})});
+return{S:S,boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
+function tsMatrix(x){var d=tsData(x),names=[];if(!d)return null;
+(x.rows||[]).forEach(function(w){if(names.indexOf(w.n)<0)names.push(w.n)});d.S.forEach(function(st){st.p.forEach(function(n){if(names.indexOf(n)<0)names.push(n)})});
+names=names.filter(function(n){return d.boats.some(function(o){return n in o.ppl})});return{names:names,boats:d.boats}}
+function tsView(x){var d=tsMatrix(x),h='<details id="tbo"'+(TBO?" open":"")+'><summary class="lbl">ТАБЕЛЬ КАТЕРОВ</summary>',names;
+if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div></details>";
+names=d.names;
+h+='<div class="card" style="padding:12px 8px"><div class="wrap"><table class="tg"><thead><tr><th class="s1">Катер</th>'+names.map(function(n){return'<th class="nm">'+esc(n)+"</th>"}).join("")+"</tr></thead><tbody>";
+d.boats.forEach(function(o){h+='<tr><td class="s1"><b>'+esc(o.b||"—")+"</b>"+(o.c?'<span class="mut" style="display:block">'+esc(o.c)+"</span>":"")+"</td>"+names.map(function(n){return'<td class="mk">'+(n in o.ppl?"✓":"")+"</td>"}).join("")+"</tr>"});
+h+="</tbody></table></div>";
+d.boats.forEach(function(o){if(o.w==null)h+='<p class="w" style="margin:8px 4px 0">Катер '+esc(o.b||"без номера")+": в этапах есть, а в списке катеров нет.</p>"});
+return h+"</div></details>"}
+function bankOf(x){var kg=0,m=0,sl=0;if(x.cur){boats().forEach(function(b){kg+=kgn(b.k);m+=kgn(b.m)});C.people.forEach(function(p){sl+=kgn(p.s)})}else{var r=x.rec||{};(r.boats||[]).forEach(function(b){kg+=+b.kg||0;m+=+b.m||0});sl=r.salad!=null?+r.salad||0:(r.rows||[]).reduce(function(a,w){return a+(+w.sal||0)},0)}
+return{kg:kg,m:m,s:sl,t:Math.round((kg+m)*500+sl*400)}}
+function shifts(){var L=[{id:sidCur(),date:C.date||todayISO(),rows:curRows(),bank:bankAuto(),cur:true}];hist().forEach(function(r){L.push({id:r.id,date:r.date||ymd(r.ts),ts:r.ts,rows:r.rows||[],bank:r.bank,rec:r})});return L}
+function findShift(id){return shifts().filter(function(x){return x.id===id})[0]||null}
+function shiftBy(id){return findShift(id)||shifts()[0]}
+function sLabel(x){return(x.cur?"Текущая: ":"")+ddate(x)+(x.rec&&x.rec.sheet&&x.rec.sheet!==ddate(x)?" ("+x.rec.sheet+")":"")+" · "+x.rows.length+" чел."}
+function shOpts(sel){return shifts().map(function(x){return'<option value="'+esc(x.id)+'"'+(x.id===sel?" selected":"")+">"+esc(sLabel(x))+"</option>"}).join("")}
+function rateOfRow(w){if(w.r)return w.r;if(w.kg>0){var x=Math.round((w.raw-(w.sal||0)*400)/w.kg);if([500,480,450].indexOf(x)>=0)return x}return null}
+function pays(){if(!C.pay)C.pay=[];return C.pay}
+function paidOf(sid){var o={};pays().forEach(function(op){if(op.sid!==sid)return;op.lines.forEach(function(l){var x=o[l.n]=o[l.n]||{adv:0,sal:0};x[op.type]+=l.amt})});return o}
+function jlines(){var L=[];pays().forEach(function(op){op.lines.forEach(function(l){L.push({op:op,l:l,id:op.id+"/"+l.n})})});return L}
+function tname(t){return t==="adv"?"Аванс":"Зарплата"}
+function dd(iso){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?m[3]+"."+m[2]+"."+m[1]:(iso||"")}
+function migrate(){if((C.ver||0)>=2)return;
+try{localStorage.setItem(KEY+"_bak1",JSON.stringify(C))}catch(e){}
+hist().forEach(function(r){if(!r.id)r.id="h"+r.ts;
+var L=(r.rows||[]).filter(function(w){return w.laid>0}).map(function(w){return{n:w.n,amt:w.laid,plan:w.A,c:w.c||z(),st:w.laid===w.A?"выдано":"выдано частично"}});
+if(L.length&&!pays().some(function(op){return op.id==="m"+r.ts}))pays().push({id:"m"+r.ts,sid:r.id,sdate:r.date||ymd(r.ts),pdate:r.date||ymd(r.ts),type:"sal",ts:r.ts,lines:L,mig:true})});
+var tk=C.ticks&&Object.keys(C.ticks).some(function(k){return C.ticks[k]});
+if(C.restored||tk){var W=curRows(),R=billPlan(W.map(function(w){return{n:w.n,A:w.A}})),L=[];
+R.W.forEach(function(w,i){var c=z(),s=0;D.forEach(function(d){if(w.c[d]&&C.ticks&&C.ticks[i+"|"+d]){c[d]=w.c[d];s+=w.c[d]*d}});if(s)L.push({n:w.n,amt:s,plan:w.A,c:c,st:s===w.A?"выдано":"выдано частично"})});
+var sid=sidCur();
+if(C.restored){sid="s:"+C.restored;if(!hist().some(function(r){return r.id===sid})){var S=0,RAW=0;W.forEach(function(w){S+=w.A;RAW+=w.raw});hist().unshift({id:sid,ts:Date.now(),date:C.date||todayISO(),boats:[],stages:[],bank:bankAuto(),S:S,RAW:RAW,rest:bankAuto()-S,rows:W,sheet:C.restored,src:"table"})}}
+if(L.length&&!pays().some(function(op){return op.id==="mc"+sid}))pays().push({id:"mc"+sid,sid:sid,sdate:C.date||todayISO(),pdate:todayISO(),type:"sal",ts:Date.now(),lines:L,mig:true});
+if(C.restored)resetShift();C.ticks={};C.sig=""}
+C.ver=2;saveLocal()}
+function viewPeople(){
+var sel=VSEL||sidCur(),x=shiftBy(sel),h='<div class="card"><label>Смена<select id="vsel" style="width:100%;margin-top:4px">'+shOpts(x.id)+"</select></label></div>";
+if(!x.cur){var S=0;x.rows.forEach(function(w){S+=w.A});
+h+='<div class="lbl">НАЧИСЛЕНИЯ · '+esc(ddate(x))+'</div><div class="card"><div class="mut">Только просмотр. Банк '+fmt(x.bank||0)+" ₽ · к выдаче "+fmt(S)+" ₽</div>";
+x.rows.forEach(function(w){var r=rateOfRow(w);h+='<div class="r2"><div><b>'+esc(w.n)+'</b><div class="mut">'+(w.kg!=null&&w.kg!==""?fmtk(w.kg)+" кг"+(r?" × "+r:""):"кг —")+(w.sal?" · салат "+fmtk(w.sal)+" кг × 400":"")+'</div><div class="mut">начислено '+fmt(w.raw)+'</div></div><b>'+fmt(w.A)+" ₽</b></div>"});
+return h+'<p class="mut" style="margin:8px 0 0">Справа сумма к выдаче (начислено вниз до 100). Выдачи и остатки — на вкладке «Итог».</p></div>'+tsView(x)}
+var S=0;x.rows.forEach(function(w){S+=w.A});
+h+='<div class="lbl">БАНК</div><div class="card"><div class="g"><label>Банк, ₽ (кг × 500, салат × 400)<input id="bank" type="text" readonly value="'+fmt(bankAuto())+'"></label><label>К выдаче всего, ₽<input type="text" readonly value="'+fmt(S)+'"></label></div></div><div class="lbl">СОТРУДНИКИ</div>';
+C.people.forEach(function(p,i){h+='<div class="card pr"><span class="n">'+esc(p.n)+((pkg(p.n)||kgn(p.s))?'<small style="display:block;font-weight:400;font-size:12px;color:var(--mut)">'+(pkg(p.n)?fmtk(pkg(p.n))+' кг × '+rateOf(p):'')+(kgn(p.s)?(pkg(p.n)?' · ':'')+'салат '+fmtk(kgn(p.s))+' кг × 400':'')+'</small>':'')+'</span><input data-s="'+i+'" type="text" inputmode="decimal" placeholder="сал" value="'+esc(p.s||"")+'" style="width:54px"><input data-a="'+i+'" type="text" inputmode="numeric" placeholder="'+(autoOf(p)||"сумма")+'" value="'+esc(p.a)+'" style="width:112px"><span class="rub">₽</span></div>'});
+h+='<div style="margin:16px 4px"><button class="pill g2" id="clr">'+(armed==="clr"?"Точно? Нажмите ещё раз":"Очистить суммы, банк, катера и этапы")+'</button></div><p class="mut" style="margin:0 8px">Серая сумма считается сама: кг по этапам × ставка, вниз до 100. Впишите свою, чтобы заменить. Ставки задаются на вкладке «Смена». Пустая сумма означает, что человека в этой смене нет.</p>';return h+tsView(x)}
+var SLIST=null,SBUSY=false;
+function gsPin(){try{return localStorage.getItem("zppin")||""}catch(e){return""}}
+function askPin(){try{var v=window.prompt("PIN таблицы");if(v!=null&&v.trim()){localStorage.setItem("zppin",v.trim());return true}}catch(e){}return false}
+function gsGet(q,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
+return fetch(GU+"?"+q+"&pin="+encodeURIComponent(gsPin())).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(!again&&askPin())return gsGet(q,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
+function gsErr(e){var m=e&&e.message;return m==="nourl"?"В коде сайта не задана ссылка Apps Script (GS_URL).":m==="pin"?"PIN таблицы не введён или не подошёл. Нажмите кнопку ещё раз и введите PIN.":"Не удалось получить данные из таблицы."+(m&&m!=="err"?" ("+m+")":"")}
+function resetShift(){C.bank=C.n1=C.n05=C.sw=C.brig="";C.bankR="";C.restored="";C.people.forEach(function(p){p.a="";p.s=""});C.ticks={};C.sig="";C.boats=null;C.stages=null;C.date=""}
+function parseShift(rows,name){var tot=-1,i,H=(rows[2]||[]).map(String),iR=H.indexOf("Начислено, ₽"),iB=H.indexOf("Катер"),iM=H.indexOf("Камчадал"),iA=H.indexOf("К выдаче, ₽"),iV=H.indexOf("Аванс"),iO=H.indexOf("Остаток"),iS=H.indexOf("КГ салата");if(iR<0)iR=2;if(iB<0)iB=5;
+for(i=3;i<rows.length;i++){if(String(rows[i][0]).trim()==="Итого"){tot=i;break}}
+if(tot<0)return null;
+var P=[],B=[],bank=null,r;
+for(i=3;i<tot;i++){r=rows[i];var n=String(r[0]==null?"":r[0]).trim();
+if(n){var raw=kgn(r[iR]),A=iA>=0&&String(r[iA]==null?"":r[iA]).trim()!==""?kgn(r[iA]):Math.floor(raw/100)*100,ov=iO>=0?String(r[iO]==null?"":r[iO]).trim():"";P.push({n:n,raw:raw,A:A,kg:kgn(r[1]),sal:iS>=0?kgn(r[iS]):0,adv:iV>=0?kgn(r[iV]):0,ost:ov===""?null:kgn(ov)})}
+var f=String(r[iB]==null?"":r[iB]).trim();
+if(f){var m=/^(.*?)\s*·\s*(.*)$/.exec(f);B.push({b:m?m[1]:f,c:m?m[2]:"",k:kgn(r[iB+1]),m:iM>=0?kgn(r[iM]):0})}}
+for(i=tot+1;i<rows.length;i++){r=rows[i];if(String(r[0]==null?"":r[0]).trim()==="Банк, ₽")bank=kgn(r[1])}
+var dm=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(name||"");
+return{P:P,B:B,bank:bank,date:dm?dm[3]+"-"+dm[2]+"-"+dm[1]:""}}
+function applyShift(d,name){var H=hist(),r=H.filter(function(x){return x.sheet===name})[0],S=0,RAW=0;
+if(!r){d.P.forEach(function(x){S+=x.A;RAW+=x.raw});r={id:"s:"+name,ts:Date.now(),date:d.date||todayISO(),boats:d.B.map(function(x){return{b:x.b,c:x.c,kg:x.k,m:x.m}}),stages:[],bank:d.bank||0,S:S,RAW:RAW,rest:(d.bank||0)-S,rows:d.P.map(function(x){return{n:x.n,raw:x.raw,A:x.A,kg:x.kg,sal:x.sal}}),sheet:name,src:"table"};H.unshift(r)}
+resolveOps();var loc=paidOf(r.id),la=[],ls=[];
+d.P.forEach(function(x){var q=loc[x.n]||{adv:0,sal:0},tot=Math.max(x.adv,x.ost==null?0:x.A-x.ost),da=x.adv-q.adv,ds=(tot-x.adv)-q.sal;if(da>0)la.push({n:x.n,amt:da,plan:da,base:x.adv,c:z(),st:"из таблицы"});if(ds>0)ls.push({n:x.n,amt:ds,plan:ds,base:tot-x.adv,c:z(),st:"из таблицы"})});
+[["adv",la],["sal",ls]].forEach(function(t){if(t[1].length)pays().push({id:"imp"+Date.now()+t[0],sid:r.id,sdate:r.date,pdate:"",type:t[0],ts:Date.now(),lines:t[1],src:"table",synced:true})});
+var dr=draft();dr.sid=r.id;dr.amt={};dr.ticks={};dr.over=false;VSEL=r.id;C.tab="tab";armed="";SLIST=null;NOTE3="Смена «"+name+"» загружена"+(la.length||ls.length?", выплаты из таблицы учтены в журнале":"")+".";save();render();window.scrollTo(0,0)}
+function loadList(){SBUSY=true;NOTE3="Загружаю список смен…";render();
+gsGet("action=list").then(function(j){SLIST=j.sheets||[];SBUSY=false;NOTE3=SLIST.length?"Выберите смену:":"В таблице пока нет смен.";render()}).catch(function(e){SBUSY=false;NOTE3=gsErr(e);render()})}
+function loadShift(name){NOTE3="Загружаю смену «"+name+"»…";render();
+gsGet("action=get&sheet="+encodeURIComponent(name)).then(function(j){var d=parseShift(j.rows||[],name);if(!d||!d.P.length){NOTE3="В листе «"+name+"» не нашёл суммы людей.";render();return}applyShift(d,name)}).catch(function(e){NOTE3=gsErr(e);render()})}
+function restoreCard(){var h='<div class="card"><p class="mut" style="margin:0 0 10px">Смены нет в списке? Загрузите её из таблицы, текущая смена не изменится.</p><button class="pill" id="gsload">'+(SBUSY?"Загружаю…":"Загрузить смену из таблицы")+"</button>";
+if(NOTE3)h+='<p class="ok2" style="margin:10px 0 0">'+esc(NOTE3)+"</p>";
+if(SLIST&&SLIST.length)h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">'+SLIST.slice(0,8).map(function(n,i){return'<button class="pill g2" data-gl="'+i+'">'+esc(n)+"</button>"}).join("")+"</div>";
+return h+"</div>"}
+function draft(){if(!C.draft)C.draft={};var d=C.draft;if(!d.id)d.id="op"+Date.now()+Math.random().toString(36).slice(2,6);if(!d.sid||!findShift(d.sid))d.sid=sidCur();if(d.pdate==null)d.pdate="";if(!d.type)d.type="sal";if(!d.amt)d.amt={};if(!d.ticks)d.ticks={};return d}
+function payState(){var d=draft(),sh=shiftBy(d.sid),pd=paidOf(sh.id),rows=[],W=[],err=[],warn=[],tot=0;
+sh.rows.forEach(function(w){var p=pd[w.n]||{adv:0,sal:0},paid=p.adv+p.sal,rem=w.A-paid,v=d.amt[w.n],def=d.type==="sal"?Math.max(0,rem):0,a=(v==null||v==="")?def:cnt(v);
+if(a%100)err.push(w.n+": "+fmt(a)+" ₽ не делится на 100.");else if(a>Math.max(0,rem))warn.push(w.n+": "+fmt(a)+" ₽ больше остатка "+fmt(Math.max(0,rem))+" ₽.");
+rows.push({n:w.n,A:w.A,paid:paid,adv:p.adv,rem:rem,v:v==null?"":v,def:def,a:a});tot+=a;if(a>0&&a%100===0)W.push({n:w.n,A:a})});
+return{d:d,sh:sh,rows:rows,W:W,err:err,warn:warn,tot:tot,bud:cnt(d.budget)}}
+function distAdv(B,rows){if(!(B>0))return{err:"Укажите сумму аванса."};if(B%100)return{err:"Сумма аванса должна делиться на 100 ₽."};
+var P=rows.filter(function(x){return x.A>0&&x.rem>=100}).map(function(x){return{n:x.n,A:x.A,cap:Math.floor(x.rem/100)}}),tot=0;P.forEach(function(x){tot+=x.cap});
+if(B/100>tot)return{err:"Сумма "+fmt(B)+" ₽ больше общего остатка к выплате "+fmt(tot*100)+" ₽. Уменьшите сумму или распределите вручную."};
+var U=B/100,fix={},act=P.slice(),used,wA,rem;
+function upd(){used=0;wA=0;Object.keys(fix).forEach(function(k){used+=fix[k]});act.forEach(function(x){wA+=x.A});rem=U-used}
+for(;;){upd();var nx=act.filter(function(x){return rem*x.A/wA>=x.cap});if(!nx.length)break;nx.forEach(function(x){fix[x.n]=x.cap});act=act.filter(function(x){return!(x.n in fix)})}
+upd();var out={},sm=0,sh=act.map(function(x){var q=rem*x.A/wA,f=Math.floor(q+1e-9);sm+=f;return{n:x.n,q:q,f:f}});
+Object.keys(fix).forEach(function(k){out[k]=fix[k]});sh.forEach(function(o){out[o.n]=o.f});
+sh.sort(function(a,b){return(b.q-b.f)-(a.q-a.f)});for(var i=0;i<rem-sm;i++)out[sh[i].n]++;
+var amt={};rows.forEach(function(x){amt[x.n]=String((out[x.n]||0)*100)});return{amt:amt}}
+function viewPay(){var P=payState(),d=P.d,h=restoreCard();
+h+='<div class="card"><label>Смена, за которую выплата<select id="psel" style="width:100%;margin-top:4px">'+shOpts(d.sid)+'</select></label><label style="margin-top:10px">Дата выдачи<input id="pdate" type="date" value="'+esc(d.pdate)+'"'+(PDERR?' style="border-color:var(--warn)"':"")+'><span class="w" id="pderr" style="display:'+(PDERR?"block":"none")+';margin-top:4px;font-size:13px">Выберите дату выдачи</span></label><div style="margin-top:10px"><span style="font-size:13px;color:var(--mut)">Операция</span><div style="display:flex;gap:8px;margin-top:6px">'+[["adv","Аванс"],["sal","Зарплата"]].map(function(t){return'<button class="chip'+(d.type===t[0]?" on":"")+'" data-pt="'+t[0]+'" style="flex:1">'+t[1]+"</button>"}).join("")+"</div></div></div>";
+if(d.type==="adv")h+='<div class="card pr" style="padding:12px 16px"><label style="flex:1;min-width:0">Сумма на аванс, ₽<input id="pbud" type="text" inputmode="numeric" value="'+esc(d.budget||"")+'" style="width:100%;margin-top:4px;text-align:left"></label><button class="pill" id="pdist" style="flex:none;align-self:flex-end">Распределить</button></div>';
+if(PAYERR)h+='<p class="w" style="margin:4px 10px">'+esc(PAYERR)+"</p>";
+if(PAYNOTE)h+='<div class="card"><p class="ok2" style="margin:0">'+esc(PAYNOTE)+"</p>"+(SYNCNOTE?'<p class="mut" style="margin:6px 0 0">'+esc(SYNCNOTE)+"</p>":"")+"</div>";
+h+='<div class="lbl">'+(d.type==="adv"?"АВАНС":"ЗАРПЛАТА")+" · СМЕНА "+esc(ddate(P.sh))+"</div>";
+if(!P.rows.length)h+='<div class="card"><p class="mut" style="margin:0">В этой смене нет начислений.</p></div>';
+P.rows.forEach(function(x,i){h+='<div class="card pr"><span class="n">'+esc(x.n)+'<small style="display:block;font-weight:400;font-size:12px;color:var(--mut)">начислено '+fmt(x.A)+" · выдано "+fmt(x.paid)+(x.adv?" (аванс "+fmt(x.adv)+")":"")+'</small><small id="pl'+i+'" style="display:block;font-weight:400;font-size:12px;color:var(--mut)"></small></span><input data-pa="'+i+'" type="text" inputmode="numeric" placeholder="'+x.def+'" value="'+esc(x.v)+'" style="width:112px"><span class="rub">₽</span></div>'});
+var cs=cashOf();
+h+='<div class="lbl">НАЛИЧНЫЕ</div><div class="card"><div class="g"><div><span style="font-size:13px;color:var(--mut)">Ожидается в кассе, ₽</span><div id="cashe" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div class="mut" id="cashh"></div></div><div><span style="font-size:13px;color:var(--mut)">Наличные, ₽</span><div id="cashv" style="font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px"></div><div id="cashm" style="font-size:13px"></div></div></div>'+
+'<p class="mut" style="margin:14px 0 4px">Купюры в наличии, шт.</p><div class="g" style="grid-template-columns:repeat(2,1fr)">'+D.map(function(dn){var v=cashBox(d.sid)[dn];return'<label>'+fmt(dn)+' ₽<input data-cash="'+dn+'" type="text" inputmode="numeric" placeholder="0" value="'+esc(v==null?"":v)+'"><span class="mut" id="cs'+dn+'"></span></label>'}).join("")+"</div>"+oldCash()+"</div>";
+return h+'<div id="payplan"></div>'}
+function oldCash(){var c=cashBox(draft().sid),p=[],t=0;OLDD.forEach(function(d){var n=cnt(c[d]);if(n){p.push(n+"×"+fmt(d)+" ₽");t+=n*d}});return p.length?'<p class="w" style="margin:12px 0 0">В сохранённых данных есть купюры '+p.join(", ")+" на "+fmt(t)+" ₽. Эти номиналы больше не используются и в наличные не входят. Разменяйте их и внесите в поля выше.</p>":""}
+function planHtml(P,R){var d=P.d,h="";
+P.err.forEach(function(e){h+='<p class="w" style="margin:4px 10px">'+esc(e)+"</p>"});
+if(P.warn.length){h+='<div class="card">'+P.warn.map(function(e){return'<p class="w" style="margin:0 0 6px">'+esc(e)+"</p>"}).join("")+'<label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)"><input id="pover" type="checkbox" style="width:auto;margin:0"'+(d.over?" checked":"")+">Подтверждаю выдачу сверх остатка</label></div>"}
+if(d.type==="adv"&&P.bud&&P.tot!==P.bud)h+='<p class="w" style="margin:4px 10px">Распределено '+fmt(P.tot)+" ₽ из "+fmt(P.bud)+" ₽ на аванс. Измените суммы или нажмите «Распределить».</p>";
+h+='<div class="card" id="exch">'+advice(R)+"</div>";
+if(!R.W.length)return h+'<p class="mut" style="margin:4px 10px">Нет сумм к выдаче.</p>';
+if(R.fail)return h;
+var sig=JSON.stringify([d.sid,d.type,R.W.map(function(w){return[w.n,w.A]}),R.st]);if(d.sig!==sig){d.ticks={};d.sig=sig;saveLocal()}
+var cols=D.filter(function(x){return R.T[x]>0||R.st[x]>0}),laid=z(),tot=0,rows="";
+R.W.forEach(function(w,i){var ls=0;rows+='<tr><td class="nm" data-i="'+i+'">'+esc(w.n)+"<small>"+fmt(w.A)+"</small></td>";
+cols.forEach(function(x){var c=w.c[x];if(!c){rows+='<td class="z">·</td>';return}var k=w.n+"|"+x,dn=d.ticks[k];if(dn){ls+=c*x;laid[x]+=c}rows+='<td class="cl'+(dn?" d":"")+'" data-k="'+esc(k)+'">'+c+"</td>"});
+tot+=ls;rows+='<td class="sm'+(ls===w.A?" ok":"")+'">'+(ls===w.A?"✓ ":"")+fmt(ls)+"</td></tr>"});
+var p=R.S?tot/R.S:0,Cc=2*Math.PI*68;
+h+='<svg class="ring" viewBox="0 0 160 160"><circle cx="80" cy="80" r="68" fill="none" stroke="var(--bd)" stroke-width="10"/><circle cx="80" cy="80" r="68" fill="none" stroke="var(--ac)" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+Cc.toFixed(1)+'" stroke-dashoffset="'+(Cc*(1-p)).toFixed(1)+'" transform="rotate(-90 80 80)"/><text x="80" y="82" text-anchor="middle" font-size="34" font-weight="800" fill="var(--ac)">'+Math.round(p*100)+'%</text><text x="80" y="104" text-anchor="middle" font-size="12" fill="var(--mut)">отмечено</text></svg>';
+h+='<div class="stats"><div><b>'+fmt(R.S)+'</b><span>К выдаче, ₽</span></div><div><b>'+fmt(tot)+'</b><span>Отмечено, ₽</span></div><div><b>'+fmt(R.S-tot)+'</b><span>Осталось, ₽</span></div></div>';
+h+='<div class="lbl">РАСКЛАДКА</div><div class="card"><div class="wrap"><table><thead><tr><th></th>'+cols.map(function(x){return"<th>"+lab(x)+"</th>"}).join("")+"<th></th></tr></thead><tbody>"+rows;
+h+='<tr class="f"><td>Всего</td>'+cols.map(function(x){return"<td>"+R.T[x]+"</td>"}).join("")+"<td></td></tr>";
+h+='<tr class="f"><td>Склад</td>'+cols.map(function(x){return"<td>"+(R.st[x]-laid[x])+"</td>"}).join("")+"<td></td></tr></tbody></table></div>";
+h+='<p class="mut" style="margin:8px 4px 0">Нажмите на цифру, когда положили. Нажмите на имя, чтобы отметить всю строку. Склад: купюры в наличии'+(R.ex?" после размена":"")+" минус отмеченные."+(R.nostock?" Наличие купюр не введено, поэтому раскладка без его учёта.":"")+"</p></div>";
+var ok=!P.err.length&&(!P.warn.length||d.over)&&tot>0;
+h+='<div style="margin:12px 4px"><button class="pill" id="pconf"'+(ok?"":' disabled style="opacity:.5"')+">"+(armed==="pconf"?"Точно? Записать "+fmt(tot)+" ₽ в журнал":"Подтвердить выдачу")+"</button></div>";
+h+='<p class="mut" style="margin:0 8px">'+(tot?"В журнал попадут только отмеченные купюры"+(tot<R.S?": "+fmt(tot)+" из "+fmt(R.S)+" ₽":"")+". До подтверждения наличные и журнал не меняются.":"Отметьте выданные купюры, затем подтвердите выдачу. До подтверждения наличные и журнал не меняются.")+"</p>";
+return h}
+function renderPlan(){var e=document.getElementById("payplan");if(!e)return;var P=payState(),R=billPlan(P.W);e.innerHTML=planHtml(P,R);
+P.rows.forEach(function(x,i){var t=document.getElementById("pl"+i);if(t)t.textContent=(P.d.type==="adv"?"аванс ":"выдать ")+fmt(x.a)+" · останется "+fmt(x.rem-x.a)});
+var cs=R.cash,v=document.getElementById("cashv"),m=document.getElementById("cashm"),ce=document.getElementById("cashe"),pd=paidOf(P.sh.id),paid=0;Object.keys(pd).forEach(function(k){paid+=pd[k].adv+pd[k].sal});var exp=P.d.type==="adv"?P.tot:(P.sh.bank||0)-paid,hh=document.getElementById("cashh");if(hh)hh.textContent=P.d.type==="adv"?"сумма аванса в этой операции":"банк смены − уже выдано";
+D.forEach(function(x){var q=document.getElementById("cs"+x);if(q)q.textContent=cs.n[x]?"= "+fmt(cs.n[x]*x)+" ₽":""});
+if(ce)ce.textContent=fmt(exp)+" ₽";
+if(v){v.textContent=fmt(cs.t)+" ₽";if(!cs.any){v.className="";m.className="mut";m.textContent="Купюры не введены"}else if(cs.t===exp){v.className="ok2";m.className="ok2";m.textContent="✓ Совпадает"}else{v.className="w";m.className="w";m.textContent="Сумма не совпадает"}}
+bindPlan()}
+function bindPlan(){var a=document.getElementById("payplan");if(!a)return;var d=draft();
+a.querySelectorAll("td.cl").forEach(function(td){td.onclick=function(){var k=td.getAttribute("data-k");d.ticks[k]=!d.ticks[k];armed="";save();renderPlan()}});
+a.querySelectorAll("td.nm").forEach(function(td){td.onclick=function(){var P=payState(),R=billPlan(P.W),w=R.W[+td.getAttribute("data-i")],ds=D.filter(function(x){return w.c[x]}),all=ds.every(function(x){return d.ticks[w.n+"|"+x]});ds.forEach(function(x){d.ticks[w.n+"|"+x]=!all});armed="";save();renderPlan()}});
+var o=document.getElementById("pover");if(o)o.onchange=function(){d.over=o.checked;save();renderPlan()};
+var c=document.getElementById("pconf");if(c)c.onclick=function(){if(c.disabled)return;if(!dateOk(draft().pdate)){armed="";noDate();return}if(armed!=="pconf"){armed="pconf";renderPlan();return}armed="";confirmPay()}}
+function dateOk(v){return/^\d{4}-\d{2}-\d{2}$/.test(v||"")}
+function noDate(){PDERR=true;var e=document.getElementById("pdate"),pe=document.getElementById("pderr");if(e){e.style.borderColor="var(--warn)";e.scrollIntoView({block:"center"})}if(pe)pe.style.display="block";renderPlan()}
+function confirmPay(){var d=draft();
+if(pays().some(function(op){return op.id===d.id})){d.id="";d.ticks={};PAYNOTE="Эта операция уже записана в журнал, повторно не записана.";save();render();return}
+if(!dateOk(d.pdate)){noDate();return}
+var P=payState(),R=billPlan(P.W);if(P.err.length||(P.warn.length&&!d.over)||R.fail)return;
+var lines=[];R.W.forEach(function(w){var c=z(),s=0;D.forEach(function(x){if(w.c[x]&&d.ticks[w.n+"|"+x]){c[x]=w.c[x];s+=w.c[x]*x}});if(s)lines.push({n:w.n,amt:s,plan:w.A,c:c,st:s===w.A?"выдано":"выдано частично"})});
+if(!lines.length)return;
+var op={id:d.id,sid:P.sh.id,sdate:P.sh.date,pdate:d.pdate,type:d.type,ts:Date.now(),lines:lines,ex:exText(R)};
+pays().push(op);
+if(!R.nostock){var nc=JSON.parse(JSON.stringify(cashBox(op.sid)));D.forEach(function(x){var g=0;lines.forEach(function(l){g+=l.c[x]});nc[x]=String(R.st[x]-g)});C.cashBy[op.sid]=nc}
+C.draft={sid:d.sid,pdate:"",type:d.type};
+var sm=0;lines.forEach(function(l){sm+=l.amt});
+PAYNOTE=tname(op.type)+" "+fmt(sm)+" ₽ записан"+(op.type==="adv"?"":"а")+" в журнал: "+lines.length+" "+pl3(lines.length,"человек","человека","человек")+".";PAYERR="";
+save();render();window.scrollTo(0,0);syncPay()}
+
+function hist(){C.history=C.history||[];return C.history}
+function viewLog(){var L=jlines().filter(function(x){return x.l.amt>0}),h="";
+function uq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i})}
+var sds=uq(L.map(function(x){return x.op.sdate})).sort().reverse(),ns=uq(L.map(function(x){return x.l.n})).sort();
+var un=pays().filter(function(op){return!op.synced}).length;
+h+='<div class="card"><button class="pill g2" id="pull" style="margin-bottom:10px">'+(PULLING?"Обновляю…":"Обновить из таблицы")+"</button>"+(PULLNOTE?'<p class="mut" style="margin:0 0 10px">'+esc(PULLNOTE)+"</p>":"")+"</div>";
+h+='<div class="card"><p style="margin:0 0 10px">'+(un?"Не записано в таблицу: "+un+" "+pl3(un,"операция","операции","операций")+".":"✓ Все операции записаны в таблицу.")+"</p>"+(un?'<button class="pill" id="sync">'+(SYNCING?"Записываю…":"Записать в таблицу")+"</button>":"")+(SYNCNOTE?'<p class="mut" style="margin:10px 0 0">'+esc(SYNCNOTE)+"</p>":"")+"</div>";
+h+='<div class="card"><div class="g" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)"><label>Дата смены<select data-jf="sd" style="width:100%;margin-top:4px"><option value="">Все</option>'+sds.map(function(x){return'<option value="'+esc(x)+'"'+(JF.sd===x?" selected":"")+">"+esc(dd(x))+"</option>"}).join("")+'</select></label><label>Сотрудник<select data-jf="n" style="width:100%;margin-top:4px"><option value="">Все</option>'+ns.map(function(x){return'<option'+(JF.n===x?" selected":"")+">"+esc(x)+"</option>"}).join("")+"</select></label></div></div>";
+var F=L.filter(function(x){return(!JF.sd||x.op.sdate===JF.sd)&&(!JF.n||x.l.n===JF.n)}).sort(function(a,b){return(b.op.pdate||"").localeCompare(a.op.pdate||"")||b.op.ts-a.op.ts}),tot=0;F.forEach(function(x){tot+=x.l.amt});
+h+='<div class="lbl">ЖУРНАЛ ВЫПЛАТ · '+F.length+'</div><div class="card jc">';
+function jd(iso){var x=dd(iso);return iso?'<span class="dl">'+esc(x)+'</span><span class="ds">'+esc(x.slice(0,6)+x.slice(8))+"</span>":"—"}
+if(!F.length)h+='<p class="mut" style="margin:0">Записей нет.</p>';
+else{h+='<div class="wrap"><table class="jt"><thead><tr><th>Дата смены</th><th>Сотрудник</th><th>Тип</th><th class="r">Сумма, ₽</th><th>Дата выдачи</th></tr></thead><tbody>';
+F.forEach(function(x){h+="<tr><td>"+jd(x.op.sdate)+"</td><td>"+esc(x.l.n)+"</td><td>"+tname(x.op.type)+'</td><td class="r">'+fmt(x.l.amt)+"</td><td>"+jd(x.op.pdate)+"</td></tr>"});
+h+='</tbody><tfoot><tr><td colspan="3">Итого</td><td class="r">'+fmt(tot)+"</td><td></td></tr></tfoot></table></div>"}
+h+="</div>";
+if(pays().length)h+='<div style="margin:16px 4px"><button class="pill g2" id="clrj">'+(armed==="clrj"?"Точно? Нажмите ещё раз":"Очистить журнал на этом устройстве")+'</button></div><p class="mut" style="margin:0 8px">Удаляет выплаты только на сайте, в Google Таблице ничего не меняется. Выплаты, которые ещё не записаны в таблицу, не удаляются. «Обновить из таблицы» вернёт на сайт всё, что есть в таблице.</p>';
+return h}
+function boats(){if(!C.boats)C.boats=[{b:"",k:""},{b:"",k:""},{b:"",k:""},{b:"",k:""}];return C.boats}
+function kgn(v){var x=parseFloat(String(v==null?"":v).replace(/\s/g,"").replace(",","."));return isNaN(x)?0:x}
+function fmtk(n){return String(Math.round(n*100)/100).replace(".",",")}
+function stages(){if(!C.stages)C.stages=[];return C.stages}
+var GS_URL="https://script.google.com/macros/s/AKfycbzI68g2EhW30n-WkgLVgbGqOEPQEecQ51ZLKNSgUeglnGCfQ3Ib4tXcEozJTLpFJk_4bw/exec";
+function gsUrl(){return /^https:\/\/script\.google\.com\//.test(GS_URL)?GS_URL:(C.gs||"")}
+var SHEET_ID="1wS1b3IaUEc8c5W63uH6OI1FeJyxeNhUyl6xiWhuS3ug",NOTE3="";
+function inSheet(r){return r.sheet||r.ts===1792474231867||r.ts===1792407853953}
+function todayISO(){var d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function ddate(r){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(r.date||"");return m?m[3]+"."+m[2]+"."+m[1]:dstr(r.ts).slice(0,10)}
+function salOf(n){var q=C.people.filter(function(p){return p.n===n})[0];return q?kgn(q.s):0}
+function sheetBlock(rec){var P=rec.rows||[],B=rec.boats||[],M=tsMatrix({rec:rec,rows:P,cur:false}),nb=M?M.names.length:0,TC=13,right=M&&TC+1+nb<=26,
+n=Math.max(P.length,B.length,right?M.boats.length:0),rows=[],W=M?12:11;
+function mk(){var r=[];for(var i=0;i<W;i++)r.push("");return r}
+function rd(x){return Math.round(x*100)/100}
+function who(no){var o=M&&M.boats.filter(function(x){return x.b===String(no==null?"":no).trim()})[0];return o?M.names.filter(function(nm){return nm in o.ppl}).join(", "):""}
+var t=mk();t[0]="Отчёт по смене от "+ddate(rec);rows.push(t);rows.push(mk());
+var h=mk();["Имя","Кг","КГ салата","Начислено, ₽","Зарплата","Аванс","Остаток","","Катер","Кг","Камчадал"].forEach(function(x,i){h[i]=x});if(M)h[11]="Сотрудники";rows.push(h);
+var sk=0,ss=0,sr=0,sa=0,sv=0,spd=0,bk=0,bm=0;
+for(var i=0;i<n;i++){var r=mk(),p=P[i],b=B[i];
+if(p){var av=p.adv||0,pd=p.pd==null?av:p.pd;r[0]=p.n;r[1]=p.kg==null?"":p.kg;r[2]=p.sal||"";r[3]=p.raw;r[4]=pd-av||"";r[5]=av||"";r[6]=p.A-pd;spd+=pd;sk+=p.kg||0;ss+=p.sal||0;sr+=p.raw;sa+=p.A;sv+=av}
+if(b){r[8]=b.b+(b.c?" · "+b.c:"");r[9]=b.kg;r[10]=b.m||"";if(M)r[11]=who(b.b);bk+=b.kg;bm+=b.m||0}
+rows.push(r)}
+var tt=mk();tt[0]="Итого";tt[1]=rd(sk);tt[2]=ss?rd(ss):"";tt[3]=sr;tt[4]=spd-sv||"";tt[5]=sv||"";tt[6]=sa-spd;tt[8]="Всего кг";tt[9]=rd(bk);tt[10]=bm?rd(bm):"";rows.push(tt);rows.push(mk());
+[["Банк, ₽",rec.bank],["ЗП всего, ₽",rec.S],["Остаток, ₽",rec.bank-rec.S]].forEach(function(x,k){var r=mk();r[0]=x[0];r[1]=x[1];if(k===0){r[8]="Итого салат, кг";r[9]=rd(rec.salad||0)}rows.push(r)});
+var bold=[],ts=null;
+if(M){var r0,c0;
+if(right){r0=1;c0=TC}else{rows.push([]);r0=rows.length;c0=0}
+function put(r,c,v){while(rows.length<=r)rows.push([]);rows[r][c]=v}
+put(r0,c0,"Табель катеров");put(r0+1,c0,"Катер");M.names.forEach(function(nm,k){put(r0+1,c0+1+k,nm)});
+M.boats.forEach(function(o,k){put(r0+2+k,c0,o.b+(o.c?" · "+o.c:""));M.names.forEach(function(nm,j){put(r0+2+k,c0+1+j,nm in o.ppl?"✓":"")})});
+bold.push([r0,r0+2,c0,c0+1+nb]);ts={r:r0,c:c0,names:nb,boats:M.boats.length}}
+var Wm=W;rows.forEach(function(r){if(r.length>Wm)Wm=r.length});rows.forEach(function(r){for(var k=0;k<Wm;k++)if(r[k]==null)r[k]=""});
+return{title:ddate(rec),rows:rows,bold:bold,num:[],ts:ts}}
+function tsStyle(gid,T,rows){function c(h){return{red:parseInt(h.slice(1,3),16)/255,green:parseInt(h.slice(3,5),16)/255,blue:parseInt(h.slice(5,7),16)/255}}
+function rg(r0,r1,c0,c1){return{sheetId:gid,startRowIndex:r0,endRowIndex:r1,startColumnIndex:c0,endColumnIndex:c1}}
+function cell(r,f,fields){return{repeatCell:{range:r,cell:{userEnteredFormat:f},fields:fields.split(",").map(function(x){return"userEnteredFormat."+x}).join(",")}}}
+var BG="#1d6fa3",h=T.r+1,b=T.boats,w=T.names,L=T.c,R=L+1+w,q=[],line={style:"SOLID",color:c("#c9d8e4")};
+q.push(cell(rg(T.r,T.r+1,L,L+1),{textFormat:{bold:true,fontSize:12,fontFamily:"Arial",foregroundColor:c(BG)}},"textFormat"));
+q.push(cell(rg(h,h+1,L,R),{backgroundColor:c(BG),horizontalAlignment:"CENTER",verticalAlignment:"MIDDLE",textRotation:{angle:0},textFormat:{bold:true,fontSize:11,fontFamily:"Arial",foregroundColor:c("#ffffff")}},"backgroundColor,horizontalAlignment,verticalAlignment,textRotation,textFormat"));
+for(var k=0;k<b;k++)q.push(cell(rg(h+1+k,h+2+k,L,R),{backgroundColor:c(k%2?"#f2f7fb":"#ffffff"),verticalAlignment:"MIDDLE",textFormat:{bold:false,fontSize:11,fontFamily:"Arial",foregroundColor:c("#1f2933")}},"backgroundColor,verticalAlignment,textFormat"));
+if(b){q.push(cell(rg(h+1,h+1+b,L,L+1),{horizontalAlignment:"LEFT"},"horizontalAlignment"));if(w)q.push(cell(rg(h+1,h+1+b,L+1,R),{horizontalAlignment:"CENTER",textFormat:{bold:true,fontSize:11,fontFamily:"Arial",foregroundColor:c(BG)}},"horizontalAlignment,textFormat"))}
+q.push({updateBorders:{range:rg(h,h+1+b,L,R),top:line,bottom:line,left:line,right:line,innerHorizontal:line,innerVertical:line}});
+function wd(i,px){q.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:i,endIndex:i+1},properties:{pixelSize:px},fields:"pixelSize"}})}
+if(L>0){wd(L-1,24);wd(L,130);for(var j=0;j<w;j++)wd(L+1+j,Math.max(64,9*String(rows[h][L+1+j]).length+22))}
+return q}
+// ширина текста Arial 11 в пикселях — по ширине каждой буквы, как автоподбор Google в браузере
+var AW_L="абвгдеёжзийклмнопрстуфхцчшщъыьэюя",AW_LW=[0.556,0.573,0.531,0.365,0.583,0.556,0.556,0.669,0.458,0.559,0.559,0.438,0.583,0.688,0.552,0.556,0.542,0.556,0.5,0.458,0.5,0.823,0.5,0.573,0.521,0.802,0.823,0.625,0.719,0.521,0.51,0.75,0.528],AW_U="АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",AW_UW=[0.667,0.656,0.667,0.542,0.677,0.667,0.667,0.923,0.604,0.719,0.719,0.583,0.656,0.833,0.722,0.778,0.719,0.667,0.722,0.611,0.635,0.76,0.667,0.74,0.667,0.917,0.938,0.792,0.885,0.656,0.719,1.01,0.719];
+function textPx(s){s=String(s==null?"":s);var t=0;for(var i=0;i<s.length;i++){var c=s.charAt(i),k=AW_L.indexOf(c);t+=k>=0?AW_LW[k]:(k=AW_U.indexOf(c))>=0?AW_UW[k]:(c===","||c===" ")?.278:c==="·"?.333:.556}return Math.round(t*14.667)}
+function colA(n){var s="";while(n>0){var m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s}
+function sheetErr(e){var c=e&&e.code;if(c==="server_not_connected"||c==="selection_required")return"Подключите Google Sheets в настройках Claude, раздел «Коннекторы».";if(c==="needs_reauth")return"Переподключите Google Sheets в настройках Claude.";if(c==="not_in_manifest"||c==="approval_required"||c==="consent_required")return"Доступ к Google Sheets не разрешён. Разрешите его для этой страницы.";return"Не удалось записать в таблицу"+(c?" ("+c+")":"")+"."}
+var JN="Журнал выплат",JH=["Операция","ID строки","Дата смены","Дата выдачи","Тип","Сотрудник","Сумма, ₽","Купюры","Статус","Записано","ID смены","Лист смены","Метка времени"];
+function syncPay(){if(SYNCING)return;var ops=pays().filter(function(op){return!op.synced});if(!ops.length)return;
+var lines=[];ops.forEach(function(op){var x=findShift(op.sid),sh=x&&x.rec&&x.rec.sheet||"";op.lines.forEach(function(l){lines.push({op:op.id,id:op.id+"/"+l.n,sdate:dd(op.sdate),pdate:dd(op.pdate),type:tname(op.type),kind:op.type,n:l.n,amt:l.amt,bills:lst(l.c||{}),st:l.st||"",ts:dstr(op.ts),tsms:op.ts,sid:op.sid,sheet:sh})})});
+SYNCING=true;SYNCNOTE="Записываю журнал в таблицу…";render();
+(window.claude&&window.claude.use?syncMcp(lines):syncGs(lines)).then(function(j){ops.forEach(function(op){op.synced=true});var m=j.rows?mergeRows(j.rows):0;save();SYNCNOTE="Таблица: записано строк "+(j.added||0)+(j.skipped?", уже были: "+j.skipped:"")+"."+(j.warn?" "+j.warn:"")+(m?" Из таблицы добавлено строк: "+m+".":"")+(j.rows?"":" Чтобы журнал подтягивался из таблицы, обновите файл zhurnal.gs в Apps Script.")},function(e){SYNCNOTE="В таблицу не записано: "+syncErr(e)+" Выплаты сохранены в журнале на этом устройстве, повторите кнопкой «Записать в таблицу» на вкладке «Журнал»."}).then(function(){SYNCING=false;render()})}
+function pullPay(manual){if(PULLING||SYNCING)return;var art=window.claude&&window.claude.use;if(!art&&(!gsUrl()||(!manual&&!gsPin())))return;
+PULLING=true;if(manual){PULLNOTE="Загружаю журнал из таблицы…";render()}
+(art?syncMcp([]):pullGs(manual)).then(function(j){if(!j.rows)throw new Error("noread");var m=mergeRows(j.rows);save();PULLNOTE="Журнал сверен с таблицей "+dstr(Date.now())+(m?", добавлено строк: "+m:", новых строк нет")+"."}).catch(function(e){PULLNOTE=e&&e.message==="noread"?"Журнал не подтянут: обновите файл zhurnal.gs в Apps Script.":"Журнал не подтянут из таблицы: "+syncErr(e)}).then(function(){PULLING=false;render()})}
+function pullGs(manual,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
+return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:[]})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(manual&&!again&&askPin())return pullGs(manual,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
+function isoOf(t){var m=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(String(t||"").trim());return m?m[3]+"-"+m[2]+"-"+m[1]:""}
+function tsOf(t){var m=/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,2}):(\d{2})/.exec(String(t||"").trim());return m?new Date(+m[3],m[2]-1,+m[1],+m[4],+m[5]).getTime():0}
+function billsOf(t){var c=z(),re=/(\d+)\s*×\s*(5к|2к|1к|500|200|100)/g,m;while((m=re.exec(String(t||""))))c[{"5к":5000,"2к":2000,"1к":1000}[m[2]]||+m[2]]+=+m[1];return c}
+function mergeRows(rows){var by={},add=0,ord=[];
+(rows||[]).forEach(function(r){var o=String(r[0]==null?"":r[0]).trim(),n=String(r[5]==null?"":r[5]).trim();if(!o||!n)return;if(!by[o]){by[o]=[];ord.push(o)}by[o].push(r)});
+ord.forEach(function(o){var R=by[o],r0=R[0],op=pays().filter(function(x){return x.id===o})[0];
+if(!op){op={id:o,sid:"?",sdate:isoOf(r0[2]),pdate:isoOf(r0[3]),type:/аванс/i.test(String(r0[4]))?"adv":"sal",ts:+String(r0[12]||"").replace(/\D/g,"")||tsOf(r0[9])||Date.now(),lines:[],synced:true,src:"sheet",rsid:String(r0[10]||"").trim(),rsheet:String(r0[11]||"").trim()};pays().push(op)}
+R.forEach(function(r){var n=String(r[5]).trim(),a=+String(r[6]==null?"":r[6]).replace(/[^\d]/g,"")||0;if(op.lines.some(function(l){return l.n===n}))return;op.lines.push({n:n,amt:a,plan:a,c:billsOf(r[7]),st:String(r[8]||"")});add++})});
+resolveOps();fixImports();return add}
+function resolveOps(){var H=hist();pays().forEach(function(op){if(op.src!=="sheet"||findShift(op.sid))return;var r=null;
+if(op.rsid)r=H.filter(function(x){return x.id===op.rsid})[0];
+if(!r&&op.rsheet)r=H.filter(function(x){return x.sheet===op.rsheet})[0];
+if(!r){var m=H.filter(function(x){return(x.date||ymd(x.ts))===op.sdate});if(m.length===1)r=m[0]}
+if(r)op.sid=r.id})}
+function fixImports(){pays().forEach(function(im){if(im.src!=="table")return;im.lines.forEach(function(l){if(l.base==null)return;var s=0;
+pays().forEach(function(op){if(op===im||op.src==="table"||op.sid!==im.sid||op.type!==im.type||op.ts>im.ts)return;op.lines.forEach(function(x){if(x.n===l.n)s+=x.amt})});l.amt=l.plan=Math.max(0,l.base-s)})})}
+function syncErr(e){var m=e&&e.message;if(m==="nourl")return"в коде сайта не задана ссылка Apps Script.";if(m==="pin")return"PIN таблицы не введён или не подошёл.";if(m==="oldscript")return"Apps Script ещё не умеет вести журнал (добавьте в него код из файла apps-script/zhurnal.gs).";if(e&&e.code)return sheetErr(e);return"нет связи с таблицей"+(m&&m!=="err"?" ("+m+")":"")+"."}
+function syncGs(lines,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
+return gsGet("action=ver").then(function(j){if(!(j.v>=2))throw new Error("oldscript")},function(e){if(e&&(e.message==="pin"||e.message==="nourl"))throw e;throw new Error("oldscript")}).then(function(){
+return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:lines})})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(!again&&askPin())return syncGs(lines,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
+function syncMcp(lines){var SV="Google Sheets";
+return claude.use("mcp").then(function(mcp){if(!mcp)throw{code:"server_not_connected"};
+function pl(r){var x=r&&r.payload;if(typeof x==="string"){try{x=JSON.parse(x)}catch(e){x=null}}return x||{}}
+function get(rg){return mcp.callTool(SV,"get_values",{spreadsheetId:SHEET_ID,range:rg},{cache:false}).then(function(r){return pl(r).values||[]})}
+function put(rg,v){return mcp.callTool(SV,"update_values",{spreadsheetId:SHEET_ID,range:rg,values:v})}
+var names=[];
+return mcp.callTool(SV,"get_spreadsheet",{spreadsheetId:SHEET_ID,fields:["sheets.properties"]},{cache:false}).then(function(r){names=(pl(r).sheets||[]).map(function(x){return x.properties&&x.properties.title});
+return(names.indexOf(JN)<0?mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:[{addSheet:{properties:{title:JN,gridProperties:{frozenRowCount:1}}}}]}):Promise.resolve()).then(function(){return put("'"+JN+"'!A1:M1",[JH])})}).then(function(){return get("'"+JN+"'!A:B")}).then(function(col){
+var have={};col.forEach(function(r){have[String(r[1])]=1});var add=lines.filter(function(l){if(have[l.id])return false;have[l.id]=1;return true});
+function fin(r){return get("'"+JN+"'!A2:M").then(function(v){r.rows=v;return r})}
+if(!add.length)return fin({added:0,skipped:lines.length});var st=Math.max(col.length,1)+1;
+return put("'"+JN+"'!A"+st+":M"+(st+add.length-1),add.map(function(l){return[l.op,l.id,l.sdate,l.pdate,l.type,l.n,l.amt,l.bills,l.st,l.ts,l.sid||"",l.sheet||"",String(l.tsms||"")]})).then(function(){
+var q=Promise.resolve(),bad=0;add.forEach(function(l){if(!l.sheet||names.indexOf(l.sheet)<0)return;q=q.then(function(){return get("'"+l.sheet+"'!A1:K200").then(function(v){var H=(v[2]||[]).map(String),c={r:H.indexOf("Начислено, ₽"),z:H.indexOf("Зарплата"),a:H.indexOf("Аванс"),o:H.indexOf("Остаток")},tot=-1,i;
+if(c.r<0||c.z<0||c.a<0||c.o<0)return;for(i=3;i<v.length;i++)if(String(v[i][0]==null?"":v[i][0]).trim()==="Итого"){tot=i;break}if(tot<0)return;
+function cell(r,k){return r[k]==null?"":r[k]}
+var Z=[],A=[],O=[],sz=0,sa=0,so=0;
+for(i=3;i<tot;i++){var r=v[i],nm=String(cell(r,0)).trim();if(!nm){Z.push([cell(r,c.z)]);A.push([cell(r,c.a)]);O.push([cell(r,c.o)]);continue}
+var due=Math.floor(kgn(cell(r,c.r))/100)*100,a=kgn(cell(r,c.a)),o=String(cell(r,c.o)).trim()===""?due:kgn(cell(r,c.o));if(nm===l.n){if(l.kind==="adv")a+=l.amt;o-=l.amt}
+var zz=Math.max(0,due-a-o);sz+=zz;sa+=a;so+=o;Z.push([zz||""]);A.push([a||""]);O.push([o])}
+Z.push([sz||""]);A.push([sa||""]);O.push([so]);
+function col(k){return String.fromCharCode(65+k)}
+return put("'"+l.sheet+"'!"+col(c.z)+"4:"+col(c.z)+(tot+1),Z).then(function(){return put("'"+l.sheet+"'!"+col(c.a)+"4:"+col(c.a)+(tot+1),A)}).then(function(){return put("'"+l.sheet+"'!"+col(c.o)+"4:"+col(c.o)+(tot+1),O)})}).catch(function(){bad++})})});
+return q.then(function(){return fin({added:add.length,skipped:lines.length-add.length,warn:bad?"Не обновлены суммы на листах смен: "+bad+".":""})})})})})}
+function sheetDone(rec,name){rec.sheet=name||"ok";save();NOTE3="Смена записана в таблицу, лист «"+name+"».";render();syncPay()}
+function withPaid(rec){var o={};pays().forEach(function(op){if(op.sid!==rec.id||!op.synced)return;op.lines.forEach(function(l){var x=o[l.n]=o[l.n]||{adv:0,pd:0};if(op.type==="adv")x.adv+=l.amt;x.pd+=l.amt})});var r=JSON.parse(JSON.stringify(rec));r.rows.forEach(function(w){var x=o[w.n]||{adv:0,pd:0};w.adv=x.adv;w.pd=x.pd});return r}
+function sheetReport(rec){
+if(SYNCING){setTimeout(function(){sheetReport(rec)},1500);return}
+var blk=sheetBlock(withPaid(rec));
+if(!window.claude||!window.claude.use){
+var GU=gsUrl();if(!GU){NOTE3="Таблица не настроена: в коде сайта не задана ссылка Apps Script (GS_URL). Смена сохранена в архиве.";render();return}
+NOTE3="Записываю смену в таблицу…";render();
+var tries=0;(function send(){blk.pin=gsPin();fetch(GU,{method:"POST",body:JSON.stringify(blk)}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(!tries++&&askPin()){send();return}NOTE3="PIN таблицы не введён или не подошёл. Нажмите «В таблицу» в архиве и введите PIN.";render();return}if(j&&j.ok)sheetDone(rec,j.sheet||blk.title);else{NOTE3="Таблица ответила ошибкой"+(j&&j.error?": "+j.error:"")+". Проверьте таблицу, прежде чем повторять.";render()}}).catch(function(){NOTE3="Не удалось связаться с таблицей. Если лист с этой датой уже появился, повторять не нужно, иначе нажмите «В таблицу» в архиве.";render()})})();
+return}
+NOTE3="Записываю смену в таблицу…";render();
+var stage="read";
+claude.use("mcp").then(function(mcp){
+if(!mcp){NOTE3="В таблицу не записано: страница не получила доступ к Google Sheets. Нажмите «В таблицу» в архиве.";render();return}
+var SV="Google Sheets";
+return mcp.callTool(SV,"get_spreadsheet",{spreadsheetId:SHEET_ID,fields:["sheets.properties"]},{cache:false}).then(function(res){
+var pl=res&&res.payload;if(typeof pl==="string"){try{pl=JSON.parse(pl)}catch(x){pl=null}}
+var names=((pl&&pl.sheets)||[]).map(function(s){return s.properties&&s.properties.title}),name=blk.title,k=1;
+while(names.indexOf(name)>=0){k++;name=blk.title+" ("+k+")"}
+var gid=(rec.ts%2000000000)+1,n=blk.rows.length,nc=blk.rows[0].length,lc=colA(nc);
+stage="write";
+return mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:[{addSheet:{properties:{sheetId:gid,title:name}}}]}).then(function(){
+return mcp.callTool(SV,"update_values",{spreadsheetId:SHEET_ID,range:"'"+name+"'!A1:"+lc+n,values:blk.rows})}).then(function(){
+sheetDone(rec,name);
+function rg(a){return{sheetId:gid,startRowIndex:a[0],endRowIndex:a[1],startColumnIndex:a[2],endColumnIndex:a[3]}}
+var rq=blk.bold.map(function(a){return{repeatCell:{cell:{userEnteredFormat:{textFormat:{bold:true}}},fields:"userEnteredFormat.textFormat",range:rg(a)}}}).concat(blk.num.map(function(x){return{repeatCell:{cell:{userEnteredFormat:{numberFormat:{pattern:x.f,type:"NUMBER"}}},fields:"userEnteredFormat.numberFormat",range:rg(x.r)}}}));
+rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:0,endIndex:nc},properties:{pixelSize:120},fields:"pixelSize"}});
+if(nc>11)rq.push({repeatCell:{range:rg([2,blk.rows.length,11,12]),cell:{userEnteredFormat:{wrapStrategy:"OVERFLOW_CELL"}},fields:"userEnteredFormat.wrapStrategy"}},{updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:11,endIndex:12},properties:{pixelSize:Math.max(120,blk.rows.slice(3).reduce(function(m,r){return Math.max(m,textPx(r[11]))},0)+10)},fields:"pixelSize"}});
+if(blk.ts)rq=rq.concat(tsStyle(gid,blk.ts,blk.rows));
+mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:rq}).catch(function(){})})})}).catch(function(e){NOTE3=sheetErr(e)+(stage==="write"?" Проверьте таблицу, прежде чем повторять.":" Смена сохранена в архиве: нажмите «В таблицу».");render()})}
+function rateOf(p){if(p.r)return +p.r;return{"Саня":500,"Даня":500,"Аня":450}[p.n]||480}
+function autoOf(p){var k=pkg(p.n),sl=kgn(p.s);return(k>0||sl>0)?String(Math.floor(k*rateOf(p)+sl*400+1e-9)):""}
+function amtOf(p){var m=String(p.a||"").trim();return m?m:autoOf(p)}
+function bankAuto(){var br=C.bankR;if(br!==""&&br!=null&&!isNaN(+br))return Math.round(+br);var t=0,m=0,sl=0;boats().forEach(function(x){t+=kgn(x.k);m+=kgn(x.m)});C.people.forEach(function(p){sl+=kgn(p.s)});return Math.round((t+m)*500+sl*400)}
+function boatsLine(){var t=0,m=0;boats().forEach(function(x){t+=kgn(x.k);m+=kgn(x.m)});return"Всего: "+fmtk(t+m)+" кг"+(m?" (камчадал "+fmtk(m)+")":"")+" · банк "+fmt(bankAuto())+" ₽"}
+function presentOf(st){return C.people.filter(function(p){return st.p&&st.p[p.n]}).map(function(p){return p.n})}
+function pkg(n){var t=0;stages().forEach(function(st){var pr=presentOf(st);if(pr.length&&pr.indexOf(n)>=0)t+=kgn(st.k)/pr.length});return t}
+function infoSt(st){var n=presentOf(st).length;return"Чел.: "+n+" · кг на чел.: "+(n?fmtk(kgn(st.k)/n):"—")}
+function warnK(ts,tk){return ts&&tk&&Math.abs(ts-tk)>0.001?"Кг по этапам "+fmtk(ts)+", по катерам "+fmtk(tk)+": не сходится":""}
+function refreshShift(){var ts=0,tk=0;stages().forEach(function(st,i){ts+=kgn(st.k);var e=document.getElementById("si"+i);if(e)e.textContent=infoSt(st)});boats().forEach(function(x){tk+=kgn(x.k)+kgn(x.m)});C.people.forEach(function(p,j){var e=document.getElementById("pk"+j);if(e)e.textContent=fmtk(pkg(p.n))+" кг"});var a=document.getElementById("tsk");if(a)a.textContent="Всего по этапам: "+fmtk(ts)+" кг";var w=document.getElementById("warnk");if(w)w.textContent=warnK(ts,tk)}
+function addStage(nextBoat){var S=stages(),pv=S[S.length-1],st={b:"",s:"",k:"",p:{}};
+if(!pv){st.b="1";st.s="1"}else if(nextBoat){var nb=parseInt(pv.b);st.b=isNaN(nb)?"":String(nb+1);st.s="1";st.p=JSON.parse(JSON.stringify(pv.p||{}))}else{st.b=pv.b;var c=0;S.forEach(function(x){if(x.b===pv.b)c++});st.s=String(c+1);st.p=JSON.parse(JSON.stringify(pv.p||{}))}
+S.push(st);armed="";save();render()}
+function viewShift(){
+var S=stages(),P=C.people,ts=0,tk=0,h='<div class="card"><label>Дата смены<input id="sdate" type="date" value="'+esc(C.date||todayISO())+'"></label></div>'+boatsView();
+boats().forEach(function(x){tk+=kgn(x.k)+kgn(x.m)});
+h+='<div class="lbl">ЭТАПЫ И ЛЮДИ</div><p class="mut" style="margin:0 10px 6px">Новый этап: когда состав поменялся. Нажмите на имя, чтобы отметить, кто был на этапе.</p>';
+S.forEach(function(st,i){ts+=kgn(st.k);
+h+='<div class="card"><div class="sg"><label>Катер<input data-sb="'+i+'" type="text" inputmode="numeric" value="'+esc(st.b||"")+'"></label><label>Этап<input data-ss="'+i+'" type="text" inputmode="numeric" value="'+esc(st.s||"")+'"></label><label>Кг этапа<input data-sk="'+i+'" type="text" inputmode="decimal" value="'+esc(st.k||"")+'"></label><button class="x" data-xs="'+i+'">×</button></div>';
+h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">'+P.map(function(p,j){return'<button class="chip'+(st.p&&st.p[p.n]?" on":"")+'" data-sc="'+i+'" data-pj="'+j+'">'+esc(p.n)+"</button>"}).join("")+"</div>";
+h+='<div class="mut" id="si'+i+'" style="margin-top:10px">'+infoSt(st)+"</div></div>"});
+h+='<div style="margin:8px 4px"><button class="pill" id="adds">+ Этап</button> <button class="pill g2" id="addbs">+ След. катер</button></div>';
+h+='<div class="mut" id="tsk" style="margin:0 10px">Всего по этапам: '+fmtk(ts)+' кг</div><p class="w" id="warnk" style="margin:4px 10px 0">'+warnK(ts,tk)+"</p>";
+h+='<details id="ppl"'+(PPL?" open":"")+'><summary class="lbl">ЛЮДИ · СТАВКА · КГ</summary><div class="card">';
+P.forEach(function(p,j){h+='<div class="r2"><b>'+esc(p.n)+'</b><span><select data-rt="'+j+'">'+[500,480,450].map(function(r){return'<option'+(rateOf(p)===r?" selected":"")+'>'+r+"</option>"}).join("")+'</select> <span class="mut" id="pk'+j+'">'+fmtk(pkg(p.n))+' кг</span><button class="x" data-xp="'+j+'" style="margin-left:8px">×</button></span></div>'});
+h+='<p class="mut" style="margin:8px 0 0">500: бригадир и бухгалтер, 480: рабочие, 450: помощники (выходят помочь).</p><div class="pr" style="padding:12px 0 0"><input id="newn" type="text" placeholder="Новое имя" style="flex:1;width:auto;min-width:0;text-align:left;font-family:inherit"><button class="pill" id="add" style="flex:none">+ Добавить</button></div></div></details>';
+return h}
+function boatsView(){var B=boats(),tk=0,h='<div class="lbl">КАТЕРА</div>';
+B.forEach(function(x,i){tk+=kgn(x.k)+kgn(x.m);h+='<div class="card pr"><input data-bb="'+i+'" type="text" placeholder="№" value="'+esc(x.b)+'" style="width:56px;text-align:center"><input data-bc="'+i+'" type="text" placeholder="капитан" value="'+esc(x.c||"")+'" style="flex:1;width:auto;min-width:0;text-align:left;font-family:inherit"><input data-bk="'+i+'" type="text" inputmode="decimal" placeholder="кг" value="'+esc(x.k)+'" style="width:76px"><input data-bm="'+i+'" type="text" inputmode="decimal" placeholder="кам" value="'+esc(x.m||"")+'" style="width:60px"><button class="x" data-xb="'+i+'">×</button></div>'});
+h+='<div style="margin:8px 4px"><button class="pill g2" id="addb">+ Катер</button> <span class="mut" id="tkg">'+boatsLine()+'</span></div>';return h}
+function pad(n){return(n<10?"0":"")+n}
+function dstr(ts){var d=new Date(ts);return pad(d.getDate())+"."+pad(d.getMonth()+1)+"."+d.getFullYear()+" "+pad(d.getHours())+":"+pad(d.getMinutes())}
+function ymd(ts){var d=new Date(ts);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function qc(v){v=String(v==null?"":v);return/[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function csvOf(r){
+var L=[["Смена",ddate(r)],[],["Имя","По ведомости","К выдаче","Авансы","Зарплата выдана","Выдано всего","Остаток"]],pd=paidOf(r.id),ta=0,ts=0;if(r.stages&&r.stages.length){var sb=[["Катер","Этап","Кг этапа","Чел.","Кг на чел.","Кто был"]];r.stages.forEach(function(x){sb.push([x.b,x.s,String(x.kg).replace(".",","),x.p.length,x.p.length?String(Math.round(x.kg/x.p.length*100)/100).replace(".",","):"",x.p.join(", ")])});sb.push([]);L.splice.apply(L,[2,0].concat(sb))}if(r.boats&&r.boats.length){var bb=[["Катер","Капитан","Кг","Камчадал"]],bk=0,bm=0;r.boats.forEach(function(x){bb.push([x.b,x.c||"",String(x.kg).replace(".",","),x.m?String(x.m).replace(".",","):""]);bk+=x.kg;bm+=x.m||0});bb.push(["Всего кг","",String(Math.round(bk*100)/100).replace(".",","),bm?String(Math.round(bm*100)/100).replace(".",","):""],[]);L.splice.apply(L,[2,0].concat(bb))}
+r.rows.forEach(function(w){var x=pd[w.n]||{adv:0,sal:0};ta+=x.adv;ts+=x.sal;L.push([w.n,w.raw,w.A,x.adv,x.sal,x.adv+x.sal,w.A-x.adv-x.sal])});
+L.push(["ИТОГО",r.RAW,r.S,ta,ts,ta+ts,r.S-ta-ts],[],["Банк",r.bank],["ЗП всего",r.S],["Остаток банка",r.rest],["Бригадиру (весь остаток)",r.rest]);
+return"\ufeff"+L.map(function(a){return a.map(qc).join(";")}).join("\r\n")}
+var NOTE="",CSVTXT="";
+function exportRec(rec){
+var csv=csvOf(rec),name="zp_"+ymd(rec.ts)+".csv";
+function fallback(m){CSVTXT=csv;NOTE=m;render()}
+if(!window.claude||!window.claude.use){fallback("Скачивание здесь недоступно. Скопируйте таблицу ниже.");return}
+claude.use("downloads").then(function(dl){
+if(!dl){fallback("Скачивание здесь недоступно. Скопируйте таблицу ниже.");return}
+return dl.save({filename:name,data:csv}).then(function(){NOTE="Таблица сохранена: "+name;CSVTXT="";render()},function(e){if(e&&e.code==="declined"){NOTE="Скачивание отменено. Таблицу можно скачать из архива ниже.";CSVTXT="";render()}else fallback("Не удалось скачать"+(e&&e.code?" ("+e.code+")":"")+". Скопируйте таблицу ниже.")})}).catch(function(){fallback("Не удалось скачать. Скопируйте таблицу ниже.")})}
+
+function closeShift(){
+var W=curRows();if(!W.length)return;var bank=bankAuto(),S=0,RAW=0;W.forEach(function(w){S+=w.A;RAW+=w.raw});var B=Math.floor(Math.max(bank-S,0)/1000)*1000;
+var rec={id:sidCur(),ts:Date.now(),date:C.date||todayISO(),boats:boats().filter(function(x){return String(x.b||"").trim()||kgn(x.k)||kgn(x.m)}).map(function(x){return{b:String(x.b||"").trim(),c:String(x.c||"").trim(),kg:kgn(x.k),m:kgn(x.m)}}),stages:stages().filter(function(st){return presentOf(st).length||kgn(st.k)}).map(function(st){return{b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:kgn(st.k),p:presentOf(st)}}),salad:C.people.reduce(function(a,p){return a+kgn(p.s)},0),bank:bank,S:S,RAW:RAW,rest:bank-S,B:B,Cm:bank-S-B,rows:W};
+var H=hist();H.unshift(rec);if(H.length>60)H.length=60;
+C.bank=C.n1=C.n05=C.sw=C.brig="";C.bankR="";C.restored="";C.people.forEach(function(p){p.a="";p.s=""});C.ticks={};C.sig="";C.boats=null;C.stages=null;C.date="";C.sid="";C.tab="sum";VSEL=rec.id;armed="";
+save();NOTE="Смена закрыта и сохранена в архиве. Выплаты по ней можно делать на вкладке «Выплаты». Данные очищены для новой смены.";NOTE2="";CSVTXT="";render();sheetReport(rec)}
+function viewSum(){
+var h="";
+if(NOTE||NOTE2||NOTE3)h+='<div class="card">'+(NOTE?'<p class="ok2" style="margin:0 0 6px">'+esc(NOTE)+"</p>":"")+(NOTE2?'<p class="ok2" style="margin:0">'+esc(NOTE2)+"</p>":"")+(NOTE3?'<p class="ok2" style="margin:6px 0 0">'+esc(NOTE3)+"</p>":"")+"</div>";
+if(CSVTXT)h+='<div class="card"><label>Таблица (выделите и скопируйте)<textarea readonly rows="8" style="width:100%;margin-top:4px;font:13px ui-monospace,Menlo,Consolas,monospace;padding:8px;border:2px solid var(--bd);border-radius:12px;background:var(--in);color:var(--tx)">'+esc(CSVTXT)+"</textarea></label></div>";
+var x=shiftBy(VSEL||sidCur()),E=x.cur?curErr():[],pd=paidOf(x.id),S=0,RAW=0,adv=0,sal=0;
+x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};S+=w.A;RAW+=w.raw;adv+=q.adv;sal+=q.sal});
+h+='<div class="card"><label>Смена<select id="ssel" style="width:100%;margin-top:4px">'+shOpts(x.id)+"</select></label></div>";
+if(!x.rows.length&&!E.length){h+='<div class="card"><p class="mut" style="margin:0">Нет сумм. Введите их на вкладке «Люди».</p></div>'}
+else{
+if(x.cur)h+='<div style="margin:8px 4px 12px"><button class="pill" id="close">'+(armed==="close"?"Точно? Нажмите ещё раз":"Закрыть смену и выгрузить таблицу")+"</button></div>";
+var rest=(x.bank||0)-S;
+h+='<div class="card s">';
+E.forEach(function(e){h+='<p class="w">'+esc(e)+"</p>"});
+if(rest<0)h+='<p class="w">ЗП больше банка на '+fmt(-rest)+" ₽.</p>";
+h+="<p><b>Начислено:</b> "+fmt(S)+" ₽"+(RAW!==S?' <span class="mut">(округление вниз убрало '+fmt(RAW-S)+" ₽)</span>":"")+"</p>";
+var bk=bankOf(x);h+="<p><b>Банк:</b> "+fmt(bk.t)+' ₽ <span class="mut">(кг '+fmtk(bk.kg)+" × 500 + камчадал "+fmtk(bk.m)+" × 500 + салат "+fmtk(bk.s)+" × 400)</span></p>";
+if(bk.t!==(x.bank||0))h+='<p class="mut">В смене записан банк '+fmt(x.bank||0)+" ₽ (например, загружен из таблицы), остаток банка ниже считается от него.</p>";
+h+="<p><b>Остаток банка:</b> "+fmt(rest)+" ₽</p>";
+h+="</div>";
+h+='<div class="lbl">ПО СОТРУДНИКАМ</div><div class="card jc"><div class="wrap"><table class="jt"><thead><tr><th>Сотрудник</th><th class="r">К выдаче</th><th class="r">Аванс</th><th class="r">Зарплата</th><th class="r">Остаток</th></tr></thead><tbody>';
+x.rows.forEach(function(w){var q=pd[w.n]||{adv:0,sal:0};h+="<tr><td>"+esc(w.n)+'</td><td class="r">'+fmt(w.A)+'</td><td class="r">'+fmt(q.adv)+'</td><td class="r">'+fmt(q.sal)+'</td><td class="r">'+fmt(w.A-q.adv-q.sal)+"</td></tr>"});
+h+='</tbody><tfoot><tr><td>Итого</td><td class="r">'+fmt(S)+'</td><td class="r">'+fmt(adv)+'</td><td class="r">'+fmt(sal)+'</td><td class="r">'+fmt(S-adv-sal)+"</td></tr></tfoot></table></div></div>"}
+var cs=cashOf(x.id);h+='<div class="card s"><p><b>Наличные по смене:</b> '+(cs.any?txt(cs.n)+" = "+fmt(cs.t)+" ₽":"не введены на вкладке «Выплаты»")+"</p></div>";
+if(!window.claude&&!/^https:\/\/script\.google\.com\//.test(GS_URL))h+='<div class="lbl">ТАБЛИЦА GOOGLE</div><div class="card"><label>Ссылка Apps Script<input id="gsurl" type="text" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(C.gs||"")+'" style="text-align:left;font:14px ui-monospace,Menlo,Consolas,monospace"></label></div>';
+var H=hist();
+if(H.length){h+='<div class="lbl">ЗАКРЫТЫЕ СМЕНЫ</div><div class="card">';H.slice(0,10).forEach(function(r,i){h+='<div class="r2"><div><b>'+ddate(r)+'</b><div class="mut">ЗП '+fmt(r.S)+" ₽ · "+r.rows.length+' чел.'+(r.boats&&r.boats.length?' · '+fmtk(r.boats.reduce(function(s,x){return s+x.kg+(x.m||0)},0))+' кг':'')+'</div></div><span style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:58%"><button class="pill g2" data-e="'+i+'" style="padding:10px 14px">CSV</button>'+(inSheet(r)?'<span class="mut" style="margin-left:6px">✓ в таблице</span>':'<button class="pill g2" data-g="'+i+'" style="padding:10px 14px;margin-left:6px">В таблицу</button>')+'<button class="pill g2" data-d="'+i+'" style="padding:10px 14px">✕</button></span></div>'});h+="</div>"}
+return h}
+function bind(){
+var a=document.getElementById("app");
+a.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){if(b.getAttribute("data-t")==="tab"&&C.tab!=="tab"&&C.draft){C.draft.pdate="";PDERR=false}C.tab=b.getAttribute("data-t");armed="";NOTE="";NOTE2="";NOTE3="";CSVTXT="";PAYNOTE="";PAYERR="";save();render();window.scrollTo(0,0)}});
+["brig"].forEach(function(id){var e=document.getElementById(id);if(e)e.oninput=function(){C[id]=e.value;save()}});
+a.querySelectorAll("input[data-s]").forEach(function(e){e.oninput=function(){var i=+e.getAttribute("data-s");C.people[i].s=e.value;var b=document.getElementById("bank");if(b)b.value=fmt(bankAuto());var pa=document.querySelector('input[data-a="'+i+'"]');if(pa)pa.placeholder=autoOf(C.people[i])||"сумма";save()}});
+a.querySelectorAll("input[data-a]").forEach(function(e){e.oninput=function(){C.people[+e.getAttribute("data-a")].a=e.value;save()}});
+a.querySelectorAll("input[data-cash]").forEach(function(e){e.oninput=function(){var v=e.value.replace(/\D/g,"");if(v!==e.value)e.value=v;cashBox(draft().sid)[e.getAttribute("data-cash")]=v;save();renderPlan()}});
+a.querySelectorAll("input[data-pa]").forEach(function(e){e.oninput=function(){var v=e.value.replace(/\D/g,"");if(v!==e.value)e.value=v;var d=draft(),P=payState();d.amt[P.rows[+e.getAttribute("data-pa")].n]=v;armed="";save();renderPlan()}});
+["vsel","ssel"].forEach(function(id){var e=document.getElementById(id);if(e)e.onchange=function(){VSEL=e.value;armed="";render()}});
+var ps=document.getElementById("psel");if(ps)ps.onchange=function(){var d=draft();d.sid=ps.value;d.amt={};d.ticks={};d.over=false;PAYERR="";PAYNOTE="";save();render()};
+var pdt=document.getElementById("pdate");if(pdt)pdt.onchange=pdt.oninput=function(){draft().pdate=pdt.value||"";if(pdt.value){PDERR=false;pdt.style.borderColor="";var pe=document.getElementById("pderr");if(pe)pe.style.display="none"}save()};
+a.querySelectorAll("button[data-pt]").forEach(function(b){b.onclick=function(){var d=draft();if(d.type===b.getAttribute("data-pt"))return;d.type=b.getAttribute("data-pt");d.amt={};d.ticks={};d.over=false;PAYERR="";PAYNOTE="";save();render()}});
+var pb=document.getElementById("pbud");if(pb)pb.oninput=function(){var v=pb.value.replace(/\D/g,"");if(v!==pb.value)pb.value=v;draft().budget=v;save();renderPlan()};
+var pdi=document.getElementById("pdist");if(pdi)pdi.onclick=function(){var d=draft(),r=distAdv(cnt(d.budget),payState().rows);PAYNOTE="";if(r.err){PAYERR=r.err}else{PAYERR="";d.amt=r.amt;d.ticks={};d.over=false}save();render()};
+a.querySelectorAll("[data-jf]").forEach(function(e){e.onchange=function(){JF[e.getAttribute("data-jf")]=e.value;render()}});
+var sy=document.getElementById("sync");if(sy)sy.onclick=function(){syncPay()};
+var pu=document.getElementById("pull");if(pu)pu.onclick=function(){pullPay(true)};
+var cj=document.getElementById("clrj");if(cj)cj.onclick=function(){if(armed!=="clrj"){armed="clrj";render();return}armed="";var keep=pays().filter(function(o){return!o.synced}),gone=pays().length-keep.length;
+try{localStorage.setItem(KEY+"_paybak",JSON.stringify({ts:Date.now(),pay:C.pay}))}catch(e){}
+C.pay=keep;PULLNOTE="Журнал на устройстве очищен: удалено операций "+gone+(keep.length?", оставлено не записанных в таблицу: "+keep.length:"")+". В таблице ничего не изменилось.";save();render()};
+renderPlan();
+a.querySelectorAll("button[data-x]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-x");if(armed!=="x"+i){armed="x"+i;b.textContent="Удалить?";return}C.people.splice(+i,1);armed="";save();render()}});
+a.querySelectorAll("input[data-bb]").forEach(function(e){e.oninput=function(){boats()[+e.getAttribute("data-bb")].b=e.value;save()}});
+a.querySelectorAll("input[data-bm]").forEach(function(e){e.oninput=function(){boats()[+e.getAttribute("data-bm")].m=e.value;refreshShift();var el=document.getElementById("tkg");if(el)el.textContent=boatsLine();save()}});
+a.querySelectorAll("input[data-bc]").forEach(function(e){e.oninput=function(){boats()[+e.getAttribute("data-bc")].c=e.value;save()}});
+a.querySelectorAll("input[data-bk]").forEach(function(e){e.oninput=function(){boats()[+e.getAttribute("data-bk")].k=e.value;var t=0;boats().forEach(function(x){t+=kgn(x.k)});var el=document.getElementById("tkg");if(el)el.textContent=boatsLine();refreshShift();save()}});
+a.querySelectorAll("button[data-xb]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-xb");if(armed!=="xb"+i){armed="xb"+i;b.textContent="Удалить?";return}boats().splice(+i,1);armed="";save();render()}});
+a.querySelectorAll("input[data-sb]").forEach(function(e){e.oninput=function(){stages()[+e.getAttribute("data-sb")].b=e.value;save()}});
+a.querySelectorAll("input[data-ss]").forEach(function(e){e.oninput=function(){stages()[+e.getAttribute("data-ss")].s=e.value;save()}});
+a.querySelectorAll("input[data-sk]").forEach(function(e){e.oninput=function(){stages()[+e.getAttribute("data-sk")].k=e.value;refreshShift();save()}});
+a.querySelectorAll("button[data-sc]").forEach(function(b){b.onclick=function(){var st=stages()[+b.getAttribute("data-sc")],n=C.people[+b.getAttribute("data-pj")].n;st.p=st.p||{};st.p[n]=!st.p[n];armed="";save();render()}});
+a.querySelectorAll("button[data-xs]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-xs");if(armed!=="xs"+i){armed="xs"+i;b.textContent="Удалить?";return}stages().splice(+i,1);armed="";save();render()}});
+a.querySelectorAll("button[data-xp]").forEach(function(b){b.onclick=function(){var i=+b.getAttribute("data-xp");if(armed!=="xp"+i){armed="xp"+i;b.textContent="Удалить?";return}var n=C.people[i].n;C.people.splice(i,1);stages().forEach(function(st){if(st.p)delete st.p[n]});armed="";save();render()}});
+a.querySelectorAll("select[data-rt]").forEach(function(e){e.onchange=function(){C.people[+e.getAttribute("data-rt")].r=+e.value;save()}});
+var as=document.getElementById("adds");if(as)as.onclick=function(){addStage(false)};
+var an=document.getElementById("addbs");if(an)an.onclick=function(){addStage(true)};
+var ab=document.getElementById("addb");if(ab)ab.onclick=function(){boats().push({b:"",k:""});save();render()};
+var pd=document.getElementById("ppl");if(pd)pd.ontoggle=function(){PPL=pd.open};
+var tb=document.getElementById("tbo");if(tb)tb.ontoggle=function(){TBO=tb.open};
+var ad=document.getElementById("add");if(ad)ad.onclick=function(){var v=document.getElementById("newn").value.trim();if(!v||C.people.some(function(p){return p.n===v}))return;C.people.push({n:v,a:""});save();render()};
+var gl=document.getElementById("gsload");if(gl)gl.onclick=function(){if(!SBUSY)loadList()};
+a.querySelectorAll("button[data-gl]").forEach(function(b){b.onclick=function(){var n=SLIST&&SLIST[+b.getAttribute("data-gl")];if(n)loadShift(n)}});
+var gu=document.getElementById("gsurl");if(gu)gu.oninput=function(){C.gs=gu.value.trim();save()};
+var sd=document.getElementById("sdate");if(sd)sd.oninput=function(){C.date=sd.value;save()};
+var cl=document.getElementById("clr");if(cl)cl.onclick=function(){if(armed!=="clr"){armed="clr";render();return}armed="";C.bank=C.n1=C.n05=C.sw=C.brig="";C.bankR="";C.restored="";C.people.forEach(function(p){p.a="";p.s=""});C.ticks={};C.sig="";C.boats=null;C.stages=null;C.date="";save();render()};
+var cs=document.getElementById("close");if(cs)cs.onclick=function(){if(armed!=="close"){armed="close";render();return}closeShift()};
+a.querySelectorAll("button[data-e]").forEach(function(b){b.onclick=function(){var r=hist()[+b.getAttribute("data-e")];if(r)exportRec(r)}});
+a.querySelectorAll("button[data-d]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-d");if(armed!=="d"+i){armed="d"+i;b.textContent="Удалить?";return}armed="";hist().splice(+i,1);save();render()}});
+a.querySelectorAll("button[data-g]").forEach(function(b){b.onclick=function(){var i=b.getAttribute("data-g");if(armed!=="g"+i){armed="g"+i;b.textContent="Точно? Ещё раз";return}armed="";var r=hist()[+i];if(r&&!inSheet(r))sheetReport(r)}});
+a.querySelectorAll("button[data-p]").forEach(function(b){b.onclick=function(){var r=hist()[+b.getAttribute("data-p")];if(r)publishReport(r)}});
+}
+migrate();migCash();
+if(C.draft)C.draft.pdate="";
+render();
+initCloud();
