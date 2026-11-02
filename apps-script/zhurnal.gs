@@ -124,7 +124,7 @@ function payFixAll() {
 }
 
 // Оформляет «Табель катеров» в стиле листа: шапка как у расчёта (ячейка A3), строки через одну
-// светлые, тонкие рамки, галочки по центру; у столбца «Сотрудники» — перенос строк.
+// светлые, тонкие рамки, галочки по центру; столбец «Сотрудники» растягивается по самому длинному списку.
 function styleTimesheet_(sh) {
   var v = sh.getDataRange().getValues(), H = (v[2] || []).map(String), tr = -1, tc = -1;
   for (var r = 0; r < v.length && tr < 0; r++)
@@ -135,7 +135,9 @@ function styleTimesheet_(sh) {
   var line = '#c9d8e4', cs = H.indexOf('Сотрудники');
   if (cs >= 0) {
     var n = 0; for (var i = 3; i < v.length && String(v[i][0]).trim() !== 'Итого'; i++) n++;
-    if (n) sh.getRange(4, cs + 1, n, 1).setWrap(true).setVerticalAlignment('middle');
+    if (n) sh.getRange(4, cs + 1, n, 1).setWrap(false).setVerticalAlignment('middle');
+    sh.autoResizeColumn(cs + 1);
+    sh.setColumnWidth(cs + 1, sh.getColumnWidth(cs + 1) + 12);
   }
   if (tr < 0) return;
   var hr = tr + 1, w = 0, b = 0;
