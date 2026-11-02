@@ -136,8 +136,8 @@ function styleTimesheet_(sh) {
   if (cs >= 0) {
     var n = 0; for (var i = 3; i < v.length && String(v[i][0]).trim() !== 'Итого'; i++) n++;
     if (n) sh.getRange(4, cs + 1, n, 1).setWrap(false).setVerticalAlignment('middle');
-    var L = 0; for (var q = 3; q < 3 + n; q++) L = Math.max(L, String(v[q][cs]).length);
-    sh.setColumnWidth(cs + 1, Math.max(160, Math.round(L * 7.6 + 28)));
+    var L = 0; for (var q = 3; q < 3 + n; q++) L = Math.max(L, textPx(v[q][cs]));
+    sh.setColumnWidth(cs + 1, Math.max(120, L + 10));
   }
   if (tr < 0) return;
   var hr = tr + 1, w = 0, b = 0;
@@ -172,3 +172,7 @@ function styleAllTimesheets() {
   });
   Logger.log('Оформлено листов: ' + n);
 }
+
+// Ширина текста Arial 11 в пикселях — по ширине каждой буквы (как автоподбор Google в браузере).
+var AW_L="абвгдеёжзийклмнопрстуфхцчшщъыьэюя",AW_LW=[0.556,0.573,0.531,0.365,0.583,0.556,0.556,0.669,0.458,0.559,0.559,0.438,0.583,0.688,0.552,0.556,0.542,0.556,0.5,0.458,0.5,0.823,0.5,0.573,0.521,0.802,0.823,0.625,0.719,0.521,0.51,0.75,0.528],AW_U="АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",AW_UW=[0.667,0.656,0.667,0.542,0.677,0.667,0.667,0.923,0.604,0.719,0.719,0.583,0.656,0.833,0.722,0.778,0.719,0.667,0.722,0.611,0.635,0.76,0.667,0.74,0.667,0.917,0.938,0.792,0.885,0.656,0.719,1.01,0.719];
+function textPx(s){s=String(s==null?"":s);var t=0;for(var i=0;i<s.length;i++){var c=s.charAt(i),k=AW_L.indexOf(c);t+=k>=0?AW_LW[k]:(k=AW_U.indexOf(c))>=0?AW_UW[k]:(c===","||c===" ")?.278:c==="·"?.333:.556}return Math.round(t*14.667)}
