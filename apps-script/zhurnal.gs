@@ -136,8 +136,8 @@ function styleTimesheet_(sh) {
   if (cs >= 0) {
     var n = 0; for (var i = 3; i < v.length && String(v[i][0]).trim() !== 'Итого'; i++) n++;
     if (n) sh.getRange(4, cs + 1, n, 1).setWrap(false).setVerticalAlignment('middle');
-    sh.autoResizeColumn(cs + 1);
-    sh.setColumnWidth(cs + 1, sh.getColumnWidth(cs + 1) + 12);
+    var L = 0; for (var q = 3; q < 3 + n; q++) L = Math.max(L, String(v[q][cs]).length);
+    sh.setColumnWidth(cs + 1, Math.max(160, Math.round(L * 7.6 + 28)));
   }
   if (tr < 0) return;
   var hr = tr + 1, w = 0, b = 0;
