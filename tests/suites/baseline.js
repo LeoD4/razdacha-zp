@@ -138,3 +138,7 @@ module.exports = async function (browser, t, opts) {
     await s.ctx.close();
   }
 };
+
+// Для набора http: те же сценарии и сравнение, но через локальный сервер.
+module.exports.SCENARIOS = SCENARIOS;
+module.exports.firstDiff = firstDiff;
