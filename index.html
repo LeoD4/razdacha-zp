@@ -521,7 +521,7 @@ sheetDone(rec,name);
 function rg(a){return{sheetId:gid,startRowIndex:a[0],endRowIndex:a[1],startColumnIndex:a[2],endColumnIndex:a[3]}}
 var rq=blk.bold.map(function(a){return{repeatCell:{cell:{userEnteredFormat:{textFormat:{bold:true}}},fields:"userEnteredFormat.textFormat",range:rg(a)}}}).concat(blk.num.map(function(x){return{repeatCell:{cell:{userEnteredFormat:{numberFormat:{pattern:x.f,type:"NUMBER"}}},fields:"userEnteredFormat.numberFormat",range:rg(x.r)}}}));
 rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:0,endIndex:nc},properties:{pixelSize:120},fields:"pixelSize"}});
-if(nc>11)rq.push({repeatCell:{range:rg([2,blk.rows.length,11,12]),cell:{userEnteredFormat:{wrapStrategy:"WRAP"}},fields:"userEnteredFormat.wrapStrategy"}},{updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:11,endIndex:12},properties:{pixelSize:240},fields:"pixelSize"}});
+if(nc>11)rq.push({repeatCell:{range:rg([2,blk.rows.length,11,12]),cell:{userEnteredFormat:{wrapStrategy:"OVERFLOW_CELL"}},fields:"userEnteredFormat.wrapStrategy"}},{autoResizeDimensions:{dimensions:{sheetId:gid,dimension:"COLUMNS",startIndex:11,endIndex:12}}});
 if(blk.ts)rq=rq.concat(tsStyle(gid,blk.ts,blk.rows));
 mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:rq}).catch(function(){})})})}).catch(function(e){NOTE3=sheetErr(e)+(stage==="write"?" Проверьте таблицу, прежде чем повторять.":" Смена сохранена в архиве: нажмите «В таблицу».");render()})}
 function rateOf(p){if(p.r)return +p.r;return{"Саня":500,"Даня":500,"Аня":450}[p.n]||480}
