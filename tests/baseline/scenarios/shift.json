@@ -1,0 +1,2239 @@
+[
+ {
+  "name": "start",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><label>Дата смены<input id=\"sdate\" type=\"date\" value=\"2026-10-26\"></label></div><div class=\"lbl\">КАТЕРА</div><div class=\"card pr\"><input data-bb=\"0\" type=\"text\" placeholder=\"№\" value=\"1\" style=\"width:56px;text-align:center\"><input data-bc=\"0\" type=\"text\" placeholder=\"капитан\" value=\"Альфа\" style=\"flex:1;width:auto;min-width:0;text-align:left;font-family:inherit\"><input data-bk=\"0\" type=\"text\" inputmode=\"decimal\" placeholder=\"кг\" value=\"62\" style=\"width:76px\"><input data-bm=\"0\" type=\"text\" inputmode=\"decimal\" placeholder=\"кам\" value=\"\" style=\"width:60px\"><button class=\"x\" data-xb=\"0\">×</button></div><div class=\"card pr\"><input data-bb=\"1\" type=\"text\" placeholder=\"№\" value=\"2\" style=\"width:56px;text-align:center\"><input data-bc=\"1\" type=\"text\" placeholder=\"капитан\" value=\"Бета\" style=\"flex:1;width:auto;min-width:0;text-align:left;font-family:inherit\"><input data-bk=\"1\" type=\"text\" inputmode=\"decimal\" placeholder=\"кг\" value=\"83\" style=\"width:76px\"><input data-bm=\"1\" type=\"text\" inputmode=\"decimal\" placeholder=\"кам\" value=\"\" style=\"width:60px\"><button class=\"x\" data-xb=\"1\">×</button></div><div class=\"card pr\"><input data-bb=\"2\" type=\"text\" placeholder=\"№\" value=\"3\" style=\"width:56px;text-align:center\"><input data-bc=\"2\" type=\"text\" placeholder=\"капитан\" value=\"Гамма\" style=\"flex:1;width:auto;min-width:0;text-align:left;font-family:inherit\"><input data-bk=\"2\" type=\"text\" inputmode=\"decimal\" placeholder=\"кг\" value=\"112\" style=\"width:76px\"><input data-bm=\"2\" type=\"text\" inputmode=\"decimal\" placeholder=\"кам\" value=\"2\" style=\"width:60px\"><button class=\"x\" data-xb=\"2\">×</button></div><div style=\"margin:8px 4px\"><button class=\"pill g2\" id=\"addb\">+ Катер</button> <span class=\"mut\" id=\"tkg\">Всего: 259 кг (камчадал 2) · банк 129 500 ₽</span></div><div class=\"lbl\">ЭТАПЫ И ЛЮДИ</div><p class=\"mut\" style=\"margin:0 10px 6px\">Новый этап: когда состав поменялся. Нажмите на имя, чтобы отметить, кто был на этапе.</p><div class=\"card\"><div class=\"sg\"><label>Катер<input data-sb=\"0\" type=\"text\" inputmode=\"numeric\" value=\"1\"></label><label>Этап<input data-ss=\"0\" type=\"text\" inputmode=\"numeric\" value=\"1\"></label><label>Кг этапа<input data-sk=\"0\" type=\"text\" inputmode=\"decimal\" value=\"62\"></label><button class=\"x\" data-xs=\"0\">×</button></div><div style=\"display:flex;flex-wrap:wrap;gap:8px;margin-top:12px\"><button class=\"chip on\" data-sc=\"0\" data-pj=\"0\">Аз</button><button class=\"chip on\" data-sc=\"0\" data-pj=\"1\">Буки</button><button class=\"chip\" data-sc=\"0\" data-pj=\"2\">Веди</button><button class=\"chip on\" data-sc=\"0\" data-pj=\"3\">Глаголь</button><button class=\"chip on\" data-sc=\"0\" data-pj=\"4\">Добро</button><button class=\"chip\" data-sc=\"0\" data-pj=\"5\">Есть</button><button class=\"chip on\" data-sc=\"0\" data-pj=\"6\">Живете</button><button class=\"chip on\" data-sc=\"0\" data-pj=\"7\">Зело</button><button class=\"chip on\" data-sc=\"0\" data-pj=\"8\">Земля</button><button class=\"chip\" data-sc=\"0\" data-pj=\"9\">Иже</button><button class=\"chip\" data-sc=\"0\" data-pj=\"10\">Како</button></div><div class=\"mut\" id=\"si0\" style=\"margin-top:10px\">Чел.: 7 · кг на чел.: 8,86</div></div><div class=\"card\"><div class=\"sg\"><label>Катер<input data-sb=\"1\" type=\"text\" inputmode=\"numeric\" value=\"2\"></label><label>Этап<input data-ss=\"1\" type=\"text\" inputmode=\"numeric\" value=\"1\"></label><label>Кг этапа<input data-sk=\"1\" type=\"text\" inputmode=\"decimal\" value=\"83\"></label><button class=\"x\" data-xs=\"1\">×</button></div><div style=\"display:flex;flex-wrap:wrap;gap:8px;margin-top:12px\"><button class=\"chip on\" data-sc=\"1\" data-pj=\"0\">Аз</button><button class=\"chip on\" data-sc=\"1\" data-pj=\"1\">Буки</button><button class=\"chip\" data-sc=\"1\" data-pj=\"2\">Веди</button><button class=\"chip on\" data-sc=\"1\" data-pj=\"3\">Глаголь</button><button class=\"chip on\" data-sc=\"1\" data-pj=\"4\">Добро</button><button class=\"chip\" data-sc=\"1\" data-pj=\"5\">Есть</button><button class=\"chip on\" data-sc=\"1\" data-pj=\"6\">Живете</button><button class=\"chip on\" data-sc=\"1\" data-pj=\"7\">Зело</button><button class=\"chip on\" data-sc=\"1\" data-pj=\"8\">Земля</button><button class=\"chip\" data-sc=\"1\" data-pj=\"9\">Иже</button><button class=\"chip\" data-sc=\"1\" data-pj=\"10\">Како</button></div><div class=\"mut\" id=\"si1\" style=\"margin-top:10px\">Чел.: 7 · кг на чел.: 11,86</div></div><div class=\"card\"><div class=\"sg\"><label>Катер<input data-sb=\"2\" type=\"text\" inputmode=\"numeric\" value=\"3\"></label><label>Этап<input data-ss=\"2\" type=\"text\" inputmode=\"numeric\" value=\"1\"></label><label>Кг этапа<input data-sk=\"2\" type=\"text\" inputmode=\"decimal\" value=\"114\"></label><button class=\"x\" data-xs=\"2\">×</button></div><div style=\"display:flex;flex-wrap:wrap;gap:8px;margin-top:12px\"><button class=\"chip\" data-sc=\"2\" data-pj=\"0\">Аз</button><button class=\"chip\" data-sc=\"2\" data-pj=\"1\">Буки</button><button class=\"chip on\" data-sc=\"2\" data-pj=\"2\">Веди</button><button class=\"chip on\" data-sc=\"2\" data-pj=\"3\">Глаголь</button><button class=\"chip\" data-sc=\"2\" data-pj=\"4\">Добро</button><button class=\"chip on\" data-sc=\"2\" data-pj=\"5\">Есть</button><button class=\"chip on\" data-sc=\"2\" data-pj=\"6\">Живете</button><button class=\"chip\" data-sc=\"2\" data-pj=\"7\">Зело</button><button class=\"chip on\" data-sc=\"2\" data-pj=\"8\">Земля</button><button class=\"chip on\" data-sc=\"2\" data-pj=\"9\">Иже</button><button class=\"chip\" data-sc=\"2\" data-pj=\"10\">Како</button></div><div class=\"mut\" id=\"si2\" style=\"margin-top:10px\">Чел.: 6 · кг на чел.: 19</div></div><div style=\"margin:8px 4px\"><button class=\"pill\" id=\"adds\">+ Этап</button> <button class=\"pill g2\" id=\"addbs\">+ След. катер</button></div><div class=\"mut\" id=\"tsk\" style=\"margin:0 10px\">Всего по этапам: 259 кг</div><p class=\"w\" id=\"warnk\" style=\"margin:4px 10px 0\"></p><details id=\"ppl\"><summary class=\"lbl\">ЛЮДИ · СТАВКА · КГ</summary><div class=\"card\"><div class=\"r2\"><b>Аз</b><span><select data-rt=\"0\"><option selected=\"\">500</option><option>480</option><option>450</option></select> <span class=\"mut\" id=\"pk0\">20,71 кг</span><button class=\"x\" data-xp=\"0\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Буки</b><span><select data-rt=\"1\"><option selected=\"\">500</option><option>480</option><option>450</option></select> <span class=\"mut\" id=\"pk1\">20,71 кг</span><button class=\"x\" data-xp=\"1\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Веди</b><span><select data-rt=\"2\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk2\">19 кг</span><button class=\"x\" data-xp=\"2\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Глаголь</b><span><select data-rt=\"3\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk3\">39,71 кг</span><button class=\"x\" data-xp=\"3\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Добро</b><span><select data-rt=\"4\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk4\">20,71 кг</span><button class=\"x\" data-xp=\"4\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Есть</b><span><select data-rt=\"5\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk5\">19 кг</span><button class=\"x\" data-xp=\"5\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Живете</b><span><select data-rt=\"6\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk6\">39,71 кг</span><button class=\"x\" data-xp=\"6\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Зело</b><span><select data-rt=\"7\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk7\">20,71 кг</span><button class=\"x\" data-xp=\"7\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Земля</b><span><select data-rt=\"8\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk8\">39,71 кг</span><button class=\"x\" data-xp=\"8\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Иже</b><span><select data-rt=\"9\"><option>500</option><option selected=\"\">480</option><option>450</option></select> <span class=\"mut\" id=\"pk9\">19 кг</span><button class=\"x\" data-xp=\"9\" style=\"margin-left:8px\">×</button></span></div><div class=\"r2\"><b>Како</b><span><select data-rt=\"10\"><option>500</option><option>480</option><option selected=\"\">450</option></select> <span class=\"mut\" id=\"pk10\">0 кг</span><button class=\"x\" data-xp=\"10\" style=\"margin-left:8px\">×</button></span></div><p class=\"mut\" style=\"margin:8px 0 0\">500: бригадир и бухгалтер, 480: рабочие, 450: помощники (выходят помочь).</p><div class=\"pr\" style=\"padding:12px 0 0\"><input id=\"newn\" type=\"text\" placeholder=\"Новое имя\" style=\"flex:1;width:auto;min-width:0;text-align:left;font-family:inherit\"><button class=\"pill\" id=\"add\" style=\"flex:none\">+ Добавить</button></div></div></details><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"on\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "shift",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {},
+    "ts": 1793610000000
+   },
+   "zppin": "0000"
+  },
+  "net": [
+   {
+    "method": "POST",
+    "url": "https://script.google.com/macros/s/AKfycbzI68g2EhW30n-WkgLVgbGqOEPQEecQ51ZLKNSgUeglnGCfQ3Ib4tXcEozJTLpFJk_4bw/exec",
+    "body": "{\"action\":\"pay\",\"pin\":\"0000\",\"lines\":[]}"
+   }
+  ]
+ },
+ {
+  "name": "people",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><label>Смена<select id=\"vsel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label></div><div class=\"lbl\">БАНК</div><div class=\"card\"><div class=\"g\"><label>Банк, ₽ (кг × 500, салат × 400)<input id=\"bank\" type=\"text\" readonly=\"\" value=\"129 500\"></label><label>К выдаче всего, ₽<input type=\"text\" readonly=\"\" value=\"124 700\"></label></div></div><div class=\"lbl\">СОТРУДНИКИ</div><div class=\"card pr\"><span class=\"n\">Аз<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 500</small></span><input data-s=\"0\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"0\" type=\"text\" inputmode=\"numeric\" placeholder=\"10357\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Буки<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 500</small></span><input data-s=\"1\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"1\" type=\"text\" inputmode=\"numeric\" placeholder=\"10357\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Веди<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">19 кг × 480</small></span><input data-s=\"2\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"2\" type=\"text\" inputmode=\"numeric\" placeholder=\"9120\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Глаголь<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">39,71 кг × 480</small></span><input data-s=\"3\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"3\" type=\"text\" inputmode=\"numeric\" placeholder=\"19062\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Добро<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 480</small></span><input data-s=\"4\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"4\" type=\"text\" inputmode=\"numeric\" placeholder=\"9942\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Есть<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">19 кг × 480</small></span><input data-s=\"5\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"5\" type=\"text\" inputmode=\"numeric\" placeholder=\"9120\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Живете<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">39,71 кг × 480</small></span><input data-s=\"6\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"6\" type=\"text\" inputmode=\"numeric\" placeholder=\"19062\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Зело<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 480</small></span><input data-s=\"7\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"7\" type=\"text\" inputmode=\"numeric\" placeholder=\"9942\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Земля<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">39,71 кг × 480</small></span><input data-s=\"8\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"8\" type=\"text\" inputmode=\"numeric\" placeholder=\"19062\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Иже<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">19 кг × 480</small></span><input data-s=\"9\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"9\" type=\"text\" inputmode=\"numeric\" placeholder=\"9120\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Како</span><input data-s=\"10\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"10\" type=\"text\" inputmode=\"numeric\" placeholder=\"сумма\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div style=\"margin:16px 4px\"><button class=\"pill g2\" id=\"clr\">Очистить суммы, банк, катера и этапы</button></div><p class=\"mut\" style=\"margin:0 8px\">Серая сумма считается сама: кг по этапам × ставка, вниз до 100. Впишите свою, чтобы заменить. Ставки задаются на вкладке «Смена». Пустая сумма означает, что человека в этой смене нет.</p><details id=\"tbo\"><summary class=\"lbl\">ТАБЕЛЬ КАТЕРОВ</summary><div class=\"card\" style=\"padding:12px 8px\"><div class=\"wrap\"><table class=\"tg\"><thead><tr><th class=\"s1\">Катер</th><th class=\"nm\">Аз</th><th class=\"nm\">Буки</th><th class=\"nm\">Веди</th><th class=\"nm\">Глаголь</th><th class=\"nm\">Добро</th><th class=\"nm\">Есть</th><th class=\"nm\">Живете</th><th class=\"nm\">Зело</th><th class=\"nm\">Земля</th><th class=\"nm\">Иже</th></tr></thead><tbody><tr><td class=\"s1\"><b>1</b><span class=\"mut\" style=\"display:block\">Альфа</span></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td></tr><tr><td class=\"s1\"><b>2</b><span class=\"mut\" style=\"display:block\">Бета</span></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td></tr><tr><td class=\"s1\"><b>3</b><span class=\"mut\" style=\"display:block\">Гамма</span></td><td class=\"mk\"></td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td></tr></tbody></table></div></div></details><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"on\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "people",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {},
+    "ts": 1793610000000
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "people-tabel",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><label>Смена<select id=\"vsel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label></div><div class=\"lbl\">БАНК</div><div class=\"card\"><div class=\"g\"><label>Банк, ₽ (кг × 500, салат × 400)<input id=\"bank\" type=\"text\" readonly=\"\" value=\"129 500\"></label><label>К выдаче всего, ₽<input type=\"text\" readonly=\"\" value=\"124 700\"></label></div></div><div class=\"lbl\">СОТРУДНИКИ</div><div class=\"card pr\"><span class=\"n\">Аз<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 500</small></span><input data-s=\"0\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"0\" type=\"text\" inputmode=\"numeric\" placeholder=\"10357\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Буки<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 500</small></span><input data-s=\"1\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"1\" type=\"text\" inputmode=\"numeric\" placeholder=\"10357\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Веди<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">19 кг × 480</small></span><input data-s=\"2\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"2\" type=\"text\" inputmode=\"numeric\" placeholder=\"9120\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Глаголь<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">39,71 кг × 480</small></span><input data-s=\"3\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"3\" type=\"text\" inputmode=\"numeric\" placeholder=\"19062\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Добро<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 480</small></span><input data-s=\"4\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"4\" type=\"text\" inputmode=\"numeric\" placeholder=\"9942\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Есть<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">19 кг × 480</small></span><input data-s=\"5\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"5\" type=\"text\" inputmode=\"numeric\" placeholder=\"9120\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Живете<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">39,71 кг × 480</small></span><input data-s=\"6\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"6\" type=\"text\" inputmode=\"numeric\" placeholder=\"19062\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Зело<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">20,71 кг × 480</small></span><input data-s=\"7\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"7\" type=\"text\" inputmode=\"numeric\" placeholder=\"9942\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Земля<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">39,71 кг × 480</small></span><input data-s=\"8\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"8\" type=\"text\" inputmode=\"numeric\" placeholder=\"19062\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Иже<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">19 кг × 480</small></span><input data-s=\"9\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"9\" type=\"text\" inputmode=\"numeric\" placeholder=\"9120\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Како</span><input data-s=\"10\" type=\"text\" inputmode=\"decimal\" placeholder=\"сал\" value=\"\" style=\"width:54px\"><input data-a=\"10\" type=\"text\" inputmode=\"numeric\" placeholder=\"сумма\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div style=\"margin:16px 4px\"><button class=\"pill g2\" id=\"clr\">Очистить суммы, банк, катера и этапы</button></div><p class=\"mut\" style=\"margin:0 8px\">Серая сумма считается сама: кг по этапам × ставка, вниз до 100. Впишите свою, чтобы заменить. Ставки задаются на вкладке «Смена». Пустая сумма означает, что человека в этой смене нет.</p><details id=\"tbo\" open=\"\"><summary class=\"lbl\">ТАБЕЛЬ КАТЕРОВ</summary><div class=\"card\" style=\"padding:12px 8px\"><div class=\"wrap\"><table class=\"tg\"><thead><tr><th class=\"s1\">Катер</th><th class=\"nm\">Аз</th><th class=\"nm\">Буки</th><th class=\"nm\">Веди</th><th class=\"nm\">Глаголь</th><th class=\"nm\">Добро</th><th class=\"nm\">Есть</th><th class=\"nm\">Живете</th><th class=\"nm\">Зело</th><th class=\"nm\">Земля</th><th class=\"nm\">Иже</th></tr></thead><tbody><tr><td class=\"s1\"><b>1</b><span class=\"mut\" style=\"display:block\">Альфа</span></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td></tr><tr><td class=\"s1\"><b>2</b><span class=\"mut\" style=\"display:block\">Бета</span></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td></tr><tr><td class=\"s1\"><b>3</b><span class=\"mut\" style=\"display:block\">Гамма</span></td><td class=\"mk\"></td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td><td class=\"mk\"></td><td class=\"mk\">✓</td><td class=\"mk\">✓</td></tr></tbody></table></div></div></details><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"on\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "people",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {},
+    "ts": 1793610000000
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "sum",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><label>Смена<select id=\"ssel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label></div><div style=\"margin:8px 4px 12px\"><button class=\"pill\" id=\"close\">Закрыть смену и выгрузить таблицу</button></div><div class=\"card s\"><p><b>Начислено:</b> 124 700 ₽ <span class=\"mut\">(округление вниз убрало 444 ₽)</span></p><p><b>Банк:</b> 129 500 ₽ <span class=\"mut\">(кг 257 × 500 + камчадал 2 × 500 + салат 0 × 400)</span></p><p><b>Остаток банка:</b> 4 800 ₽</p></div><div class=\"lbl\">ПО СОТРУДНИКАМ</div><div class=\"card jc\"><div class=\"wrap\"><table class=\"jt\"><thead><tr><th>Сотрудник</th><th class=\"r\">К выдаче</th><th class=\"r\">Аванс</th><th class=\"r\">Зарплата</th><th class=\"r\">Остаток</th></tr></thead><tbody><tr><td>Аз</td><td class=\"r\">10 300</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">10 300</td></tr><tr><td>Буки</td><td class=\"r\">10 300</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">10 300</td></tr><tr><td>Веди</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr><tr><td>Глаголь</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Добро</td><td class=\"r\">9 900</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 900</td></tr><tr><td>Есть</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr><tr><td>Живете</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Зело</td><td class=\"r\">9 900</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 900</td></tr><tr><td>Земля</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Иже</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr></tbody><tfoot><tr><td>Итого</td><td class=\"r\">124 700</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">124 700</td></tr></tfoot></table></div></div><div class=\"card s\"><p><b>Наличные по смене:</b> не введены на вкладке «Выплаты»</p></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"on\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "sum",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {},
+    "ts": 1793610000000
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "pay",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><p class=\"mut\" style=\"margin:0 0 10px\">Смены нет в списке? Загрузите её из таблицы, текущая смена не изменится.</p><button class=\"pill\" id=\"gsload\">Загрузить смену из таблицы</button></div><div class=\"card\"><label>Смена, за которую выплата<select id=\"psel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label><label style=\"margin-top:10px\">Дата выдачи<input id=\"pdate\" type=\"date\" value=\"\"><span class=\"w\" id=\"pderr\" style=\"display:none;margin-top:4px;font-size:13px\">Выберите дату выдачи</span></label><div style=\"margin-top:10px\"><span style=\"font-size:13px;color:var(--mut)\">Операция</span><div style=\"display:flex;gap:8px;margin-top:6px\"><button class=\"chip\" data-pt=\"adv\" style=\"flex:1\">Аванс</button><button class=\"chip on\" data-pt=\"sal\" style=\"flex:1\">Зарплата</button></div></div></div><div class=\"lbl\">ЗАРПЛАТА · СМЕНА 26.10.2026</div><div class=\"card pr\"><span class=\"n\">Аз<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl0\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 10 300 · останется 0</small></span><input data-pa=\"0\" type=\"text\" inputmode=\"numeric\" placeholder=\"10300\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Буки<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl1\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 10 300 · останется 0</small></span><input data-pa=\"1\" type=\"text\" inputmode=\"numeric\" placeholder=\"10300\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Веди<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl2\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 9 100 · останется 0</small></span><input data-pa=\"2\" type=\"text\" inputmode=\"numeric\" placeholder=\"9100\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Глаголь<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl3\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 19 000 · останется 0</small></span><input data-pa=\"3\" type=\"text\" inputmode=\"numeric\" placeholder=\"19000\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Добро<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl4\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 9 900 · останется 0</small></span><input data-pa=\"4\" type=\"text\" inputmode=\"numeric\" placeholder=\"9900\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Есть<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl5\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 9 100 · останется 0</small></span><input data-pa=\"5\" type=\"text\" inputmode=\"numeric\" placeholder=\"9100\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Живете<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl6\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 19 000 · останется 0</small></span><input data-pa=\"6\" type=\"text\" inputmode=\"numeric\" placeholder=\"19000\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Зело<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl7\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 9 900 · останется 0</small></span><input data-pa=\"7\" type=\"text\" inputmode=\"numeric\" placeholder=\"9900\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Земля<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl8\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 19 000 · останется 0</small></span><input data-pa=\"8\" type=\"text\" inputmode=\"numeric\" placeholder=\"19000\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Иже<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl9\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">выдать 9 100 · останется 0</small></span><input data-pa=\"9\" type=\"text\" inputmode=\"numeric\" placeholder=\"9100\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"lbl\">НАЛИЧНЫЕ</div><div class=\"card\"><div class=\"g\"><div><span style=\"font-size:13px;color:var(--mut)\">Ожидается в кассе, ₽</span><div id=\"cashe\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\">129 500 ₽</div><div class=\"mut\" id=\"cashh\">банк смены − уже выдано</div></div><div><span style=\"font-size:13px;color:var(--mut)\">Наличные, ₽</span><div id=\"cashv\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\" class=\"\">0 ₽</div><div id=\"cashm\" style=\"font-size:13px\" class=\"mut\">Купюры не введены</div></div></div><p class=\"mut\" style=\"margin:14px 0 4px\">Купюры в наличии, шт.</p><div class=\"g\" style=\"grid-template-columns:repeat(2,1fr)\"><label>5 000 ₽<input data-cash=\"5000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs5000\"></span></label><label>1 000 ₽<input data-cash=\"1000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs1000\"></span></label><label>500 ₽<input data-cash=\"500\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs500\"></span></label><label>100 ₽<input data-cash=\"100\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs100\"></span></label></div></div><div id=\"payplan\"><div class=\"card\" id=\"exch\"><p class=\"mut\" style=\"margin:0\">Введите количество купюр, чтобы проверить выдачу и размен.</p></div><svg class=\"ring\" viewBox=\"0 0 160 160\"><circle cx=\"80\" cy=\"80\" r=\"68\" fill=\"none\" stroke=\"var(--bd)\" stroke-width=\"10\"></circle><circle cx=\"80\" cy=\"80\" r=\"68\" fill=\"none\" stroke=\"var(--ac)\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"427.3\" stroke-dashoffset=\"427.3\" transform=\"rotate(-90 80 80)\"></circle><text x=\"80\" y=\"82\" text-anchor=\"middle\" font-size=\"34\" font-weight=\"800\" fill=\"var(--ac)\">0%</text><text x=\"80\" y=\"104\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--mut)\">отмечено</text></svg><div class=\"stats\"><div><b>124 700</b><span>К выдаче, ₽</span></div><div><b>0</b><span>Отмечено, ₽</span></div><div><b>124 700</b><span>Осталось, ₽</span></div></div><div class=\"lbl\">РАСКЛАДКА</div><div class=\"card\"><div class=\"wrap\"><table><thead><tr><th></th><th>5к</th><th>1к</th><th>500</th><th>100</th><th></th></tr></thead><tbody><tr><td class=\"nm\" data-i=\"0\">Аз<small>10 300</small></td><td class=\"cl\" data-k=\"Аз|5000\">2</td><td class=\"z\">·</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Аз|100\">3</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"1\">Буки<small>10 300</small></td><td class=\"cl\" data-k=\"Буки|5000\">2</td><td class=\"z\">·</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Буки|100\">3</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"2\">Веди<small>9 100</small></td><td class=\"cl\" data-k=\"Веди|5000\">1</td><td class=\"cl\" data-k=\"Веди|1000\">4</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Веди|100\">1</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"3\">Глаголь<small>19 000</small></td><td class=\"cl\" data-k=\"Глаголь|5000\">3</td><td class=\"cl\" data-k=\"Глаголь|1000\">4</td><td class=\"z\">·</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"4\">Добро<small>9 900</small></td><td class=\"cl\" data-k=\"Добро|5000\">1</td><td class=\"cl\" data-k=\"Добро|1000\">4</td><td class=\"cl\" data-k=\"Добро|500\">1</td><td class=\"cl\" data-k=\"Добро|100\">4</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"5\">Есть<small>9 100</small></td><td class=\"cl\" data-k=\"Есть|5000\">1</td><td class=\"cl\" data-k=\"Есть|1000\">4</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Есть|100\">1</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"6\">Живете<small>19 000</small></td><td class=\"cl\" data-k=\"Живете|5000\">3</td><td class=\"cl\" data-k=\"Живете|1000\">4</td><td class=\"z\">·</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"7\">Зело<small>9 900</small></td><td class=\"cl\" data-k=\"Зело|5000\">1</td><td class=\"cl\" data-k=\"Зело|1000\">4</td><td class=\"cl\" data-k=\"Зело|500\">1</td><td class=\"cl\" data-k=\"Зело|100\">4</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"8\">Земля<small>19 000</small></td><td class=\"cl\" data-k=\"Земля|5000\">3</td><td class=\"cl\" data-k=\"Земля|1000\">4</td><td class=\"z\">·</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"9\">Иже<small>9 100</small></td><td class=\"cl\" data-k=\"Иже|5000\">1</td><td class=\"cl\" data-k=\"Иже|1000\">4</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Иже|100\">1</td><td class=\"sm\">0</td></tr><tr class=\"f\"><td>Всего</td><td>18</td><td>32</td><td>2</td><td>17</td><td></td></tr><tr class=\"f\"><td>Склад</td><td>18</td><td>32</td><td>2</td><td>17</td><td></td></tr></tbody></table></div><p class=\"mut\" style=\"margin:8px 4px 0\">Нажмите на цифру, когда положили. Нажмите на имя, чтобы отметить всю строку. Склад: купюры в наличии минус отмеченные. Наличие купюр не введено, поэтому раскладка без его учёта.</p></div><div style=\"margin:12px 4px\"><button class=\"pill\" id=\"pconf\" disabled=\"\" style=\"opacity:.5\">Подтвердить выдачу</button></div><p class=\"mut\" style=\"margin:0 8px\">Отметьте выданные купюры, затем подтвердите выдачу. До подтверждения наличные и журнал не меняются.</p></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"on\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "tab",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "",
+     "type": "sal",
+     "amt": {},
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"sal\",[[\"Аз\",10300],[\"Буки\",10300],[\"Веди\",9100],[\"Глаголь\",19000],[\"Добро\",9900],[\"Есть\",9100],[\"Живете\",19000],[\"Зело\",9900],[\"Земля\",19000],[\"Иже\",9100]],{\"100\":17,\"200\":0,\"500\":2,\"1000\":32,\"2000\":0,\"5000\":18}]"
+    }
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "pay-adv",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><p class=\"mut\" style=\"margin:0 0 10px\">Смены нет в списке? Загрузите её из таблицы, текущая смена не изменится.</p><button class=\"pill\" id=\"gsload\">Загрузить смену из таблицы</button></div><div class=\"card\"><label>Смена, за которую выплата<select id=\"psel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label><label style=\"margin-top:10px\">Дата выдачи<input id=\"pdate\" type=\"date\" value=\"\"><span class=\"w\" id=\"pderr\" style=\"display:none;margin-top:4px;font-size:13px\">Выберите дату выдачи</span></label><div style=\"margin-top:10px\"><span style=\"font-size:13px;color:var(--mut)\">Операция</span><div style=\"display:flex;gap:8px;margin-top:6px\"><button class=\"chip on\" data-pt=\"adv\" style=\"flex:1\">Аванс</button><button class=\"chip\" data-pt=\"sal\" style=\"flex:1\">Зарплата</button></div></div></div><div class=\"card pr\" style=\"padding:12px 16px\"><label style=\"flex:1;min-width:0\">Сумма на аванс, ₽<input id=\"pbud\" type=\"text\" inputmode=\"numeric\" value=\"\" style=\"width:100%;margin-top:4px;text-align:left\"></label><button class=\"pill\" id=\"pdist\" style=\"flex:none;align-self:flex-end\">Распределить</button></div><div class=\"lbl\">АВАНС · СМЕНА 26.10.2026</div><div class=\"card pr\"><span class=\"n\">Аз<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl0\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 10 300</small></span><input data-pa=\"0\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Буки<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl1\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 10 300</small></span><input data-pa=\"1\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Веди<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl2\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 9 100</small></span><input data-pa=\"2\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Глаголь<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl3\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 19 000</small></span><input data-pa=\"3\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Добро<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl4\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 9 900</small></span><input data-pa=\"4\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Есть<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl5\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 9 100</small></span><input data-pa=\"5\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Живете<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl6\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 19 000</small></span><input data-pa=\"6\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Зело<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl7\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 9 900</small></span><input data-pa=\"7\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Земля<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl8\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 19 000</small></span><input data-pa=\"8\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Иже<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl9\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 0 · останется 9 100</small></span><input data-pa=\"9\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"lbl\">НАЛИЧНЫЕ</div><div class=\"card\"><div class=\"g\"><div><span style=\"font-size:13px;color:var(--mut)\">Ожидается в кассе, ₽</span><div id=\"cashe\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\">0 ₽</div><div class=\"mut\" id=\"cashh\">сумма аванса в этой операции</div></div><div><span style=\"font-size:13px;color:var(--mut)\">Наличные, ₽</span><div id=\"cashv\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\" class=\"\">0 ₽</div><div id=\"cashm\" style=\"font-size:13px\" class=\"mut\">Купюры не введены</div></div></div><p class=\"mut\" style=\"margin:14px 0 4px\">Купюры в наличии, шт.</p><div class=\"g\" style=\"grid-template-columns:repeat(2,1fr)\"><label>5 000 ₽<input data-cash=\"5000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs5000\"></span></label><label>1 000 ₽<input data-cash=\"1000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs1000\"></span></label><label>500 ₽<input data-cash=\"500\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs500\"></span></label><label>100 ₽<input data-cash=\"100\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs100\"></span></label></div></div><div id=\"payplan\"><div class=\"card\" id=\"exch\"><p class=\"mut\" style=\"margin:0\">Нет сумм к выдаче.</p></div><p class=\"mut\" style=\"margin:4px 10px\">Нет сумм к выдаче.</p></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"on\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "tab",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "",
+     "type": "adv",
+     "amt": {},
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"sal\",[[\"Аз\",10300],[\"Буки\",10300],[\"Веди\",9100],[\"Глаголь\",19000],[\"Добро\",9900],[\"Есть\",9100],[\"Живете\",19000],[\"Зело\",9900],[\"Земля\",19000],[\"Иже\",9100]],{\"100\":17,\"200\":0,\"500\":2,\"1000\":32,\"2000\":0,\"5000\":18}]",
+     "over": false
+    }
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "pay-adv-dist",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><p class=\"mut\" style=\"margin:0 0 10px\">Смены нет в списке? Загрузите её из таблицы, текущая смена не изменится.</p><button class=\"pill\" id=\"gsload\">Загрузить смену из таблицы</button></div><div class=\"card\"><label>Смена, за которую выплата<select id=\"psel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label><label style=\"margin-top:10px\">Дата выдачи<input id=\"pdate\" type=\"date\" value=\"\"><span class=\"w\" id=\"pderr\" style=\"display:none;margin-top:4px;font-size:13px\">Выберите дату выдачи</span></label><div style=\"margin-top:10px\"><span style=\"font-size:13px;color:var(--mut)\">Операция</span><div style=\"display:flex;gap:8px;margin-top:6px\"><button class=\"chip on\" data-pt=\"adv\" style=\"flex:1\">Аванс</button><button class=\"chip\" data-pt=\"sal\" style=\"flex:1\">Зарплата</button></div></div></div><div class=\"card pr\" style=\"padding:12px 16px\"><label style=\"flex:1;min-width:0\">Сумма на аванс, ₽<input id=\"pbud\" type=\"text\" inputmode=\"numeric\" value=\"30000\" style=\"width:100%;margin-top:4px;text-align:left\"></label><button class=\"pill\" id=\"pdist\" style=\"flex:none;align-self:flex-end\">Распределить</button></div><div class=\"lbl\">АВАНС · СМЕНА 26.10.2026</div><div class=\"card pr\"><span class=\"n\">Аз<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl0\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 500 · останется 7 800</small></span><input data-pa=\"0\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Буки<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl1\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 500 · останется 7 800</small></span><input data-pa=\"1\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Веди<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl2\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 200 · останется 6 900</small></span><input data-pa=\"2\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2200\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Глаголь<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl3\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 4 600 · останется 14 400</small></span><input data-pa=\"3\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"4600\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Добро<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl4\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 400 · останется 7 500</small></span><input data-pa=\"4\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2400\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Есть<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl5\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 200 · останется 6 900</small></span><input data-pa=\"5\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2200\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Живете<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl6\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 4 500 · останется 14 500</small></span><input data-pa=\"6\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"4500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Зело<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl7\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 400 · останется 7 500</small></span><input data-pa=\"7\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2400\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Земля<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl8\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 4 500 · останется 14 500</small></span><input data-pa=\"8\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"4500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Иже<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl9\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 200 · останется 6 900</small></span><input data-pa=\"9\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2200\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"lbl\">НАЛИЧНЫЕ</div><div class=\"card\"><div class=\"g\"><div><span style=\"font-size:13px;color:var(--mut)\">Ожидается в кассе, ₽</span><div id=\"cashe\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\">30 000 ₽</div><div class=\"mut\" id=\"cashh\">сумма аванса в этой операции</div></div><div><span style=\"font-size:13px;color:var(--mut)\">Наличные, ₽</span><div id=\"cashv\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\" class=\"\">0 ₽</div><div id=\"cashm\" style=\"font-size:13px\" class=\"mut\">Купюры не введены</div></div></div><p class=\"mut\" style=\"margin:14px 0 4px\">Купюры в наличии, шт.</p><div class=\"g\" style=\"grid-template-columns:repeat(2,1fr)\"><label>5 000 ₽<input data-cash=\"5000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs5000\"></span></label><label>1 000 ₽<input data-cash=\"1000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs1000\"></span></label><label>500 ₽<input data-cash=\"500\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs500\"></span></label><label>100 ₽<input data-cash=\"100\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs100\"></span></label></div></div><div id=\"payplan\"><div class=\"card\" id=\"exch\"><p class=\"mut\" style=\"margin:0\">Введите количество купюр, чтобы проверить выдачу и размен.</p></div><svg class=\"ring\" viewBox=\"0 0 160 160\"><circle cx=\"80\" cy=\"80\" r=\"68\" fill=\"none\" stroke=\"var(--bd)\" stroke-width=\"10\"></circle><circle cx=\"80\" cy=\"80\" r=\"68\" fill=\"none\" stroke=\"var(--ac)\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"427.3\" stroke-dashoffset=\"427.3\" transform=\"rotate(-90 80 80)\"></circle><text x=\"80\" y=\"82\" text-anchor=\"middle\" font-size=\"34\" font-weight=\"800\" fill=\"var(--ac)\">0%</text><text x=\"80\" y=\"104\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--mut)\">отмечено</text></svg><div class=\"stats\"><div><b>30 000</b><span>К выдаче, ₽</span></div><div><b>0</b><span>Отмечено, ₽</span></div><div><b>30 000</b><span>Осталось, ₽</span></div></div><div class=\"lbl\">РАСКЛАДКА</div><div class=\"card\"><div class=\"wrap\"><table><thead><tr><th></th><th>1к</th><th>500</th><th>100</th><th></th></tr></thead><tbody><tr><td class=\"nm\" data-i=\"0\">Аз<small>2 500</small></td><td class=\"cl\" data-k=\"Аз|1000\">2</td><td class=\"cl\" data-k=\"Аз|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"1\">Буки<small>2 500</small></td><td class=\"cl\" data-k=\"Буки|1000\">2</td><td class=\"cl\" data-k=\"Буки|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"2\">Веди<small>2 200</small></td><td class=\"cl\" data-k=\"Веди|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Веди|100\">2</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"3\">Глаголь<small>4 600</small></td><td class=\"cl\" data-k=\"Глаголь|1000\">4</td><td class=\"cl\" data-k=\"Глаголь|500\">1</td><td class=\"cl\" data-k=\"Глаголь|100\">1</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"4\">Добро<small>2 400</small></td><td class=\"cl\" data-k=\"Добро|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Добро|100\">4</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"5\">Есть<small>2 200</small></td><td class=\"cl\" data-k=\"Есть|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Есть|100\">2</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"6\">Живете<small>4 500</small></td><td class=\"cl\" data-k=\"Живете|1000\">4</td><td class=\"cl\" data-k=\"Живете|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"7\">Зело<small>2 400</small></td><td class=\"cl\" data-k=\"Зело|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Зело|100\">4</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"8\">Земля<small>4 500</small></td><td class=\"cl\" data-k=\"Земля|1000\">4</td><td class=\"cl\" data-k=\"Земля|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"9\">Иже<small>2 200</small></td><td class=\"cl\" data-k=\"Иже|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Иже|100\">2</td><td class=\"sm\">0</td></tr><tr class=\"f\"><td>Всего</td><td>26</td><td>5</td><td>15</td><td></td></tr><tr class=\"f\"><td>Склад</td><td>26</td><td>5</td><td>15</td><td></td></tr></tbody></table></div><p class=\"mut\" style=\"margin:8px 4px 0\">Нажмите на цифру, когда положили. Нажмите на имя, чтобы отметить всю строку. Склад: купюры в наличии минус отмеченные. Наличие купюр не введено, поэтому раскладка без его учёта.</p></div><div style=\"margin:12px 4px\"><button class=\"pill\" id=\"pconf\" disabled=\"\" style=\"opacity:.5\">Подтвердить выдачу</button></div><p class=\"mut\" style=\"margin:0 8px\">Отметьте выданные купюры, затем подтвердите выдачу. До подтверждения наличные и журнал не меняются.</p></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"on\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "tab",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "",
+     "type": "adv",
+     "amt": {
+      "Аз": "2500",
+      "Буки": "2500",
+      "Веди": "2200",
+      "Глаголь": "4600",
+      "Добро": "2400",
+      "Есть": "2200",
+      "Живете": "4500",
+      "Зело": "2400",
+      "Земля": "4500",
+      "Иже": "2200"
+     },
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"adv\",[[\"Аз\",2500],[\"Буки\",2500],[\"Веди\",2200],[\"Глаголь\",4600],[\"Добро\",2400],[\"Есть\",2200],[\"Живете\",4500],[\"Зело\",2400],[\"Земля\",4500],[\"Иже\",2200]],{\"100\":15,\"200\":0,\"500\":5,\"1000\":26,\"2000\":0,\"5000\":0}]",
+     "over": false,
+     "budget": "30000"
+    }
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "pay-date",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><p class=\"mut\" style=\"margin:0 0 10px\">Смены нет в списке? Загрузите её из таблицы, текущая смена не изменится.</p><button class=\"pill\" id=\"gsload\">Загрузить смену из таблицы</button></div><div class=\"card\"><label>Смена, за которую выплата<select id=\"psel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label><label style=\"margin-top:10px\">Дата выдачи<input id=\"pdate\" type=\"date\" value=\"\"><span class=\"w\" id=\"pderr\" style=\"display:none;margin-top:4px;font-size:13px\">Выберите дату выдачи</span></label><div style=\"margin-top:10px\"><span style=\"font-size:13px;color:var(--mut)\">Операция</span><div style=\"display:flex;gap:8px;margin-top:6px\"><button class=\"chip on\" data-pt=\"adv\" style=\"flex:1\">Аванс</button><button class=\"chip\" data-pt=\"sal\" style=\"flex:1\">Зарплата</button></div></div></div><div class=\"card pr\" style=\"padding:12px 16px\"><label style=\"flex:1;min-width:0\">Сумма на аванс, ₽<input id=\"pbud\" type=\"text\" inputmode=\"numeric\" value=\"30000\" style=\"width:100%;margin-top:4px;text-align:left\"></label><button class=\"pill\" id=\"pdist\" style=\"flex:none;align-self:flex-end\">Распределить</button></div><div class=\"lbl\">АВАНС · СМЕНА 26.10.2026</div><div class=\"card pr\"><span class=\"n\">Аз<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl0\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 500 · останется 7 800</small></span><input data-pa=\"0\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Буки<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 10 300 · выдано 0</small><small id=\"pl1\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 500 · останется 7 800</small></span><input data-pa=\"1\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Веди<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl2\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 200 · останется 6 900</small></span><input data-pa=\"2\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2200\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Глаголь<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl3\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 4 600 · останется 14 400</small></span><input data-pa=\"3\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"4600\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Добро<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl4\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 400 · останется 7 500</small></span><input data-pa=\"4\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2400\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Есть<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl5\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 200 · останется 6 900</small></span><input data-pa=\"5\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2200\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Живете<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl6\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 4 500 · останется 14 500</small></span><input data-pa=\"6\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"4500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Зело<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 900 · выдано 0</small><small id=\"pl7\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 400 · останется 7 500</small></span><input data-pa=\"7\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2400\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Земля<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 19 000 · выдано 0</small><small id=\"pl8\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 4 500 · останется 14 500</small></span><input data-pa=\"8\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"4500\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"card pr\"><span class=\"n\">Иже<small style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">начислено 9 100 · выдано 0</small><small id=\"pl9\" style=\"display:block;font-weight:400;font-size:12px;color:var(--mut)\">аванс 2 200 · останется 6 900</small></span><input data-pa=\"9\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"2200\" style=\"width:112px\"><span class=\"rub\">₽</span></div><div class=\"lbl\">НАЛИЧНЫЕ</div><div class=\"card\"><div class=\"g\"><div><span style=\"font-size:13px;color:var(--mut)\">Ожидается в кассе, ₽</span><div id=\"cashe\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\">30 000 ₽</div><div class=\"mut\" id=\"cashh\">сумма аванса в этой операции</div></div><div><span style=\"font-size:13px;color:var(--mut)\">Наличные, ₽</span><div id=\"cashv\" style=\"font:600 18px ui-monospace,Menlo,Consolas,monospace;padding:12px 0 2px\" class=\"\">0 ₽</div><div id=\"cashm\" style=\"font-size:13px\" class=\"mut\">Купюры не введены</div></div></div><p class=\"mut\" style=\"margin:14px 0 4px\">Купюры в наличии, шт.</p><div class=\"g\" style=\"grid-template-columns:repeat(2,1fr)\"><label>5 000 ₽<input data-cash=\"5000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs5000\"></span></label><label>1 000 ₽<input data-cash=\"1000\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs1000\"></span></label><label>500 ₽<input data-cash=\"500\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs500\"></span></label><label>100 ₽<input data-cash=\"100\" type=\"text\" inputmode=\"numeric\" placeholder=\"0\" value=\"\"><span class=\"mut\" id=\"cs100\"></span></label></div></div><div id=\"payplan\"><div class=\"card\" id=\"exch\"><p class=\"mut\" style=\"margin:0\">Введите количество купюр, чтобы проверить выдачу и размен.</p></div><svg class=\"ring\" viewBox=\"0 0 160 160\"><circle cx=\"80\" cy=\"80\" r=\"68\" fill=\"none\" stroke=\"var(--bd)\" stroke-width=\"10\"></circle><circle cx=\"80\" cy=\"80\" r=\"68\" fill=\"none\" stroke=\"var(--ac)\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"427.3\" stroke-dashoffset=\"427.3\" transform=\"rotate(-90 80 80)\"></circle><text x=\"80\" y=\"82\" text-anchor=\"middle\" font-size=\"34\" font-weight=\"800\" fill=\"var(--ac)\">0%</text><text x=\"80\" y=\"104\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--mut)\">отмечено</text></svg><div class=\"stats\"><div><b>30 000</b><span>К выдаче, ₽</span></div><div><b>0</b><span>Отмечено, ₽</span></div><div><b>30 000</b><span>Осталось, ₽</span></div></div><div class=\"lbl\">РАСКЛАДКА</div><div class=\"card\"><div class=\"wrap\"><table><thead><tr><th></th><th>1к</th><th>500</th><th>100</th><th></th></tr></thead><tbody><tr><td class=\"nm\" data-i=\"0\">Аз<small>2 500</small></td><td class=\"cl\" data-k=\"Аз|1000\">2</td><td class=\"cl\" data-k=\"Аз|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"1\">Буки<small>2 500</small></td><td class=\"cl\" data-k=\"Буки|1000\">2</td><td class=\"cl\" data-k=\"Буки|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"2\">Веди<small>2 200</small></td><td class=\"cl\" data-k=\"Веди|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Веди|100\">2</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"3\">Глаголь<small>4 600</small></td><td class=\"cl\" data-k=\"Глаголь|1000\">4</td><td class=\"cl\" data-k=\"Глаголь|500\">1</td><td class=\"cl\" data-k=\"Глаголь|100\">1</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"4\">Добро<small>2 400</small></td><td class=\"cl\" data-k=\"Добро|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Добро|100\">4</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"5\">Есть<small>2 200</small></td><td class=\"cl\" data-k=\"Есть|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Есть|100\">2</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"6\">Живете<small>4 500</small></td><td class=\"cl\" data-k=\"Живете|1000\">4</td><td class=\"cl\" data-k=\"Живете|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"7\">Зело<small>2 400</small></td><td class=\"cl\" data-k=\"Зело|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Зело|100\">4</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"8\">Земля<small>4 500</small></td><td class=\"cl\" data-k=\"Земля|1000\">4</td><td class=\"cl\" data-k=\"Земля|500\">1</td><td class=\"z\">·</td><td class=\"sm\">0</td></tr><tr><td class=\"nm\" data-i=\"9\">Иже<small>2 200</small></td><td class=\"cl\" data-k=\"Иже|1000\">2</td><td class=\"z\">·</td><td class=\"cl\" data-k=\"Иже|100\">2</td><td class=\"sm\">0</td></tr><tr class=\"f\"><td>Всего</td><td>26</td><td>5</td><td>15</td><td></td></tr><tr class=\"f\"><td>Склад</td><td>26</td><td>5</td><td>15</td><td></td></tr></tbody></table></div><p class=\"mut\" style=\"margin:8px 4px 0\">Нажмите на цифру, когда положили. Нажмите на имя, чтобы отметить всю строку. Склад: купюры в наличии минус отмеченные. Наличие купюр не введено, поэтому раскладка без его учёта.</p></div><div style=\"margin:12px 4px\"><button class=\"pill\" id=\"pconf\" disabled=\"\" style=\"opacity:.5\">Подтвердить выдачу</button></div><p class=\"mut\" style=\"margin:0 8px\">Отметьте выданные купюры, затем подтвердите выдачу. До подтверждения наличные и журнал не меняются.</p></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"on\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "tab",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "2026-11-02",
+     "type": "adv",
+     "amt": {
+      "Аз": "2500",
+      "Буки": "2500",
+      "Веди": "2200",
+      "Глаголь": "4600",
+      "Добро": "2400",
+      "Есть": "2200",
+      "Живете": "4500",
+      "Зело": "2400",
+      "Земля": "4500",
+      "Иже": "2200"
+     },
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"adv\",[[\"Аз\",2500],[\"Буки\",2500],[\"Веди\",2200],[\"Глаголь\",4600],[\"Добро\",2400],[\"Есть\",2200],[\"Живете\",4500],[\"Зело\",2400],[\"Земля\",4500],[\"Иже\",2200]],{\"100\":15,\"200\":0,\"500\":5,\"1000\":26,\"2000\":0,\"5000\":0}]",
+     "over": false,
+     "budget": "30000"
+    }
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "log",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><button class=\"pill g2\" id=\"pull\" style=\"margin-bottom:10px\">Обновить из таблицы</button><p class=\"mut\" style=\"margin:0 0 10px\">Журнал сверен с таблицей 02.11.2026 12:00, добавлено строк: 1.</p></div><div class=\"card\"><p style=\"margin:0 0 10px\">✓ Все операции записаны в таблицу.</p></div><div class=\"card\"><div class=\"g\" style=\"grid-template-columns:minmax(0,1fr) minmax(0,1fr)\"><label>Дата смены<select data-jf=\"sd\" style=\"width:100%;margin-top:4px\"><option value=\"\">Все</option><option value=\"2026-10-26\">26.10.2026</option></select></label><label>Сотрудник<select data-jf=\"n\" style=\"width:100%;margin-top:4px\"><option value=\"\">Все</option><option>Аз</option></select></label></div></div><div class=\"lbl\">ЖУРНАЛ ВЫПЛАТ · 1</div><div class=\"card jc\"><div class=\"wrap\"><table class=\"jt\"><thead><tr><th>Дата смены</th><th>Сотрудник</th><th>Тип</th><th class=\"r\">Сумма, ₽</th><th>Дата выдачи</th></tr></thead><tbody><tr><td><span class=\"dl\">26.10.2026</span><span class=\"ds\">26.10.26</span></td><td>Аз</td><td>Аванс</td><td class=\"r\">5 000</td><td><span class=\"dl\">27.10.2026</span><span class=\"ds\">27.10.26</span></td></tr></tbody><tfoot><tr><td colspan=\"3\">Итого</td><td class=\"r\">5 000</td><td></td></tr></tfoot></table></div></div><div style=\"margin:16px 4px\"><button class=\"pill g2\" id=\"clrj\">Очистить журнал на этом устройстве</button></div><p class=\"mut\" style=\"margin:0 8px\">Удаляет выплаты только на сайте, в Google Таблице ничего не меняется. Выплаты, которые ещё не записаны в таблицу, не удаляются. «Обновить из таблицы» вернёт на сайт всё, что есть в таблице.</p><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"on\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "log",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "2026-11-02",
+     "type": "adv",
+     "amt": {
+      "Аз": "2500",
+      "Буки": "2500",
+      "Веди": "2200",
+      "Глаголь": "4600",
+      "Добро": "2400",
+      "Есть": "2200",
+      "Живете": "4500",
+      "Зело": "2400",
+      "Земля": "4500",
+      "Иже": "2200"
+     },
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"adv\",[[\"Аз\",2500],[\"Буки\",2500],[\"Веди\",2200],[\"Глаголь\",4600],[\"Добро\",2400],[\"Есть\",2200],[\"Живете\",4500],[\"Зело\",2400],[\"Земля\",4500],[\"Иже\",2200]],{\"100\":15,\"200\":0,\"500\":5,\"1000\":26,\"2000\":0,\"5000\":0}]",
+     "over": false,
+     "budget": "30000"
+    }
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "close-armed",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><label>Смена<select id=\"ssel\" style=\"width:100%;margin-top:4px\"><option value=\"c1792990000000\" selected=\"\">Текущая: 26.10.2026 · 10 чел.</option></select></label></div><div style=\"margin:8px 4px 12px\"><button class=\"pill\" id=\"close\">Точно? Нажмите ещё раз</button></div><div class=\"card s\"><p><b>Начислено:</b> 124 700 ₽ <span class=\"mut\">(округление вниз убрало 444 ₽)</span></p><p><b>Банк:</b> 129 500 ₽ <span class=\"mut\">(кг 257 × 500 + камчадал 2 × 500 + салат 0 × 400)</span></p><p><b>Остаток банка:</b> 4 800 ₽</p></div><div class=\"lbl\">ПО СОТРУДНИКАМ</div><div class=\"card jc\"><div class=\"wrap\"><table class=\"jt\"><thead><tr><th>Сотрудник</th><th class=\"r\">К выдаче</th><th class=\"r\">Аванс</th><th class=\"r\">Зарплата</th><th class=\"r\">Остаток</th></tr></thead><tbody><tr><td>Аз</td><td class=\"r\">10 300</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">10 300</td></tr><tr><td>Буки</td><td class=\"r\">10 300</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">10 300</td></tr><tr><td>Веди</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr><tr><td>Глаголь</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Добро</td><td class=\"r\">9 900</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 900</td></tr><tr><td>Есть</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr><tr><td>Живете</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Зело</td><td class=\"r\">9 900</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 900</td></tr><tr><td>Земля</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Иже</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr></tbody><tfoot><tr><td>Итого</td><td class=\"r\">124 700</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">124 700</td></tr></tfoot></table></div></div><div class=\"card s\"><p><b>Наличные по смене:</b> не введены на вкладке «Выплаты»</p></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"on\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "sum",
+    "date": "2026-10-26",
+    "sid": "c1792990000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "1",
+      "c": "Альфа",
+      "k": "62"
+     },
+     {
+      "b": "2",
+      "c": "Бета",
+      "k": "83"
+     },
+     {
+      "b": "3",
+      "c": "Гамма",
+      "k": "112",
+      "m": "2"
+     }
+    ],
+    "stages": [
+     {
+      "b": "1",
+      "s": "1",
+      "k": "62",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "2",
+      "s": "1",
+      "k": "83",
+      "p": {
+       "Аз": true,
+       "Буки": true,
+       "Глаголь": true,
+       "Добро": true,
+       "Живете": true,
+       "Зело": true,
+       "Земля": true
+      }
+     },
+     {
+      "b": "3",
+      "s": "1",
+      "k": "114",
+      "p": {
+       "Веди": true,
+       "Глаголь": true,
+       "Есть": true,
+       "Живете": true,
+       "Земля": true,
+       "Иже": true
+      }
+     }
+    ],
+    "history": [],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "2026-11-02",
+     "type": "adv",
+     "amt": {
+      "Аз": "2500",
+      "Буки": "2500",
+      "Веди": "2200",
+      "Глаголь": "4600",
+      "Добро": "2400",
+      "Есть": "2200",
+      "Живете": "4500",
+      "Зело": "2400",
+      "Земля": "4500",
+      "Иже": "2200"
+     },
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"adv\",[[\"Аз\",2500],[\"Буки\",2500],[\"Веди\",2200],[\"Глаголь\",4600],[\"Добро\",2400],[\"Есть\",2200],[\"Живете\",4500],[\"Зело\",2400],[\"Земля\",4500],[\"Иже\",2200]],{\"100\":15,\"200\":0,\"500\":5,\"1000\":26,\"2000\":0,\"5000\":0}]",
+     "over": false,
+     "budget": "30000"
+    }
+   },
+   "zppin": "0000"
+  },
+  "net": []
+ },
+ {
+  "name": "closed",
+  "html": "<h1>РАЗДАЧА ЗП<small>смена</small></h1><div class=\"mut\" id=\"cloud\" style=\"margin:-8px 10px 6px\"></div><div class=\"card\"><p class=\"ok2\" style=\"margin:0 0 6px\">Смена закрыта и сохранена в архиве. Выплаты по ней можно делать на вкладке «Выплаты». Данные очищены для новой смены.</p><p class=\"ok2\" style=\"margin:6px 0 0\">Смена записана в таблицу, лист «26.10.2026».</p></div><div class=\"card\"><label>Смена<select id=\"ssel\" style=\"width:100%;margin-top:4px\"><option value=\"c1793610000000\">Текущая: 02.11.2026 · 0 чел.</option><option value=\"c1792990000000\" selected=\"\">26.10.2026 · 10 чел.</option></select></label></div><div class=\"card s\"><p><b>Начислено:</b> 124 700 ₽ <span class=\"mut\">(округление вниз убрало 444 ₽)</span></p><p><b>Банк:</b> 129 500 ₽ <span class=\"mut\">(кг 257 × 500 + камчадал 2 × 500 + салат 0 × 400)</span></p><p><b>Остаток банка:</b> 4 800 ₽</p></div><div class=\"lbl\">ПО СОТРУДНИКАМ</div><div class=\"card jc\"><div class=\"wrap\"><table class=\"jt\"><thead><tr><th>Сотрудник</th><th class=\"r\">К выдаче</th><th class=\"r\">Аванс</th><th class=\"r\">Зарплата</th><th class=\"r\">Остаток</th></tr></thead><tbody><tr><td>Аз</td><td class=\"r\">10 300</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">10 300</td></tr><tr><td>Буки</td><td class=\"r\">10 300</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">10 300</td></tr><tr><td>Веди</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr><tr><td>Глаголь</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Добро</td><td class=\"r\">9 900</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 900</td></tr><tr><td>Есть</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr><tr><td>Живете</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Зело</td><td class=\"r\">9 900</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 900</td></tr><tr><td>Земля</td><td class=\"r\">19 000</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">19 000</td></tr><tr><td>Иже</td><td class=\"r\">9 100</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">9 100</td></tr></tbody><tfoot><tr><td>Итого</td><td class=\"r\">124 700</td><td class=\"r\">0</td><td class=\"r\">0</td><td class=\"r\">124 700</td></tr></tfoot></table></div></div><div class=\"card s\"><p><b>Наличные по смене:</b> не введены на вкладке «Выплаты»</p></div><div class=\"lbl\">ЗАКРЫТЫЕ СМЕНЫ</div><div class=\"card\"><div class=\"r2\"><div><b>26.10.2026</b><div class=\"mut\">ЗП 124 700 ₽ · 10 чел. · 259 кг</div></div><span style=\"display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:58%\"><button class=\"pill g2\" data-e=\"0\" style=\"padding:10px 14px\">CSV</button><span class=\"mut\" style=\"margin-left:6px\">✓ в таблице</span><button class=\"pill g2\" data-d=\"0\" style=\"padding:10px 14px\">✕</button></span></div></div><nav><div class=\"ng\" style=\"grid-template-columns:repeat(3,1fr)\"><button data-t=\"shift\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2.5\"></rect><path d=\"M9 4.5h6M9 12l2 2 4-4M9 17h6\"></path></svg>Смена</button><button data-t=\"people\" class=\"\"><svg viewBox=\"0 0 24 24\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"></circle><path d=\"M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6\"></path><circle cx=\"17\" cy=\"9\" r=\"2.5\"></circle><path d=\"M17 14c2.6 0 4.5 2 4.5 5\"></path></svg>Люди</button><button data-t=\"sum\" class=\"on\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14M5 10h14M5 16h9\"></path><path d=\"M15 19.5l2.2 2L21 17.5\"></path></svg>Итог</button></div><div class=\"ng\" style=\"grid-template-columns:repeat(2,1fr)\"><button data-t=\"tab\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect><rect x=\"13.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"2\"></rect></svg>Выплаты</button><button data-t=\"log\" class=\"\"><svg viewBox=\"0 0 24 24\"><rect x=\"4.5\" y=\"3.5\" width=\"15\" height=\"17\" rx=\"2.5\"></rect><path d=\"M8 8h8M8 12h8M8 16h5\"></path></svg>Журнал</button></div></nav>",
+  "storage": {
+   "zpcfg4": {
+    "ver": 2,
+    "tab": "sum",
+    "date": "",
+    "sid": "c1793610000000",
+    "bank": "",
+    "bankR": "",
+    "people": [
+     {
+      "n": "Аз",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Буки",
+      "a": "",
+      "s": "",
+      "r": 500
+     },
+     {
+      "n": "Веди",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Глаголь",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Добро",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Есть",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Живете",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Зело",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Земля",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Иже",
+      "a": "",
+      "s": "",
+      "r": 480
+     },
+     {
+      "n": "Како",
+      "a": "",
+      "s": "",
+      "r": 450
+     }
+    ],
+    "boats": [
+     {
+      "b": "",
+      "k": ""
+     },
+     {
+      "b": "",
+      "k": ""
+     },
+     {
+      "b": "",
+      "k": ""
+     },
+     {
+      "b": "",
+      "k": ""
+     }
+    ],
+    "stages": [],
+    "history": [
+     {
+      "id": "c1792990000000",
+      "ts": 1793610000000,
+      "date": "2026-10-26",
+      "boats": [
+       {
+        "b": "1",
+        "c": "Альфа",
+        "kg": 62,
+        "m": 0
+       },
+       {
+        "b": "2",
+        "c": "Бета",
+        "kg": 83,
+        "m": 0
+       },
+       {
+        "b": "3",
+        "c": "Гамма",
+        "kg": 112,
+        "m": 2
+       }
+      ],
+      "stages": [
+       {
+        "b": "1",
+        "s": "1",
+        "kg": 62,
+        "p": [
+         "Аз",
+         "Буки",
+         "Глаголь",
+         "Добро",
+         "Живете",
+         "Зело",
+         "Земля"
+        ]
+       },
+       {
+        "b": "2",
+        "s": "1",
+        "kg": 83,
+        "p": [
+         "Аз",
+         "Буки",
+         "Глаголь",
+         "Добро",
+         "Живете",
+         "Зело",
+         "Земля"
+        ]
+       },
+       {
+        "b": "3",
+        "s": "1",
+        "kg": 114,
+        "p": [
+         "Веди",
+         "Глаголь",
+         "Есть",
+         "Живете",
+         "Земля",
+         "Иже"
+        ]
+       }
+      ],
+      "salad": 0,
+      "bank": 129500,
+      "S": 124700,
+      "RAW": 125144,
+      "rest": 4800,
+      "B": 4000,
+      "Cm": 800,
+      "rows": [
+       {
+        "n": "Аз",
+        "raw": 10357,
+        "A": 10300,
+        "kg": 20.71,
+        "sal": 0,
+        "r": 500
+       },
+       {
+        "n": "Буки",
+        "raw": 10357,
+        "A": 10300,
+        "kg": 20.71,
+        "sal": 0,
+        "r": 500
+       },
+       {
+        "n": "Веди",
+        "raw": 9120,
+        "A": 9100,
+        "kg": 19,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Глаголь",
+        "raw": 19062,
+        "A": 19000,
+        "kg": 39.71,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Добро",
+        "raw": 9942,
+        "A": 9900,
+        "kg": 20.71,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Есть",
+        "raw": 9120,
+        "A": 9100,
+        "kg": 19,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Живете",
+        "raw": 19062,
+        "A": 19000,
+        "kg": 39.71,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Зело",
+        "raw": 9942,
+        "A": 9900,
+        "kg": 20.71,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Земля",
+        "raw": 19062,
+        "A": 19000,
+        "kg": 39.71,
+        "sal": 0,
+        "r": 480
+       },
+       {
+        "n": "Иже",
+        "raw": 9120,
+        "A": 9100,
+        "kg": 19,
+        "sal": 0,
+        "r": 480
+       }
+      ],
+      "sheet": "26.10.2026"
+     }
+    ],
+    "pay": [
+     {
+      "id": "op9",
+      "sid": "?",
+      "sdate": "2026-10-26",
+      "pdate": "2026-10-27",
+      "type": "adv",
+      "ts": 1793080000000,
+      "lines": [
+       {
+        "n": "Аз",
+        "amt": 5000,
+        "plan": 5000,
+        "c": {
+         "100": 0,
+         "200": 0,
+         "500": 0,
+         "1000": 0,
+         "2000": 0,
+         "5000": 1
+        },
+        "st": "выдано"
+       }
+      ],
+      "synced": true,
+      "src": "sheet",
+      "rsid": "s:26.10.2026",
+      "rsheet": "26.10.2026"
+     }
+    ],
+    "cashBy": {
+     "c1792990000000": {}
+    },
+    "ts": 1793610000000,
+    "draft": {
+     "id": "op1793610000000h40q",
+     "sid": "c1792990000000",
+     "pdate": "2026-11-02",
+     "type": "adv",
+     "amt": {
+      "Аз": "2500",
+      "Буки": "2500",
+      "Веди": "2200",
+      "Глаголь": "4600",
+      "Добро": "2400",
+      "Есть": "2200",
+      "Живете": "4500",
+      "Зело": "2400",
+      "Земля": "4500",
+      "Иже": "2200"
+     },
+     "ticks": {},
+     "sig": "[\"c1792990000000\",\"adv\",[[\"Аз\",2500],[\"Буки\",2500],[\"Веди\",2200],[\"Глаголь\",4600],[\"Добро\",2400],[\"Есть\",2200],[\"Живете\",4500],[\"Зело\",2400],[\"Земля\",4500],[\"Иже\",2200]],{\"100\":15,\"200\":0,\"500\":5,\"1000\":26,\"2000\":0,\"5000\":0}]",
+     "over": false,
+     "budget": "30000"
+    },
+    "brig": "",
+    "sw": "",
+    "n05": "",
+    "n1": "",
+    "restored": "",
+    "ticks": {},
+    "sig": ""
+   },
+   "zppin": "0000"
+  },
+  "net": [
+   {
+    "method": "POST",
+    "url": "https://script.google.com/macros/s/AKfycbzI68g2EhW30n-WkgLVgbGqOEPQEecQ51ZLKNSgUeglnGCfQ3Ib4tXcEozJTLpFJk_4bw/exec",
+    "body": "{\"title\":\"26.10.2026\",\"rows\":[[\"Отчёт по смене от 26.10.2026\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"Табель катеров\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Имя\",\"Кг\",\"КГ салата\",\"Начислено, ₽\",\"Зарплата\",\"Аванс\",\"Остаток\",\"\",\"Катер\",\"Кг\",\"Камчадал\",\"Сотрудники\",\"\",\"Катер\",\"Аз\",\"Буки\",\"Веди\",\"Глаголь\",\"Добро\",\"Есть\",\"Живете\",\"Зело\",\"Земля\",\"Иже\"],[\"Аз\",20.71,\"\",10357,\"\",\"\",10300,\"\",\"1 · Альфа\",62,\"\",\"Аз, Буки, Глаголь, Добро, Живете, Зело, Земля\",\"\",\"1 · Альфа\",\"✓\",\"✓\",\"\",\"✓\",\"✓\",\"\",\"✓\",\"✓\",\"✓\",\"\"],[\"Буки\",20.71,\"\",10357,\"\",\"\",10300,\"\",\"2 · Бета\",83,\"\",\"Аз, Буки, Глаголь, Добро, Живете, Зело, Земля\",\"\",\"2 · Бета\",\"✓\",\"✓\",\"\",\"✓\",\"✓\",\"\",\"✓\",\"✓\",\"✓\",\"\"],[\"Веди\",19,\"\",9120,\"\",\"\",9100,\"\",\"3 · Гамма\",112,2,\"Веди, Глаголь, Есть, Живете, Земля, Иже\",\"\",\"3 · Гамма\",\"\",\"\",\"✓\",\"✓\",\"\",\"✓\",\"✓\",\"\",\"✓\",\"✓\"],[\"Глаголь\",39.71,\"\",19062,\"\",\"\",19000,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Добро\",20.71,\"\",9942,\"\",\"\",9900,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Есть\",19,\"\",9120,\"\",\"\",9100,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Живете\",39.71,\"\",19062,\"\",\"\",19000,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Зело\",20.71,\"\",9942,\"\",\"\",9900,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Земля\",39.71,\"\",19062,\"\",\"\",19000,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Иже\",19,\"\",9120,\"\",\"\",9100,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Итого\",258.97,\"\",125144,\"\",\"\",124700,\"\",\"Всего кг\",257,2,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Банк, ₽\",129500,\"\",\"\",\"\",\"\",\"\",\"\",\"Итого салат, кг\",0,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"ЗП всего, ₽\",124700,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],[\"Остаток, ₽\",4800,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]],\"bold\":[[1,3,13,24]],\"num\":[],\"ts\":{\"r\":1,\"c\":13,\"names\":10,\"boats\":3},\"pin\":\"0000\"}"
+   }
+  ]
+ }
+]
