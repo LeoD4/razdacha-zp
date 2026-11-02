@@ -122,35 +122,38 @@ function payFixAll() {
   Logger.log('Обновлено листов: ' + n);
 }
 
-// Оформляет столбец «Сотрудники» у таблицы катеров и «Табель катеров» в цветах шапки листа (ячейка A3).
+// Оформляет «Табель катеров» в стиле листа: шапка как у расчёта (ячейка A3), строки через одну
+// светлые, тонкие рамки, галочки по центру; у столбца «Сотрудники» — перенос строк.
 function styleTimesheet_(sh) {
   var v = sh.getDataRange().getValues(), H = (v[2] || []).map(String), tr = -1, tc = -1;
   for (var r = 0; r < v.length && tr < 0; r++)
     for (var c = 0; c < v[r].length; c++) if (String(v[r][c]).trim() === 'Табель катеров') { tr = r; tc = c; break; }
-  var head = sh.getRange(3, 1), bg = head.getBackground(), fg = head.getFontColor();
-  var cs = H.indexOf('Сотрудники');
+  var head = sh.getRange(3, 1), bg = head.getBackground() || '#1d6fa3', fg = head.getFontColor() || '#ffffff';
+  var ink = sh.getRange(4, 1).getFontColor() || '#1f2933', zebra = sh.getRange(5, 1).getBackground();
+  if (!zebra || zebra === '#ffffff') zebra = '#f2f7fb';
+  var line = '#c9d8e4', cs = H.indexOf('Сотрудники');
   if (cs >= 0) {
-    sh.getRange(3, cs + 1).setBackground(bg).setFontColor(fg).setFontWeight('bold');
     var n = 0; for (var i = 3; i < v.length && String(v[i][0]).trim() !== 'Итого'; i++) n++;
     if (n) sh.getRange(4, cs + 1, n, 1).setWrap(true).setVerticalAlignment('middle');
-    sh.setColumnWidth(cs + 1, 240);
   }
   if (tr < 0) return;
   var hr = tr + 1, w = 0, b = 0;
   while (tc + 1 + w < v[hr].length && String(v[hr][tc + 1 + w]).trim() !== '') w++;
   while (hr + 1 + b < v.length && String(v[hr + 1 + b][tc]).trim() !== '') b++;
-  sh.getRange(tr + 1, tc + 1).setFontWeight('bold').setFontSize(12);
-  sh.getRange(hr + 1, tc + 1, 1, w + 1).setBackground(bg).setFontColor(fg).setFontWeight('bold').setVerticalAlignment('bottom');
-  if (w) sh.getRange(hr + 1, tc + 2, 1, w).setTextRotation(90).setHorizontalAlignment('center');
+  sh.getRange(tr + 1, tc + 1).setFontFamily('Arial').setFontSize(12).setFontWeight('bold').setFontColor(bg);
+  sh.getRange(hr + 1, tc + 1, 1, w + 1).setBackground(bg).setFontColor(fg).setFontFamily('Arial').setFontSize(11)
+    .setFontWeight('bold').setTextRotation(0).setHorizontalAlignment('center').setVerticalAlignment('middle');
   if (b) {
-    sh.getRange(hr + 2, tc + 1, b, 1).setFontWeight('bold');
-    if (w) sh.getRange(hr + 2, tc + 2, b, w).setHorizontalAlignment('center').setFontColor('#2e7d32').setFontWeight('bold');
-    for (var k = 0; k < b; k += 2) sh.getRange(hr + 2 + k, tc + 1, 1, w + 1).setBackground('#f3f7fb');
+    var body = sh.getRange(hr + 2, tc + 1, b, w + 1);
+    body.setFontFamily('Arial').setFontSize(11).setFontColor(ink).setFontWeight('normal').setVerticalAlignment('middle');
+    for (var k = 0; k < b; k++) sh.getRange(hr + 2 + k, tc + 1, 1, w + 1).setBackground(k % 2 ? zebra : '#ffffff');
+    sh.getRange(hr + 2, tc + 1, b, 1).setHorizontalAlignment('left');
+    if (w) sh.getRange(hr + 2, tc + 2, b, w).setHorizontalAlignment('center').setFontWeight('bold').setFontColor(bg);
   }
-  sh.getRange(hr + 1, tc + 1, b + 1, w + 1).setBorder(true, true, true, true, true, true, '#9fb3c8', SpreadsheetApp.BorderStyle.SOLID);
+  sh.getRange(hr + 1, tc + 1, b + 1, w + 1).setBorder(true, true, true, true, true, true, line, SpreadsheetApp.BorderStyle.SOLID);
   if (tc > 0) {
     sh.setColumnWidth(tc, 24);
-    sh.setColumnWidth(tc + 1, 120);
-    if (w) sh.setColumnWidths(tc + 2, w, 32);
+    sh.setColumnWidth(tc + 1, 130);
+    for (var j = 0; j < w; j++) sh.setColumnWidth(tc + 2 + j, Math.max(64, 9 * String(v[hr][tc + 1 + j]).length + 22));
   }
 }
