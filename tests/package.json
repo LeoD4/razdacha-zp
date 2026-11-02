@@ -1,0 +1,12 @@
+{
+  "name": "razdacha-zp-tests",
+  "private": true,
+  "description": "Автотесты сайта «Раздача ЗП». На сам сайт не влияют.",
+  "scripts": {
+    "test": "node run.js",
+    "test:loose": "node run.js --loose-screens"
+  },
+  "devDependencies": {
+    "acorn": "8.14.0"
+  }
+}
