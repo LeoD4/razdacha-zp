@@ -1,4 +1,3 @@
-var KEY="zpcfg4",D=[5000,1000,500,100],ALLD=[5000,2000,1000,500,200,100],OLDD=[2000,200];
 var DEF={bank:"",n1:"",n05:"",sw:"",brig:"",tab:"people",ticks:{},sig:"",people:[["Саня",""],["Даня",""],["Ваня",""],["Эля",""],["Эльнур",""],["Витя",""],["Егор",""],["Костя",""],["Аня",""],["Тёма",""],["Женя",""],["Гор",""]].map(function(p){return{n:p[0],a:p[1]}})};
 var C=JSON.parse(JSON.stringify(DEF)),armed="",PPL=false;
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.people)C=o}}catch(e){}
@@ -26,12 +25,6 @@ if(d&&d.people&&(d.ts||0)>(C.ts||0)){C=JSON.parse(JSON.stringify(d));migrate();m
 else if(first&&(!d||(C.ts||0)>(d.ts||0)))schedPush();
 if(first){first=false;if(!pushT)setCloud("☁ подключено")}},
 function(e){setCloud("☁ ошибка облака"+(e&&e.code?" ("+e.code+")":""))})})})}).catch(function(){ROLE="login";render()})}
-function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," ")}
-function lab(d){return d===5000?"5к":d===2000?"2к":d===1000?"1к":String(d)}
-function pa(s){s=String(s).replace(/\s/g,"");if(/^\d{1,3}([.,]\d{3})+$/.test(s))return +s.replace(/[.,]/g,"");if(/^\d+([.,]\d{1,2})?$/.test(s))return Math.round(parseFloat(s.replace(",",".")));return NaN}
-function nm(v){v=String(v==null?"":v).trim();if(!v)return 0;var x=pa(v);return isNaN(x)?0:x}
-function txt(c){var p=[];ALLD.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(" + ")||"0"}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function billPlan(W){
 var cs=cashOf(),As=W.map(function(w){return w.A}),S=0,pl,fail="";
 W.forEach(function(w){S+=w.A});
@@ -40,8 +33,6 @@ else{pl=plan(As,cs.n);if(!pl.p)fail=cs.t<S?"Наличных "+fmt(cs.t)+" ₽ �
 var T=z();W.forEach(function(w,i){w.c=pl.p?pl.p.c[i]:z();D.forEach(function(d){T[d]+=w.c[d]})});
 var st=cs.any?(pl.p?pl.s:cs.n):T,L=z();D.forEach(function(d){L[d]=st[d]-T[d]});
 return{W:W,cash:cs,nostock:!cs.any,fail:fail,st:st,L:L,T:T,S:S,n:pl.p?pl.p.n:0,base:pl.base,k:pl.k,ex:pl.p&&pl.k?exOf(cs.n,pl.s):null}}
-function z(){return{5000:0,2000:0,1000:0,500:0,200:0,100:0}}
-function cnt(v){v=String(v==null?"":v).replace(/\D/g,"");return v?parseInt(v,10):0}
 function cashBox(sid){if(!C.cashBy)C.cashBy={};if(!C.cashBy[sid])C.cashBy[sid]={};return C.cashBy[sid]}
 function migCash(){if(C.cash){C.cashOld=C.cash;delete C.cash}}
 function cashOf(sid){var c=cashBox(sid||draft().sid),o=z(),t=0,any=false;D.forEach(function(d){if(String(c[d]==null?"":c[d]).trim()!=="")any=true;o[d]=cnt(c[d]);t+=o[d]*d});return{n:o,t:t,any:any}}
@@ -65,8 +56,6 @@ var bc=null;D.forEach(function(d){if(d===100)return;for(var m=1;m<=Math.min(cur[
 if(!bc)break;cur=bc.s;p=bc.p;sc=bc.v;k=bc.k}
 return{p:p,s:cur,base:base,k:k}}
 function exOf(a,b){var g=z(),r=z();D.forEach(function(d){if(a[d]>b[d])g[d]=a[d]-b[d];else r[d]=b[d]-a[d]});return{give:g,get:r}}
-function pl3(n,a,b,c){var m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<12||h>14)?b:c}
-function lst(c){var p=[];ALLD.forEach(function(d){if(c[d])p.push(c[d]+"×"+lab(d))});return p.join(", ")}
 function exText(R){return R.ex?"отдать "+lst(R.ex.give)+", получить "+lst(R.ex.get):""}
 function advice(R){
 if(!R.W.length)return'<p class="mut" style="margin:0">Нет сумм к выдаче.</p>';
@@ -153,8 +142,6 @@ function rateOfRow(w){if(w.r)return w.r;if(w.kg>0){var x=Math.round((w.raw-(w.sa
 function pays(){if(!C.pay)C.pay=[];return C.pay}
 function paidOf(sid){var o={};pays().forEach(function(op){if(op.sid!==sid)return;op.lines.forEach(function(l){var x=o[l.n]=o[l.n]||{adv:0,sal:0};x[op.type]+=l.amt})});return o}
 function jlines(){var L=[];pays().forEach(function(op){op.lines.forEach(function(l){L.push({op:op,l:l,id:op.id+"/"+l.n})})});return L}
-function tname(t){return t==="adv"?"Аванс":"Зарплата"}
-function dd(iso){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");return m?m[3]+"."+m[2]+"."+m[1]:(iso||"")}
 function migrate(){if((C.ver||0)>=2)return;
 try{localStorage.setItem(KEY+"_bak1",JSON.stringify(C))}catch(e){}
 hist().forEach(function(r){if(!r.id)r.id="h"+r.ts;
@@ -309,15 +296,11 @@ h+="</div>";
 if(pays().length)h+='<div style="margin:16px 4px"><button class="pill g2" id="clrj">'+(armed==="clrj"?"Точно? Нажмите ещё раз":"Очистить журнал на этом устройстве")+'</button></div><p class="mut" style="margin:0 8px">Удаляет выплаты только на сайте, в Google Таблице ничего не меняется. Выплаты, которые ещё не записаны в таблицу, не удаляются. «Обновить из таблицы» вернёт на сайт всё, что есть в таблице.</p>';
 return h}
 function boats(){if(!C.boats)C.boats=[{b:"",k:""},{b:"",k:""},{b:"",k:""},{b:"",k:""}];return C.boats}
-function kgn(v){var x=parseFloat(String(v==null?"":v).replace(/\s/g,"").replace(",","."));return isNaN(x)?0:x}
-function fmtk(n){return String(Math.round(n*100)/100).replace(".",",")}
 function stages(){if(!C.stages)C.stages=[];return C.stages}
 var GS_URL="https://script.google.com/macros/s/AKfycbzI68g2EhW30n-WkgLVgbGqOEPQEecQ51ZLKNSgUeglnGCfQ3Ib4tXcEozJTLpFJk_4bw/exec";
 function gsUrl(){return /^https:\/\/script\.google\.com\//.test(GS_URL)?GS_URL:(C.gs||"")}
 var SHEET_ID="1wS1b3IaUEc8c5W63uH6OI1FeJyxeNhUyl6xiWhuS3ug",NOTE3="";
 function inSheet(r){return r.sheet||r.ts===1792474231867||r.ts===1792407853953}
-function todayISO(){var d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
-function ddate(r){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(r.date||"");return m?m[3]+"."+m[2]+"."+m[1]:dstr(r.ts).slice(0,10)}
 function salOf(n){var q=C.people.filter(function(p){return p.n===n})[0];return q?kgn(q.s):0}
 function sheetBlock(rec){var P=rec.rows||[],B=rec.boats||[],M=tsMatrix({rec:rec,rows:P,cur:false}),nb=M?M.names.length:0,TC=13,right=M&&TC+1+nb<=26,
 n=Math.max(P.length,B.length,right?M.boats.length:0),rows=[],W=M?12:11;
@@ -369,8 +352,6 @@ PULLING=true;if(manual){PULLNOTE="Загружаю журнал из табли�
 (art?syncMcp([]):pullGs(manual)).then(function(j){if(!j.rows)throw new Error("noread");var m=mergeRows(j.rows);save();PULLNOTE="Журнал сверен с таблицей "+dstr(Date.now())+(m?", добавлено строк: "+m:", новых строк нет")+"."}).catch(function(e){PULLNOTE=e&&e.message==="noread"?"Журнал не подтянут: обновите файл zhurnal.gs в Apps Script.":"Журнал не подтянут из таблицы: "+syncErr(e)}).then(function(){PULLING=false;render()})}
 function pullGs(manual,again){var GU=gsUrl();if(!GU)return Promise.reject(new Error("nourl"));
 return fetch(GU,{method:"POST",body:JSON.stringify({action:"pay",pin:gsPin(),lines:[]})}).then(function(r){return r.json()}).then(function(j){if(j&&j.error==="pin"){if(manual&&!again&&askPin())return pullGs(manual,true);throw new Error("pin")}if(!j||!j.ok)throw new Error((j&&j.error)||"err");return j})}
-function isoOf(t){var m=/^(\d{2})\.(\d{2})\.(\d{4})/.exec(String(t||"").trim());return m?m[3]+"-"+m[2]+"-"+m[1]:""}
-function tsOf(t){var m=/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,2}):(\d{2})/.exec(String(t||"").trim());return m?new Date(+m[3],m[2]-1,+m[1],+m[4],+m[5]).getTime():0}
 function billsOf(t){var c=z(),re=/(\d+)\s*×\s*(5к|2к|1к|500|200|100)/g,m;while((m=re.exec(String(t||""))))c[{"5к":5000,"2к":2000,"1к":1000}[m[2]]||+m[2]]+=+m[1];return c}
 function mergeRows(rows){var by={},add=0,ord=[];
 (rows||[]).forEach(function(r){var o=String(r[0]==null?"":r[0]).trim(),n=String(r[5]==null?"":r[5]).trim();if(!o||!n)return;if(!by[o]){by[o]=[];ord.push(o)}by[o].push(r)});
@@ -472,10 +453,6 @@ return h}
 function boatsView(){var B=boats(),tk=0,h='<div class="lbl">КАТЕРА</div>';
 B.forEach(function(x,i){tk+=kgn(x.k)+kgn(x.m);h+='<div class="card pr"><input data-bb="'+i+'" type="text" placeholder="№" value="'+esc(x.b)+'" style="width:56px;text-align:center"><input data-bc="'+i+'" type="text" placeholder="капитан" value="'+esc(x.c||"")+'" style="flex:1;width:auto;min-width:0;text-align:left;font-family:inherit"><input data-bk="'+i+'" type="text" inputmode="decimal" placeholder="кг" value="'+esc(x.k)+'" style="width:76px"><input data-bm="'+i+'" type="text" inputmode="decimal" placeholder="кам" value="'+esc(x.m||"")+'" style="width:60px"><button class="x" data-xb="'+i+'">×</button></div>'});
 h+='<div style="margin:8px 4px"><button class="pill g2" id="addb">+ Катер</button> <span class="mut" id="tkg">'+boatsLine()+'</span></div>';return h}
-function pad(n){return(n<10?"0":"")+n}
-function dstr(ts){var d=new Date(ts);return pad(d.getDate())+"."+pad(d.getMonth()+1)+"."+d.getFullYear()+" "+pad(d.getHours())+":"+pad(d.getMinutes())}
-function ymd(ts){var d=new Date(ts);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
-function qc(v){v=String(v==null?"":v);return/[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
 function csvOf(r){
 var L=[["Смена",ddate(r)],[],["Имя","По ведомости","К выдаче","Авансы","Зарплата выдана","Выдано всего","Остаток"]],pd=paidOf(r.id),ta=0,ts=0;if(r.stages&&r.stages.length){var sb=[["Катер","Этап","Кг этапа","Чел.","Кг на чел.","Кто был"]];r.stages.forEach(function(x){sb.push([x.b,x.s,String(x.kg).replace(".",","),x.p.length,x.p.length?String(Math.round(x.kg/x.p.length*100)/100).replace(".",","):"",x.p.join(", ")])});sb.push([]);L.splice.apply(L,[2,0].concat(sb))}if(r.boats&&r.boats.length){var bb=[["Катер","Капитан","Кг","Камчадал"]],bk=0,bm=0;r.boats.forEach(function(x){bb.push([x.b,x.c||"",String(x.kg).replace(".",","),x.m?String(x.m).replace(".",","):""]);bk+=x.kg;bm+=x.m||0});bb.push(["Всего кг","",String(Math.round(bk*100)/100).replace(".",","),bm?String(Math.round(bm*100)/100).replace(".",","):""],[]);L.splice.apply(L,[2,0].concat(bb))}
 r.rows.forEach(function(w){var x=pd[w.n]||{adv:0,sal:0};ta+=x.adv;ts+=x.sal;L.push([w.n,w.raw,w.A,x.adv,x.sal,x.adv+x.sal,w.A-x.adv-x.sal])});
