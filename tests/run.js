@@ -1,14 +1,14 @@
 // Запуск всех тестов: node tests/run.js [--update] [--loose-screens] [имя группы ...]
 //   --update         пересоздать эталон (делать только на исходной версии, ветка stable-before-split);
 //   --loose-screens  отличия скриншотов не считать ошибкой (на другом компьютере шрифты отличаются);
-//   имена групп: structure, calc, baseline, jsguard, http (по умолчанию все).
+//   имена групп: structure, calc, baseline, jsguard, http, negative (по умолчанию все).
 const path = require('path');
 const { launch, ROOT } = require('./lib/app');
 
 const args = process.argv.slice(2);
 const opts = { update: args.includes('--update'), strictScreens: !args.includes('--loose-screens') };
 const only = args.filter((a) => !a.startsWith('--'));
-const SUITES = { structure: 'Структура кода', calc: 'Расчёты', baseline: 'Сравнение с эталоном', jsguard: 'Защита переноса JavaScript', http: 'Локальный сервер /razdacha-zp/' };
+const SUITES = { structure: 'Структура кода', calc: 'Расчёты', baseline: 'Сравнение с эталоном', jsguard: 'Защита переноса JavaScript', http: 'Локальный сервер /razdacha-zp/', negative: 'Отрицательные сценарии (самопроверка)' };
 
 function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
 

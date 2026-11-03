@@ -57,7 +57,8 @@ function origJs() {
 // Текущий JavaScript: все скрипты страницы по порядку, склеенные (файлы читаются байтами).
 function currentJs(root) {
   const page = scriptsOf(fs.readFileSync(path.join(root, 'index.html')));
-  const parts = page.scripts.map((x) => (x.inline ? x.inline : fs.readFileSync(path.join(root, x.src.split('?')[0]))));
+  const read = (f) => (fs.existsSync(path.join(root, f)) ? fs.readFileSync(path.join(root, f)) : Buffer.alloc(0)); // отсутствующий файл ловят отдельные проверки
+  const parts = page.scripts.map((x) => (x.inline ? x.inline : read(x.src.split('?')[0])));
   return { page, buf: Buffer.concat(parts) };
 }
 

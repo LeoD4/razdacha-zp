@@ -6,6 +6,7 @@ const path = require('path');
 const http = require('http');
 const { ROOT, open, fixture, tab, useUrl } = require('../lib/app');
 const { SCENARIOS, firstDiff } = require('./baseline');
+const K = require('../lib/checks');
 
 const PREFIX = '/razdacha-zp/';
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -32,10 +33,9 @@ module.exports = async function (browser, t, opts) {
   const base = `http://127.0.0.1:${srv.address().port}${PREFIX}`;
   try {
     t.eq('http: index.html — 200', await get(base + 'index.html'), 200);
-    t.eq('http: css/style.css — 200', await get(base + 'css/style.css'), 200);
-    const app = fs.existsSync(path.join(ROOT, 'js', 'app.js'));
-    if (app) t.eq('http: js/app.js — 200', await get(base + 'js/app.js'), 200);
-    else t.skip('http: js/app.js — 200', 'включится после переноса JavaScript в js/app.js');
+    const SR = K.scriptReport(ROOT);
+    const refs = [SR.cssHref].concat(SR.list); // как они записаны в index.html (с ?v=, если есть)
+    for (const r of refs) t.eq(`http: ${r} — 200`, await get(base + r), 200);
     t.eq('http: адрес вне /razdacha-zp/ не обслуживается (как на GitHub Pages)', await get(base.replace(PREFIX, '/') + 'index.html'), 404);
 
     useUrl(base + 'index.html');
@@ -44,8 +44,8 @@ module.exports = async function (browser, t, opts) {
       const s = await open(browser, { storage: fixture('shift-26-10') });
       const own = s.responses.filter((r) => r.url.startsWith(base));
       t.eq('http: все файлы сайта загружены с кодом 200', own.filter((r) => r.status !== 200).map((r) => `${r.status} ${r.url.slice(base.length)}`), []);
-      t.eq('http: загружены index.html и css/style.css' + (app ? ' и js/app.js' : ''),
-        ['index.html', 'css/style.css', 'js/app.js'].filter((f) => own.some((r) => r.url.split('?')[0] === base + f)), app ? ['index.html', 'css/style.css', 'js/app.js'] : ['index.html', 'css/style.css']);
+      const want = ['index.html'].concat(refs);
+      t.eq('http: загружены index.html, CSS и все JS-файлы, ровно по ссылкам из index.html', want.filter((f) => own.some((r) => r.url === base + f)), want);
       t.eq('http: приложение отрисовано (есть заголовок и нижнее меню)', await s.page.evaluate(() => !!document.querySelector('#app h1') && document.querySelectorAll('#app nav button').length === 5), true);
       t.eq('http: стили применены (фон страницы как в эталоне)', await s.page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(242, 246, 236)');
       t.eq('http: ошибок в консоли нет', s.errors, []);

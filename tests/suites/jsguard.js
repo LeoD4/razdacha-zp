@@ -1,19 +1,20 @@
 // Защита переноса JavaScript (подготовка к этапу 2).
 // Сравнивает текущий JavaScript с исходным из ветки stable-before-split (коммит aac1f26):
 //  2.1 функции, объявленные и неявные глобальные переменные, их типы и постоянные значения;
-//  2.2 побайтовое совпадение кода;
-//  2.3 все 53 назначения обработчиков и порядок bind() → renderPlan() → bindPlan();
-//  2.4 подключение js/app.js — проверки включаются, когда файл появится.
+//  2.2 побайтовое совпадение каждой из 151 инструкции верхнего уровня (код может быть разделён на файлы);
+//  2.3 все 53 назначения обработчиков (порядок — внутри каждой функции) и порядок bind() → renderPlan() → bindPlan();
+//  2.4 подключение файлов js/*.js: согласованный порядок, синхронная загрузка, порядок выполнения при загрузке.
 // Эталон-перечень tests/baseline/js-structure.json снимается командой --update только из исходного кода.
 const fs = require('fs');
 const path = require('path');
 const { ROOT, open, fixture, tab } = require('../lib/app');
 const S = require('../lib/source');
+const K = require('../lib/checks');
+const { FILES } = require('../lib/split');
 
 const INV = path.join(__dirname, '..', 'baseline', 'js-structure.json');
 const OWNERS = { bind: 46, bindPlan: 4, renderEmp: 2, render: 1 }; // согласовано владельцем
 const STABLE = ['KEY', 'D', 'ALLD', 'OLDD', 'DEF', 'PEN', 'IC', 'GS_URL', 'SHEET_ID', 'AW_L', 'AW_LW', 'AW_U', 'AW_UW', 'JN', 'JH'];
-const APP_JS = /^js\/app\.js(\?v=[\w.-]+)?$/;
 
 // Состояние страницы после загрузки: типы всех глобальных имён, постоянные значения, порядок вызовов при входе в «Выплаты».
 async function runtime(browser, url, names) {
@@ -72,18 +73,26 @@ module.exports = async function (browser, t, opts) {
   t.eq('исходный код: 176 имён структурного эталона (функции + объявленные переменные)', inv.counts.structureNames, 176);
   t.eq('исходный код: 178 имён вместе с r и o', inv.counts.allNames, 178);
 
-  // --- 2.2 побайтовое совпадение ---
+  // --- 2.2 побайтовое совпадение каждой инструкции ---
   const cur = S.currentJs(ROOT);
   const buf = cur.buf;
-  let diff = '';
-  if (!buf.equals(orig)) {
-    let i = 0; while (i < buf.length && i < orig.length && buf[i] === orig[i]) i++;
-    const line = orig.slice(0, i).toString('utf8').split('\n').length;
-    diff = `отличие с байта ${i} (строка ${line} кода): сейчас ${buf.length} байт, в исходном ${orig.length}`;
-  }
-  t.eq('JavaScript побайтово совпадает с исходным (stable-before-split)', diff, '');
-  t.eq('JavaScript: нет метки BOM в начале', buf.slice(0, 3).equals(Buffer.from([0xef, 0xbb, 0xbf])), false);
-  t.eq('JavaScript: корректная кодировка UTF-8', Buffer.from(buf.toString('utf8'), 'utf8').equals(buf), true);
+  const SR = K.scriptReport(ROOT);
+  const texts = K.fileTexts(ROOT, SR);
+  const ST = K.statementReport(orig.toString('utf8'), texts);
+  t.eq('инструкции: исходных инструкций верхнего уровня 151', ST.total, 151);
+  t.eq('инструкции: все 151 найдены, каждая побайтово совпадает с исходной (stable-before-split)', ST.missing, []);
+  t.eq('инструкции: нет изменённых и лишних', ST.extra, []);
+  t.eq('инструкции: каждая встречается ровно один раз', ST.dupes, []);
+  t.eq('инструкции: внутри каждого файла исходный относительный порядок', ST.badOrder, []);
+  t.eq('инструкции: между ними только переводы строк (нет постороннего кода и комментариев)', ST.badSep, []);
+  t.eq('выполнение при загрузке: 6 исполняемых инструкций в исходном порядке', [ST.execCount, ST.execOrderOk], [6, true]);
+  t.eq('выполнение при загрузке: 5 инструкций запуска — последние, в исходном порядке', [ST.startupCount, ST.startupLast], [5, true]);
+  t.eq('выполнение при загрузке: чтение localStorage (try) после объявлений KEY, DEF, C', ST.tryAfterDecls, true);
+  t.eq('выполнение при загрузке: DEF объявлен раньше C', ST.defBeforeC, true);
+  texts.forEach(({ file }) => {
+    const b = fs.existsSync(path.join(ROOT, file)) ? fs.readFileSync(path.join(ROOT, file)) : Buffer.alloc(0);
+    t.eq(`${file}: нет метки BOM, корректная кодировка UTF-8`, [b.slice(0, 3).equals(Buffer.from([0xef, 0xbb, 0xbf])), Buffer.from(b.toString('utf8'), 'utf8').equals(b)], [false, true]);
+  });
 
   // --- 2.1 имена и типы ---
   let C;
@@ -92,7 +101,6 @@ module.exports = async function (browser, t, opts) {
   t.eq('функции: ни одна не удалена и не переименована', lost(inv.functions, C.fns), []);
   t.eq('функции: новых нет', lost(C.fns, inv.functions), []);
   t.eq('функции: количество объявлений = 131', C.fns.length, 131);
-  t.eq('функции: порядок объявлений не изменился', C.fns, inv.functions);
   t.eq('переменные: ни одна не удалена и не переименована', lost(inv.declaredVars, C.vars), []);
   t.eq('переменные: новых нет', lost(C.vars, inv.declaredVars), []);
   t.eq('переменные: количество объявлений = 45', C.vars.length, 45);
@@ -119,7 +127,9 @@ module.exports = async function (browser, t, opts) {
   const cnt = (a) => a.reduce((m, k) => { m[k] = (m[k] || 0) + 1; return m; }, {});
   const ci = cnt(ih), cc = cnt(ch);
   t.eq('обработчики: нет неожиданных дубликатов', Object.keys(cc).filter((k) => cc[k] !== ci[k]).map((k) => `${k}: ${cc[k]} (эталон ${ci[k] || 0})`), []);
-  t.eq('обработчики: порядок назначения не изменился', ch, ih);
+  const perOwner = (H) => H.reduce((m, h) => { (m[h.owner] = m[h.owner] || []).push(`${h.event} | ${h.target}`); return m; }, {});
+  const po = perOwner(inv.handlers), pc = perOwner(C.handlers);
+  t.eq('обработчики: порядок назначения внутри каждой функции не изменился', Object.keys(po).filter((o) => JSON.stringify(po[o]) !== JSON.stringify(pc[o])), []);
   t.eq('#pdate: два события в bind() — oninput и onchange', C.handlers.filter((h) => h.target === '#pdate' && h.owner === 'bind').map((h) => h.event).sort(), ['onchange', 'oninput']);
   t.eq('порядок: bind() вызывает renderPlan() один раз прямо в теле', C.order.renderPlanCallsInBind, 1);
   t.eq(`порядок: renderPlan() вызывается после ${inv.order.bindHandlersBeforeRenderPlan} назначений в bind()`, C.order.bindHandlersBeforeRenderPlan, inv.order.bindHandlersBeforeRenderPlan);
@@ -129,25 +139,16 @@ module.exports = async function (browser, t, opts) {
   t.eq('порядок вызовов при входе в «Выплаты» совпадает с исходным', R.seq, inv.runtimeOrder);
 
   // --- 2.4 подключение скриптов ---
-  const P = cur.page;
   t.eq('приложение рисует #app синхронно, пока документ загружается', R.firstRender, 'loading');
-  t.eq('все скрипты стоят после <div id="app"></div>', P.scripts.every((x) => x.pos > P.appDivPos) && P.appDivPos >= 0, true);
-  t.eq('ни у одного скрипта нет async / defer / type="module"', P.scripts.filter((x) => /\basync\b|\bdefer\b|type\s*=\s*["']?module/i.test(x.attrs)).map((x) => x.src || 'встроенный'), []);
-  const appTag = P.scripts.filter((x) => x.src && /(^|\/)app\.js(\?|$)/.test(x.src));
-  const appFile = fs.existsSync(path.join(ROOT, 'js', 'app.js'));
-  if (!appTag.length && !appFile) {
-    t.eq('до переноса: в index.html один встроенный скрипт', P.scripts.map((x) => (x.inline ? 'встроенный' : x.src)), ['встроенный']);
-    ['js/app.js существует', 'путь js/app.js относительный', 'js/app.js подключён после <div id="app"></div>', 'у js/app.js нет async', 'у js/app.js нет defer', 'у js/app.js нет type="module"', 'встроенного кода в index.html не осталось', 'js/app.js подключён ровно один раз']
-      .forEach((n) => t.skip(n, 'включится после переноса JavaScript в js/app.js'));
-  } else {
-    const tag = appTag[0] || { src: '', attrs: '', pos: -1 };
-    t.eq('js/app.js существует', appFile, true);
-    t.eq('путь js/app.js относительный', APP_JS.test(tag.src), true);
-    t.eq('js/app.js подключён после <div id="app"></div>', tag.pos > P.appDivPos, true);
-    t.eq('у js/app.js нет async', /\basync\b/i.test(tag.attrs), false);
-    t.eq('у js/app.js нет defer', /\bdefer\b/i.test(tag.attrs), false);
-    t.eq('у js/app.js нет type="module"', /type\s*=\s*["']?module/i.test(tag.attrs), false);
-    t.eq('встроенного кода в index.html не осталось', P.scripts.filter((x) => x.inline && x.inline.toString().trim()).length, 0);
-    t.eq('js/app.js подключён ровно один раз', appTag.length, 1);
-  }
+  t.eq('все скрипты стоят после <div id="app"></div>', SR.afterApp, true);
+  t.eq('ни у одного скрипта нет async / defer / type="module"', SR.badAttrs, []);
+  t.eq('встроенного кода в index.html не осталось', SR.inlineLeft, 0);
+  t.eq('пути скриптов относительные, вида js/имя.js (допускается ?v=)', SR.badPath, []);
+  t.eq(`подключаются только файлы плана (${FILES.join(', ')})`, SR.unknown, []);
+  t.eq('каждый файл подключён один раз', SR.duplicates, []);
+  t.eq('порядок подключения: utils → store → calc → sheets → views → app', SR.orderOk, true);
+  t.eq('js/app.js подключён последним', SR.appLast, true);
+  t.eq('все подключённые файлы существуют', SR.missingFiles, []);
+  t.eq('в папке js/ нет неподключённых файлов', SR.orphanFiles, []);
+  t.eq('версия ?v= одинакова у всех локальных CSS и JS (или её нет ни у одного)', SR.versions.length, 1);
 };

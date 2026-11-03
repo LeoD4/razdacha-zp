@@ -50,7 +50,7 @@ module.exports = async function (browser, t, opts) {
   const seen = {};
   const dups = [];
   scripts.forEach((s) => {
-    const code = s.code != null ? s.code : fs.readFileSync(path.join(ROOT, s.file), 'utf8');
+    const code = s.code != null ? s.code : (fs.existsSync(path.join(ROOT, s.file)) ? fs.readFileSync(path.join(ROOT, s.file), 'utf8') : ''); // отсутствие файла — отдельная проверка
     let list = [];
     try { list = declared(code); } catch (e) { t.fail(`скрипт разбирается: ${s.name}`, e.message); return; }
     list.forEach((d) => {
