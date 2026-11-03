@@ -25,38 +25,8 @@ if(d&&d.people&&(d.ts||0)>(C.ts||0)){C=JSON.parse(JSON.stringify(d));migrate();m
 else if(first&&(!d||(C.ts||0)>(d.ts||0)))schedPush();
 if(first){first=false;if(!pushT)setCloud("☁ подключено")}},
 function(e){setCloud("☁ ошибка облака"+(e&&e.code?" ("+e.code+")":""))})})})}).catch(function(){ROLE="login";render()})}
-function billPlan(W){
-var cs=cashOf(),As=W.map(function(w){return w.A}),S=0,pl,fail="";
-W.forEach(function(w){S+=w.A});
-if(!cs.any){var inf=z();D.forEach(function(d){inf[d]=1e9});pl={p:alloc(As,inf),s:null,base:null,k:0}}
-else{pl=plan(As,cs.n);if(!pl.p)fail=cs.t<S?"Наличных "+fmt(cs.t)+" ₽ меньше, чем к выдаче "+fmt(S)+" ₽: не хватает "+fmt(S-cs.t)+" ₽.":"Не удалось подобрать раскладку имеющимися купюрами даже с разменом. Проверьте количество купюр."}
-var T=z();W.forEach(function(w,i){w.c=pl.p?pl.p.c[i]:z();D.forEach(function(d){T[d]+=w.c[d]})});
-var st=cs.any?(pl.p?pl.s:cs.n):T,L=z();D.forEach(function(d){L[d]=st[d]-T[d]});
-return{W:W,cash:cs,nostock:!cs.any,fail:fail,st:st,L:L,T:T,S:S,n:pl.p?pl.p.n:0,base:pl.base,k:pl.k,ex:pl.p&&pl.k?exOf(cs.n,pl.s):null}}
 function cashBox(sid){if(!C.cashBy)C.cashBy={};if(!C.cashBy[sid])C.cashBy[sid]={};return C.cashBy[sid]}
 function migCash(){if(C.cash){C.cashOld=C.cash;delete C.cash}}
-function cashOf(sid){var c=cashBox(sid||draft().sid),o=z(),t=0,any=false;D.forEach(function(d){if(String(c[d]==null?"":c[d]).trim()!=="")any=true;o[d]=cnt(c[d]);t+=o[d]*d});return{n:o,t:t,any:any}}
-function pick(a,s){var M={};
-function f(i,rem){if(rem===0)return 0;if(i>=D.length)return Infinity;var key=i+"|"+rem;if(M[key])return M[key].v;var d=D[i],bv=Infinity,bk=0;
-for(var k=Math.min(s[d],Math.floor(rem/d));k>=0;k--){var v=k+f(i+1,rem-k*d);if(v<bv){bv=v;bk=k}}M[key]={v:bv,k:bk};return bv}
-if(f(0,a)===Infinity)return null;var c=z(),rem=a;for(var i=0;i<D.length&&rem>0;i++){var k=M[i+"|"+rem].k;c[D[i]]=k;rem-=k*D[i]}return c}
-function alloc(As,s){var ix=As.map(function(a,i){return i}),best=null;
-[function(x,y){return As[y]-As[x]},function(x,y){return As[y]%1000-As[x]%1000||As[y]-As[x]},function(x,y){return As[x]-As[y]}].forEach(function(cmp){
-var L={},cs=[],n=0,ok=true;D.forEach(function(d){L[d]=s[d]});
-ix.slice().sort(cmp).forEach(function(i){if(!ok)return;var c=pick(As[i],L);if(!c){ok=false;return}cs[i]=c;D.forEach(function(d){L[d]-=c[d];n+=c[d]})});
-if(ok&&(!best||n<best.n))best={c:cs,n:n}});return best}
-var PEN=3;
-function gave(a,b){var k=0;D.forEach(function(d){if(a[d]>b[d])k+=a[d]-b[d]});return k}
-function recv(cur,d,m,need){var s={};D.forEach(function(e){s[e]=cur[e]});s[d]-=m;var V=m*d,sm=D.filter(function(e){return e<d&&e!==2000});
-sm.forEach(function(e){var t=Math.min(Math.max(0,need[e]-s[e]),Math.floor(V/e));s[e]+=t;V-=t*e});
-sm.forEach(function(e){var t=Math.floor(V/e);s[e]+=t;V-=t*e});return s}
-function plan(As,s0){var base=alloc(As,s0),cur=s0,p=base,k=0,sc=base?base.n:Infinity;
-for(var r=0;r<4;r++){var inf={},need=z(),ip;D.forEach(function(d){inf[d]=d===2000?cur[d]:1e9});ip=alloc(As,inf);if(ip)ip.c.forEach(function(c){D.forEach(function(d){need[d]+=c[d]})});
-var bc=null;D.forEach(function(d){if(d===100)return;for(var m=1;m<=Math.min(cur[d],8);m++){var s=recv(cur,d,m,need),q=alloc(As,s);if(!q)continue;var kk=gave(s0,s),v=q.n+PEN*kk;if(v<sc&&(!bc||v<bc.v))bc={v:v,s:s,p:q,k:kk}}});
-if(!bc)break;cur=bc.s;p=bc.p;sc=bc.v;k=bc.k}
-return{p:p,s:cur,base:base,k:k}}
-function exOf(a,b){var g=z(),r=z();D.forEach(function(d){if(a[d]>b[d])g[d]=a[d]-b[d];else r[d]=b[d]-a[d]});return{give:g,get:r}}
-function exText(R){return R.ex?"отдать "+lst(R.ex.give)+", получить "+lst(R.ex.get):""}
 function advice(R){
 if(!R.W.length)return'<p class="mut" style="margin:0">Нет сумм к выдаче.</p>';
 if(R.nostock)return'<p class="mut" style="margin:0">Введите количество купюр, чтобы проверить выдачу и размен.</p>';
@@ -108,21 +78,6 @@ h+=t==="shift"?viewShift():t==="people"?viewPeople():t==="tab"?viewPay():t==="lo
 document.getElementById("app").innerHTML=h+nav();bind();
 if(!PULLED){PULLED=true;setTimeout(function(){pullPay(false)},0)}}
 function sidCur(){if(!C.sid)C.sid="c"+Date.now();return C.sid}
-function curErr(){var E=[];C.people.forEach(function(p){var s=amtOf(p);if(s&&isNaN(pa(s)))E.push("Сумма не понята: "+p.n+" «"+s+"»")});return E}
-function curRows(){var W=[];C.people.forEach(function(p){var s=amtOf(p);if(!s)return;var a=pa(s);if(isNaN(a))return;W.push({n:p.n,raw:a,A:Math.floor(a/100)*100,kg:Math.round(pkg(p.n)*100)/100,sal:kgn(p.s),r:rateOf(p)})});return W}
-function tsData(x){var B=[],S=[];
-if(x.cur){boats().forEach(function(b){var no=String(b.b||"").trim();if(no||kgn(b.k)||kgn(b.m))B.push({b:no,c:String(b.c||"").trim(),kg:kgn(b.k),m:kgn(b.m)})});stages().forEach(function(st){S.push({b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:kgn(st.k),p:presentOf(st)})})}
-else{var r=x.rec||{};(r.boats||[]).forEach(function(b){B.push({b:String(b.b||"").trim(),c:String(b.c||"").trim(),kg:+b.kg||0,m:+b.m||0})});(r.stages||[]).forEach(function(st){S.push({b:String(st.b||"").trim(),s:String(st.s||"").trim(),kg:+st.kg||0,p:st.p||[]})})}
-if(!S.some(function(st){return st.p.length}))return null;
-var bm={},bo=[];function bt(no){if(!bm[no]){bm[no]={b:no,c:"",w:null,m:0,ppl:{},po:[],sk:0,lost:0};bo.push(no)}return bm[no]}
-B.forEach(function(b){var o=bt(b.b);if(b.c&&!o.c)o.c=b.c;o.w=(o.w||0)+b.kg+b.m;o.m+=b.m});
-S.forEach(function(st){if(!st.kg&&!st.p.length)return;var o=bt(st.b);o.sk+=st.kg;if(!st.p.length){o.lost+=st.kg;return}var e=st.kg/st.p.length;st.p.forEach(function(n){if(!(n in o.ppl)){o.ppl[n]=0;o.po.push(n)}o.ppl[n]+=e})});
-var L=bo.map(function(k){return bm[k]}).filter(function(o){return o.sk||o.w}),em={},eo=[];
-L.forEach(function(o){o.po.forEach(function(n){if(!em[n]){em[n]={n:n,list:[],t:0};eo.push(n)}em[n].list.push({b:o.b,c:o.c,kg:o.ppl[n]});em[n].t+=o.ppl[n]})});
-return{S:S,boats:L,emps:eo.map(function(n){return em[n]}).sort(function(a,b){return a.n.localeCompare(b.n,"ru")})}}
-function tsMatrix(x){var d=tsData(x),names=[];if(!d)return null;
-(x.rows||[]).forEach(function(w){if(names.indexOf(w.n)<0)names.push(w.n)});d.S.forEach(function(st){st.p.forEach(function(n){if(names.indexOf(n)<0)names.push(n)})});
-names=names.filter(function(n){return d.boats.some(function(o){return n in o.ppl})});return{names:names,boats:d.boats}}
 function tsView(x){var d=tsMatrix(x),h='<details id="tbo"'+(TBO?" open":"")+'><summary class="lbl">ТАБЕЛЬ КАТЕРОВ</summary>',names;
 if(!d)return h+'<div class="card"><p class="mut" style="margin:0">Для этой смены нет этапов с отмеченными людьми, поэтому табель недоступен'+(x.rec&&x.rec.src==="table"?" (смена загружена из таблицы, этапов в ней нет)":"")+".</p></div></details>";
 names=d.names;
@@ -131,17 +86,9 @@ d.boats.forEach(function(o){h+='<tr><td class="s1"><b>'+esc(o.b||"—")+"</b>"+(
 h+="</tbody></table></div>";
 d.boats.forEach(function(o){if(o.w==null)h+='<p class="w" style="margin:8px 4px 0">Катер '+esc(o.b||"без номера")+": в этапах есть, а в списке катеров нет.</p>"});
 return h+"</div></details>"}
-function bankOf(x){var kg=0,m=0,sl=0;if(x.cur){boats().forEach(function(b){kg+=kgn(b.k);m+=kgn(b.m)});C.people.forEach(function(p){sl+=kgn(p.s)})}else{var r=x.rec||{};(r.boats||[]).forEach(function(b){kg+=+b.kg||0;m+=+b.m||0});sl=r.salad!=null?+r.salad||0:(r.rows||[]).reduce(function(a,w){return a+(+w.sal||0)},0)}
-return{kg:kg,m:m,s:sl,t:Math.round((kg+m)*500+sl*400)}}
-function shifts(){var L=[{id:sidCur(),date:C.date||todayISO(),rows:curRows(),bank:bankAuto(),cur:true}];hist().forEach(function(r){L.push({id:r.id,date:r.date||ymd(r.ts),ts:r.ts,rows:r.rows||[],bank:r.bank,rec:r})});return L}
-function findShift(id){return shifts().filter(function(x){return x.id===id})[0]||null}
-function shiftBy(id){return findShift(id)||shifts()[0]}
 function sLabel(x){return(x.cur?"Текущая: ":"")+ddate(x)+(x.rec&&x.rec.sheet&&x.rec.sheet!==ddate(x)?" ("+x.rec.sheet+")":"")+" · "+x.rows.length+" чел."}
 function shOpts(sel){return shifts().map(function(x){return'<option value="'+esc(x.id)+'"'+(x.id===sel?" selected":"")+">"+esc(sLabel(x))+"</option>"}).join("")}
-function rateOfRow(w){if(w.r)return w.r;if(w.kg>0){var x=Math.round((w.raw-(w.sal||0)*400)/w.kg);if([500,480,450].indexOf(x)>=0)return x}return null}
 function pays(){if(!C.pay)C.pay=[];return C.pay}
-function paidOf(sid){var o={};pays().forEach(function(op){if(op.sid!==sid)return;op.lines.forEach(function(l){var x=o[l.n]=o[l.n]||{adv:0,sal:0};x[op.type]+=l.amt})});return o}
-function jlines(){var L=[];pays().forEach(function(op){op.lines.forEach(function(l){L.push({op:op,l:l,id:op.id+"/"+l.n})})});return L}
 function migrate(){if((C.ver||0)>=2)return;
 try{localStorage.setItem(KEY+"_bak1",JSON.stringify(C))}catch(e){}
 hist().forEach(function(r){if(!r.id)r.id="h"+r.ts;
@@ -198,21 +145,6 @@ if(NOTE3)h+='<p class="ok2" style="margin:10px 0 0">'+esc(NOTE3)+"</p>";
 if(SLIST&&SLIST.length)h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">'+SLIST.slice(0,8).map(function(n,i){return'<button class="pill g2" data-gl="'+i+'">'+esc(n)+"</button>"}).join("")+"</div>";
 return h+"</div>"}
 function draft(){if(!C.draft)C.draft={};var d=C.draft;if(!d.id)d.id="op"+Date.now()+Math.random().toString(36).slice(2,6);if(!d.sid||!findShift(d.sid))d.sid=sidCur();if(d.pdate==null)d.pdate="";if(!d.type)d.type="sal";if(!d.amt)d.amt={};if(!d.ticks)d.ticks={};return d}
-function payState(){var d=draft(),sh=shiftBy(d.sid),pd=paidOf(sh.id),rows=[],W=[],err=[],warn=[],tot=0;
-sh.rows.forEach(function(w){var p=pd[w.n]||{adv:0,sal:0},paid=p.adv+p.sal,rem=w.A-paid,v=d.amt[w.n],def=d.type==="sal"?Math.max(0,rem):0,a=(v==null||v==="")?def:cnt(v);
-if(a%100)err.push(w.n+": "+fmt(a)+" ₽ не делится на 100.");else if(a>Math.max(0,rem))warn.push(w.n+": "+fmt(a)+" ₽ больше остатка "+fmt(Math.max(0,rem))+" ₽.");
-rows.push({n:w.n,A:w.A,paid:paid,adv:p.adv,rem:rem,v:v==null?"":v,def:def,a:a});tot+=a;if(a>0&&a%100===0)W.push({n:w.n,A:a})});
-return{d:d,sh:sh,rows:rows,W:W,err:err,warn:warn,tot:tot,bud:cnt(d.budget)}}
-function distAdv(B,rows){if(!(B>0))return{err:"Укажите сумму аванса."};if(B%100)return{err:"Сумма аванса должна делиться на 100 ₽."};
-var P=rows.filter(function(x){return x.A>0&&x.rem>=100}).map(function(x){return{n:x.n,A:x.A,cap:Math.floor(x.rem/100)}}),tot=0;P.forEach(function(x){tot+=x.cap});
-if(B/100>tot)return{err:"Сумма "+fmt(B)+" ₽ больше общего остатка к выплате "+fmt(tot*100)+" ₽. Уменьшите сумму или распределите вручную."};
-var U=B/100,fix={},act=P.slice(),used,wA,rem;
-function upd(){used=0;wA=0;Object.keys(fix).forEach(function(k){used+=fix[k]});act.forEach(function(x){wA+=x.A});rem=U-used}
-for(;;){upd();var nx=act.filter(function(x){return rem*x.A/wA>=x.cap});if(!nx.length)break;nx.forEach(function(x){fix[x.n]=x.cap});act=act.filter(function(x){return!(x.n in fix)})}
-upd();var out={},sm=0,sh=act.map(function(x){var q=rem*x.A/wA,f=Math.floor(q+1e-9);sm+=f;return{n:x.n,q:q,f:f}});
-Object.keys(fix).forEach(function(k){out[k]=fix[k]});sh.forEach(function(o){out[o.n]=o.f});
-sh.sort(function(a,b){return(b.q-b.f)-(a.q-a.f)});for(var i=0;i<rem-sm;i++)out[sh[i].n]++;
-var amt={};rows.forEach(function(x){amt[x.n]=String((out[x.n]||0)*100)});return{amt:amt}}
 function viewPay(){var P=payState(),d=P.d,h=restoreCard();
 h+='<div class="card"><label>Смена, за которую выплата<select id="psel" style="width:100%;margin-top:4px">'+shOpts(d.sid)+'</select></label><label style="margin-top:10px">Дата выдачи<input id="pdate" type="date" value="'+esc(d.pdate)+'"'+(PDERR?' style="border-color:var(--warn)"':"")+'><span class="w" id="pderr" style="display:'+(PDERR?"block":"none")+';margin-top:4px;font-size:13px">Выберите дату выдачи</span></label><div style="margin-top:10px"><span style="font-size:13px;color:var(--mut)">Операция</span><div style="display:flex;gap:8px;margin-top:6px">'+[["adv","Аванс"],["sal","Зарплата"]].map(function(t){return'<button class="chip'+(d.type===t[0]?" on":"")+'" data-pt="'+t[0]+'" style="flex:1">'+t[1]+"</button>"}).join("")+"</div></div></div>";
 if(d.type==="adv")h+='<div class="card pr" style="padding:12px 16px"><label style="flex:1;min-width:0">Сумма на аванс, ₽<input id="pbud" type="text" inputmode="numeric" value="'+esc(d.budget||"")+'" style="width:100%;margin-top:4px;text-align:left"></label><button class="pill" id="pdist" style="flex:none;align-self:flex-end">Распределить</button></div>';
@@ -301,7 +233,6 @@ var GS_URL="https://script.google.com/macros/s/AKfycbzI68g2EhW30n-WkgLVgbGqOEPQE
 function gsUrl(){return /^https:\/\/script\.google\.com\//.test(GS_URL)?GS_URL:(C.gs||"")}
 var SHEET_ID="1wS1b3IaUEc8c5W63uH6OI1FeJyxeNhUyl6xiWhuS3ug",NOTE3="";
 function inSheet(r){return r.sheet||r.ts===1792474231867||r.ts===1792407853953}
-function salOf(n){var q=C.people.filter(function(p){return p.n===n})[0];return q?kgn(q.s):0}
 function sheetBlock(rec){var P=rec.rows||[],B=rec.boats||[],M=tsMatrix({rec:rec,rows:P,cur:false}),nb=M?M.names.length:0,TC=13,right=M&&TC+1+nb<=26,
 n=Math.max(P.length,B.length,right?M.boats.length:0),rows=[],W=M?12:11;
 function mk(){var r=[];for(var i=0;i<W;i++)r.push("");return r}
@@ -394,7 +325,6 @@ function col(k){return String.fromCharCode(65+k)}
 return put("'"+l.sheet+"'!"+col(c.z)+"4:"+col(c.z)+(tot+1),Z).then(function(){return put("'"+l.sheet+"'!"+col(c.a)+"4:"+col(c.a)+(tot+1),A)}).then(function(){return put("'"+l.sheet+"'!"+col(c.o)+"4:"+col(c.o)+(tot+1),O)})}).catch(function(){bad++})})});
 return q.then(function(){return fin({added:add.length,skipped:lines.length-add.length,warn:bad?"Не обновлены суммы на листах смен: "+bad+".":""})})})})})}
 function sheetDone(rec,name){rec.sheet=name||"ok";save();NOTE3="Смена записана в таблицу, лист «"+name+"».";render();syncPay()}
-function withPaid(rec){var o={};pays().forEach(function(op){if(op.sid!==rec.id||!op.synced)return;op.lines.forEach(function(l){var x=o[l.n]=o[l.n]||{adv:0,pd:0};if(op.type==="adv")x.adv+=l.amt;x.pd+=l.amt})});var r=JSON.parse(JSON.stringify(rec));r.rows.forEach(function(w){var x=o[w.n]||{adv:0,pd:0};w.adv=x.adv;w.pd=x.pd});return r}
 function sheetReport(rec){
 if(SYNCING){setTimeout(function(){sheetReport(rec)},1500);return}
 var blk=sheetBlock(withPaid(rec));
@@ -423,15 +353,7 @@ rq.push({updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",start
 if(nc>11)rq.push({repeatCell:{range:rg([2,blk.rows.length,11,12]),cell:{userEnteredFormat:{wrapStrategy:"OVERFLOW_CELL"}},fields:"userEnteredFormat.wrapStrategy"}},{updateDimensionProperties:{range:{sheetId:gid,dimension:"COLUMNS",startIndex:11,endIndex:12},properties:{pixelSize:Math.max(120,blk.rows.slice(3).reduce(function(m,r){return Math.max(m,textPx(r[11]))},0)+10)},fields:"pixelSize"}});
 if(blk.ts)rq=rq.concat(tsStyle(gid,blk.ts,blk.rows));
 mcp.callTool(SV,"update_spreadsheet",{spreadsheetId:SHEET_ID,requests:rq}).catch(function(){})})})}).catch(function(e){NOTE3=sheetErr(e)+(stage==="write"?" Проверьте таблицу, прежде чем повторять.":" Смена сохранена в архиве: нажмите «В таблицу».");render()})}
-function rateOf(p){if(p.r)return +p.r;return{"Саня":500,"Даня":500,"Аня":450}[p.n]||480}
-function autoOf(p){var k=pkg(p.n),sl=kgn(p.s);return(k>0||sl>0)?String(Math.floor(k*rateOf(p)+sl*400+1e-9)):""}
-function amtOf(p){var m=String(p.a||"").trim();return m?m:autoOf(p)}
-function bankAuto(){var br=C.bankR;if(br!==""&&br!=null&&!isNaN(+br))return Math.round(+br);var t=0,m=0,sl=0;boats().forEach(function(x){t+=kgn(x.k);m+=kgn(x.m)});C.people.forEach(function(p){sl+=kgn(p.s)});return Math.round((t+m)*500+sl*400)}
 function boatsLine(){var t=0,m=0;boats().forEach(function(x){t+=kgn(x.k);m+=kgn(x.m)});return"Всего: "+fmtk(t+m)+" кг"+(m?" (камчадал "+fmtk(m)+")":"")+" · банк "+fmt(bankAuto())+" ₽"}
-function presentOf(st){return C.people.filter(function(p){return st.p&&st.p[p.n]}).map(function(p){return p.n})}
-function pkg(n){var t=0;stages().forEach(function(st){var pr=presentOf(st);if(pr.length&&pr.indexOf(n)>=0)t+=kgn(st.k)/pr.length});return t}
-function infoSt(st){var n=presentOf(st).length;return"Чел.: "+n+" · кг на чел.: "+(n?fmtk(kgn(st.k)/n):"—")}
-function warnK(ts,tk){return ts&&tk&&Math.abs(ts-tk)>0.001?"Кг по этапам "+fmtk(ts)+", по катерам "+fmtk(tk)+": не сходится":""}
 function refreshShift(){var ts=0,tk=0;stages().forEach(function(st,i){ts+=kgn(st.k);var e=document.getElementById("si"+i);if(e)e.textContent=infoSt(st)});boats().forEach(function(x){tk+=kgn(x.k)+kgn(x.m)});C.people.forEach(function(p,j){var e=document.getElementById("pk"+j);if(e)e.textContent=fmtk(pkg(p.n))+" кг"});var a=document.getElementById("tsk");if(a)a.textContent="Всего по этапам: "+fmtk(ts)+" кг";var w=document.getElementById("warnk");if(w)w.textContent=warnK(ts,tk)}
 function addStage(nextBoat){var S=stages(),pv=S[S.length-1],st={b:"",s:"",k:"",p:{}};
 if(!pv){st.b="1";st.s="1"}else if(nextBoat){var nb=parseInt(pv.b);st.b=isNaN(nb)?"":String(nb+1);st.s="1";st.p=JSON.parse(JSON.stringify(pv.p||{}))}else{st.b=pv.b;var c=0;S.forEach(function(x){if(x.b===pv.b)c++});st.s=String(c+1);st.p=JSON.parse(JSON.stringify(pv.p||{}))}
